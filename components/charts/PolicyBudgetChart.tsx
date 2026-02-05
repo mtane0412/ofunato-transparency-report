@@ -20,12 +20,14 @@ interface PolicyBudgetChartProps {
 
 /**
  * 円グラフ用カスタムラベル
- * パーセンテージを表示
+ * パーセンテージを表示（5%未満は非表示にして重なりを防ぐ）
  */
 function renderLabel(entry: { percent?: number }) {
   if (!entry.percent) return '';
-  const percent = (entry.percent * 100).toFixed(1);
-  return `${percent}%`;
+  const percent = entry.percent * 100;
+  // 5%未満のセグメントにはラベルを表示しない（重なり防止）
+  if (percent < 5) return '';
+  return `${percent.toFixed(1)}%`;
 }
 
 /**
@@ -79,15 +81,15 @@ export default function PolicyBudgetChart({
 
   return (
     <ChartContainer title="政策別予算配分">
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={500}>
         <PieChart>
           <Pie
             data={chartData}
             dataKey="value"
             nameKey="name"
             cx="50%"
-            cy="50%"
-            outerRadius={120}
+            cy="45%"
+            outerRadius={100}
             label={renderLabel}
             labelLine
           >
@@ -99,7 +101,11 @@ export default function PolicyBudgetChart({
             ))}
           </Pie>
           <Tooltip content={<CustomPieTooltip />} />
-          <Legend />
+          <Legend
+            verticalAlign="bottom"
+            height={100}
+            wrapperStyle={{ paddingTop: '20px' }}
+          />
         </PieChart>
       </ResponsiveContainer>
     </ChartContainer>
