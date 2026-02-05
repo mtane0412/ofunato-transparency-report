@@ -50,6 +50,8 @@ export function ProjectFilter({
 }: ProjectFilterProps) {
   // キーワード検索のローカル状態（Enter押下時に反映）
   const [localKeyword, setLocalKeyword] = useState(filters.q || '');
+  // IME変換中かどうかを追跡（日本語入力対応）
+  const [isComposing, setIsComposing] = useState(false);
 
   // filtersのqが外部から変更された場合、ローカル状態も同期する（リセット時など）
   useEffect(() => {
@@ -63,6 +65,11 @@ export function ProjectFilter({
 
     setLocalKeyword(newValue);
 
+    // IME変換中は処理をスキップ（日本語入力のバグ防止）
+    if (isComposing) {
+      return;
+    }
+
     // 文字が削除された場合（入力値が短くなった場合）は即座に反映
     if (newValue.length < oldValue.length) {
       onFilterChange({ q: newValue || undefined });
@@ -71,9 +78,19 @@ export function ProjectFilter({
 
   // Enterキー押下時にフィルターを適用
   const handleKeywordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isComposing) {
       onFilterChange({ q: localKeyword || undefined });
     }
+  };
+
+  // IME変換開始
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  // IME変換終了
+  const handleCompositionEnd = () => {
+    setIsComposing(false);
   };
 
   return (
@@ -100,6 +117,8 @@ export function ProjectFilter({
           value={localKeyword}
           onChange={handleKeywordChange}
           onKeyDown={handleKeywordKeyDown}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
           placeholder="事業名で検索...（Enterで適用 / 削除は自動反映）"
           className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />

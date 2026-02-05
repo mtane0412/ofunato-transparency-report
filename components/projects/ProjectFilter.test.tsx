@@ -205,4 +205,23 @@ describe('ProjectFilter', () => {
     // Enterキー押下後にonFilterChangeが呼ばれる
     expect(mockOnFilterChange).toHaveBeenCalledWith({ q: 'テスト事業' });
   });
+
+  it('IME変換中は文字削除時もonFilterChangeが呼ばれないこと', () => {
+    render(<ProjectFilter {...defaultProps} />);
+
+    const searchInput = screen.getByLabelText('キーワード検索') as HTMLInputElement;
+
+    // IME変換開始をシミュレート
+    searchInput.dispatchEvent(new CompositionEvent('compositionstart'));
+
+    // 変換中に文字を変更（例: 「てすと」→「て」）
+    searchInput.value = 'て';
+    searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+    // IME変換中は文字が削除されてもonFilterChangeが呼ばれない
+    expect(mockOnFilterChange).not.toHaveBeenCalled();
+
+    // IME変換終了
+    searchInput.dispatchEvent(new CompositionEvent('compositionend'));
+  });
 });
