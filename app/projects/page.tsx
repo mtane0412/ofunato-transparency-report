@@ -2,16 +2,174 @@
  * 事業一覧・検索ページ
  *
  * すべての事務事業をテーブル形式で表示します。
- * フィルター機能により、政策・部署・事業区分で絞り込みが可能です。
+ * フィルター機能により、政策・施策・基本事業・部署・事業区分で絞り込みが可能です。
  */
 
-import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
-import { getAllProjects } from '@/lib/data';
-import { formatThousandYen } from '@/lib/utils';
+'use client';
 
-export default function ProjectsPage() {
-  const projects = getAllProjects();
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useCallback, useMemo, Suspense } from 'react';
+import {
+  getAllProjects,
+  getAllPolicies,
+  getAllMeasures,
+  getAllBasicProjects,
+  getAllDepartments,
+  getAllCategories,
+} from '@/lib/data';
+import {
+  filterProjects,
+  getAvailableMeasures,
+  getAvailableBasicProjects,
+  getFilterOptionCounts,
+  type FilterParams,
+} from '@/lib/filter';
+import { ProjectFilter } from '@/components/projects/ProjectFilter';
+import { ProjectTable } from '@/components/projects/ProjectTable';
+
+/**
+ * フィルター機能付き事業一覧コンポーネント
+ */
+function ProjectsContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // URLパラメータからフィルター状態を取得
+  const filters: FilterParams = useMemo(
+    () => ({
+      policy: searchParams.get('policy') || undefined,
+      measure: searchParams.get('measure') || undefined,
+      basicProject: searchParams.get('basicProject') || undefined,
+      department: searchParams.get('department') || undefined,
+      category: searchParams.get('category') || undefined,
+    }),
+    [searchParams]
+  );
+
+  // 全データを取得
+  const allProjects = useMemo(() => getAllProjects(), []);
+
+  // フィルタリング後のデータ
+  const filteredProjects = useMemo(
+    () => filterProjects(allProjects, filters),
+    [allProjects, filters]
+  );
+
+  // 選択肢データの取得
+  const policies = useMemo(() => getAllPolicies(), []);
+  const allMeasures = useMemo(() => getAllMeasures(), []);
+  const allBasicProjects = useMemo(() => getAllBasicProjects(), []);
+  const departments = useMemo(() => getAllDepartments(), []);
+  const categories = useMemo(() => getAllCategories(), []);
+
+  // カスケードフィルターの選択肢を取得
+  const availableMeasures = useMemo(
+    () => getAvailableMeasures(allProjects, filters.policy),
+    [allProjects, filters.policy]
+  );
+
+  const availableBasicProjects = useMemo(
+    () => getAvailableBasicProjects(allProjects, filters.measure),
+    [allProjects, filters.measure]
+  );
+
+  // 各選択肢の件数を計算
+  const optionCounts = useMemo(
+    () => getFilterOptionCounts(allProjects, filters),
+    [allProjects, filters]
+  );
+
+  // 件数付きの選択肢を生成
+  const policiesWithCount = useMemo(
+    () =>
+      policies.map((p) => ({
+        value: p.id,
+        label: p.name,
+        count: optionCounts.policies.get(p.id) || 0,
+      })),
+    [policies, optionCounts.policies]
+  );
+
+  const measuresWithCount = useMemo(
+    () => {
+      const measuresToUse = filters.policy ? availableMeasures : allMeasures;
+      return measuresToUse.map((m) => ({
+        value: m.id,
+        label: m.name,
+        count: optionCounts.measures.get(m.id) || 0,
+      }));
+    },
+    [filters.policy, availableMeasures, allMeasures, optionCounts.measures]
+  );
+
+  const basicProjectsWithCount = useMemo(
+    () => {
+      const basicProjectsToUse = filters.measure
+        ? availableBasicProjects
+        : allBasicProjects;
+      return basicProjectsToUse.map((bp) => ({
+        value: bp.id,
+        label: bp.name,
+        count: optionCounts.basicProjects.get(bp.id) || 0,
+      }));
+    },
+    [filters.measure, availableBasicProjects, allBasicProjects, optionCounts.basicProjects]
+  );
+
+  const departmentsWithCount = useMemo(
+    () =>
+      departments.map((d) => ({
+        value: d,
+        label: d,
+        count: optionCounts.departments.get(d) || 0,
+      })),
+    [departments, optionCounts.departments]
+  );
+
+  const categoriesWithCount = useMemo(
+    () =>
+      categories.map((c) => ({
+        value: c,
+        label: c,
+        count: optionCounts.categories.get(c) || 0,
+      })),
+    [categories, optionCounts.categories]
+  );
+
+  // フィルター変更ハンドラ
+  const handleFilterChange = useCallback(
+    (newFilters: Partial<FilterParams>) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      // 新しいフィルター値を設定
+      Object.entries(newFilters).forEach(([key, value]) => {
+        if (value) {
+          params.set(key, value);
+        } else {
+          params.delete(key);
+        }
+      });
+
+      // カスケードフィルターのリセット処理
+      // 政策を変更した場合、施策と基本事業をリセット
+      if ('policy' in newFilters) {
+        params.delete('measure');
+        params.delete('basicProject');
+      }
+      // 施策を変更した場合、基本事業をリセット
+      if ('measure' in newFilters) {
+        params.delete('basicProject');
+      }
+
+      router.push(`/projects?${params.toString()}`);
+    },
+    [searchParams, router]
+  );
+
+  // フィルターリセットハンドラ
+  const handleReset = useCallback(() => {
+    router.push('/projects');
+  }, [router]);
 
   return (
     <div className="space-y-6">
@@ -19,82 +177,36 @@ export default function ProjectsPage() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">事業一覧</h1>
         <p className="mt-2 text-gray-600">
-          全{projects.length}件の事務事業を表示しています。
+          全{allProjects.length}件中、{filteredProjects.length}
+          件の事務事業を表示しています。
         </p>
       </div>
 
+      {/* フィルターパネル */}
+      <ProjectFilter
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onReset={handleReset}
+        policies={policiesWithCount}
+        measures={measuresWithCount}
+        basicProjects={basicProjectsWithCount}
+        departments={departmentsWithCount}
+        categories={categoriesWithCount}
+      />
+
       {/* 事業一覧テーブル */}
-      <Card>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  事業名
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  政策
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  部署
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  事業区分
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  予算（最新年度）
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {projects.map((project) => {
-                // 最新年度の財政データを取得
-                const latestFinancial = project.financials.find(
-                  (f) => f.year === project.year
-                );
-
-                return (
-                  <tr key={project.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {project.id}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      <Link
-                        href={`/projects/${project.id}`}
-                        className="text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        {project.name}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {project.policy.name}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {project.department}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {project.category}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                      {latestFinancial
-                        ? formatThousandYen(latestFinancial.grandTotal)
-                        : '-'}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      {/* ページネーションの注記 */}
-      <div className="text-center text-sm text-gray-500">
-        ※ 現在はすべての事業を表示しています。フィルターとページネーションは今後実装予定です。
-      </div>
+      <ProjectTable projects={filteredProjects} />
     </div>
+  );
+}
+
+/**
+ * 事業一覧ページ（Suspenseでラップ）
+ */
+export default function ProjectsPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-8">読み込み中...</div>}>
+      <ProjectsContent />
+    </Suspense>
   );
 }

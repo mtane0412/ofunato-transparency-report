@@ -31,6 +31,18 @@ npm run type-check
 npm run build
 ```
 
+### テスト
+
+```bash
+npm test
+```
+
+## テスト環境
+
+- **フレームワーク**: Vitest + React Testing Library + jsdom
+- **設定ファイル**: `vitest.config.ts`, `vitest.setup.ts`
+- **実行コマンド**: `npm test`（全テスト）、`npm run test:watch`（watch mode）
+
 ## 開発ワークフロー
 
 ### データ更新
@@ -91,6 +103,49 @@ ofunato-transparency-report/
 - **指標データ**: 6年分の指標データ（活動指標、対象指標、成果指標）
 - **評価情報**: 改革改善の方向性、今後の方向性、評価コメント
 
+## 実装パターン
+
+### Client ComponentでuseSearchParams使用時（SSG対応）
+
+```tsx
+// ❌ 悪い例（prerenderエラー）
+export default function Page() {
+  const searchParams = useSearchParams();
+  // ...
+}
+
+// ✅ 良い例（Suspenseでラップ）
+function PageContent() {
+  const searchParams = useSearchParams();
+  // ...
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>読み込み中...</div>}>
+      <PageContent />
+    </Suspense>
+  );
+}
+```
+
+### フィルター機能のパフォーマンス最適化
+
+- URLパラメータでフィルター状態を管理（ブックマーク・共有可能）
+- `useMemo`で件数計算をメモ化（407件のデータで体感遅延なし）
+- カスケードフィルター実装時は、上位フィルター変更で下位フィルターをリセット
+
+### TypeScriptの型安全なオブジェクト操作
+
+```typescript
+// ❌ delete演算子は型エラーになる可能性
+const filters = { ...currentFilters };
+delete filters.policy; // エラー: The operand of a 'delete' operator must be optional
+
+// ✅ 分割代入で新オブジェクトを作成
+const { policy: _p, ...filtersWithoutPolicy } = currentFilters;
+```
+
 ## 注意事項
 
 ### ダークモード
@@ -102,10 +157,17 @@ ofunato-transparency-report/
 - `report.xlsx` はGitにコミットされています（データソースとして必要）
 - `data/projects.json` は `.gitignore` に追加せず、ビルド成果物としてコミットしています（SSGのため）
 
+## 実装済み機能
+
+1. **フィルター機能**: 政策・施策・基本事業・部署・事業区分でのフィルタリング
+   - URLパラメータ方式（ブックマーク・共有可能）
+   - カスケードフィルター（政策→施策→基本事業の階層連動）
+   - 件数表示と0件選択肢の無効化
+
 ## 今後の拡張候補
 
-1. **フィルター機能**: 政策・部署・事業区分でのフィルタリング
-2. **ページネーション**: 事業一覧の表示件数制限
-3. **グラフ表示**: Rechartsを使用した財政データの可視化
-4. **検索機能**: キーワードによる全文検索
-5. **予算分析ページ**: 政策別・施策別の予算配分分析
+1. **ページネーション**: 事業一覧の表示件数制限
+2. **グラフ表示**: Rechartsを使用した財政データの可視化
+3. **検索機能**: キーワードによる全文検索
+4. **予算分析ページ**: 政策別・施策別の予算配分分析
+5. **エクスポート機能**: フィルター結果のCSV/Excel出力
