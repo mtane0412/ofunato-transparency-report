@@ -80,3 +80,59 @@ export function formatThousandYen(value: number): string {
 export function formatPercent(value: number, decimals = 1): string {
   return `${value.toFixed(decimals)}%`;
 }
+
+/**
+ * グラフY軸用の省略形金額フォーマット
+ * @param amountInThousand - 千円単位の金額
+ * @param mode - 表示モード（'thousand' or 'japanese'）
+ * @returns 省略形の金額文字列
+ *
+ * thousandモード: カンマ区切りの千円表記（例: "1,000千円"）
+ * japaneseモード:
+ *   - 1万円未満: 千円単位（例: "5千円"）
+ *   - 1万円〜1億円未満: 万円単位、小数点1桁（例: "1.3万"）
+ *   - 1億円以上: 億円単位、小数点1桁（例: "1.3億"）
+ */
+export function formatAmountShort(
+  amountInThousand: number,
+  mode: AmountDisplayMode
+): string {
+  if (mode === 'thousand') {
+    // thousandモードはカンマ区切りの千円表記
+    return `${amountInThousand.toLocaleString('ja-JP')}千円`;
+  }
+
+  // japaneseモードは省略表記
+  const isNegative = amountInThousand < 0;
+  const absoluteAmount = Math.abs(amountInThousand);
+
+  if (absoluteAmount === 0) {
+    return '0円';
+  }
+
+  // 1万円未満（千円単位で10未満）は千円表記
+  if (absoluteAmount < 10) {
+    const result = `${absoluteAmount}千円`;
+    return isNegative ? `-${result}` : result;
+  }
+
+  // 1億円未満（千円単位で100,000未満）は万円単位
+  if (absoluteAmount < 100000) {
+    const manValue = absoluteAmount / 10;
+    const formatted = manValue.toLocaleString('ja-JP', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1,
+    });
+    const result = `${formatted}万`;
+    return isNegative ? `-${result}` : result;
+  }
+
+  // 1億円以上は億円単位
+  const okuValue = absoluteAmount / 100000;
+  const formatted = okuValue.toLocaleString('ja-JP', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  });
+  const result = `${formatted}億`;
+  return isNegative ? `-${result}` : result;
+}
