@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { ChartContainer } from './ChartContainer';
 import { CustomTooltip } from './CustomTooltip';
@@ -31,8 +32,11 @@ interface CostBreakdownChartProps {
 export function CostBreakdownChart({ financials }: CostBreakdownChartProps) {
   const { mode } = useAmountDisplay();
 
-  // データ変換
-  const chartData = toCostBreakdownChartData(financials);
+  // データ変換（メモ化により不要な再計算を防ぐ）
+  const chartData = useMemo(
+    () => toCostBreakdownChartData(financials),
+    [financials]
+  );
 
   // データが空の場合
   if (chartData.length === 0) {

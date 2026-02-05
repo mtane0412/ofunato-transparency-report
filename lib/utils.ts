@@ -136,3 +136,34 @@ export function formatAmountShort(
   const result = `${formatted}億`;
   return isNegative ? `-${result}` : result;
 }
+
+/**
+ * 指標ラベルをフォーマットする
+ *
+ * @param label - 指標ラベル（名称と単位を含む）
+ * @param defaultLabel - デフォルトラベル
+ * @returns フォーマットされたラベル文字列
+ *
+ * - 名称と単位の両方がある場合: "名称（単位）"
+ * - 名称のみの場合: "名称"
+ * - 単位のみの場合: "デフォルトラベル（単位）"
+ * - 両方とも空またはlabelがundefined/nullの場合: "デフォルトラベル"
+ */
+export function formatIndicatorLabel(
+  label: { name?: string; unit?: string } | undefined | null,
+  defaultLabel: string
+): string {
+  // labelがundefined/nullの場合は空のオブジェクトとして扱う
+  const { name = '', unit = '' } = label || {};
+
+  if (name && unit) {
+    return `${name}（${unit}）`;
+  }
+  if (name) {
+    return name;
+  }
+  if (unit) {
+    return `${defaultLabel}（${unit}）`;
+  }
+  return defaultLabel;
+}

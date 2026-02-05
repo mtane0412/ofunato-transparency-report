@@ -14,6 +14,7 @@ import { RevenueSourceChart } from '@/components/charts/RevenueSourceChart';
 import { CostBreakdownChart } from '@/components/charts/CostBreakdownChart';
 import { IndicatorChart } from '@/components/charts/IndicatorChart';
 import { hasValidIndicatorData } from '@/lib/chart-data';
+import { formatIndicatorLabel } from '@/lib/utils';
 import type { Project } from '@/types';
 
 interface ProjectDetailContentProps {
@@ -21,29 +22,22 @@ interface ProjectDetailContentProps {
 }
 
 /**
- * 指標ラベルをフォーマットする
- * - 名称と単位の両方がある場合: "名称（単位）"
- * - 名称のみの場合: "名称"
- * - 単位のみの場合: "デフォルトラベル（単位）"
- * - 両方とも空: "デフォルトラベル"
+ * 指標カテゴリの設定型
  */
-function formatIndicatorLabel(
-  label: { name: string; unit: string },
-  defaultLabel: string
-): string {
-  const { name, unit } = label;
+type IndicatorCategoryConfig = {
+  category: 'activity' | 'target' | 'outcome';
+  defaultLabels: string[];
+};
 
-  if (name && unit) {
-    return `${name}（${unit}）`;
-  }
-  if (name) {
-    return name;
-  }
-  if (unit) {
-    return `${defaultLabel}（${unit}）`;
-  }
-  return defaultLabel;
-}
+/**
+ * 指標カテゴリの設定
+ * 各カテゴリには3つの指標（インデックス0, 1, 2）があります
+ */
+const INDICATOR_CATEGORIES: IndicatorCategoryConfig[] = [
+  { category: 'activity', defaultLabels: ['活動指標ア', '活動指標イ', '活動指標ウ'] },
+  { category: 'target', defaultLabels: ['対象指標カ', '対象指標キ', '対象指標ク'] },
+  { category: 'outcome', defaultLabels: ['成果指標サ', '成果指標シ', '成果指標ス'] },
+];
 
 /**
  * ProjectDetailContent コンポーネント
@@ -281,109 +275,22 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
           <>
             <h2 className="text-xl font-bold text-gray-900 mt-8">指標の推移</h2>
 
-            {/* 活動指標 */}
-            {hasValidIndicatorData(project.indicators, 'activity', 0) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="activity"
-                index={0}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.activity[0],
-                  '活動指標ア'
-                )}
-              />
-            )}
-            {hasValidIndicatorData(project.indicators, 'activity', 1) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="activity"
-                index={1}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.activity[1],
-                  '活動指標イ'
-                )}
-              />
-            )}
-            {hasValidIndicatorData(project.indicators, 'activity', 2) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="activity"
-                index={2}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.activity[2],
-                  '活動指標ウ'
-                )}
-              />
-            )}
-
-            {/* 対象指標 */}
-            {hasValidIndicatorData(project.indicators, 'target', 0) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="target"
-                index={0}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.target[0],
-                  '対象指標カ'
-                )}
-              />
-            )}
-            {hasValidIndicatorData(project.indicators, 'target', 1) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="target"
-                index={1}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.target[1],
-                  '対象指標キ'
-                )}
-              />
-            )}
-            {hasValidIndicatorData(project.indicators, 'target', 2) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="target"
-                index={2}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.target[2],
-                  '対象指標ク'
-                )}
-              />
-            )}
-
-            {/* 成果指標 */}
-            {hasValidIndicatorData(project.indicators, 'outcome', 0) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="outcome"
-                index={0}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.outcome[0],
-                  '成果指標サ'
-                )}
-              />
-            )}
-            {hasValidIndicatorData(project.indicators, 'outcome', 1) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="outcome"
-                index={1}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.outcome[1],
-                  '成果指標シ'
-                )}
-              />
-            )}
-            {hasValidIndicatorData(project.indicators, 'outcome', 2) && (
-              <IndicatorChart
-                indicators={project.indicators}
-                category="outcome"
-                index={2}
-                label={formatIndicatorLabel(
-                  project.indicatorLabels.outcome[2],
-                  '成果指標ス'
-                )}
-              />
+            {/* 各カテゴリの指標をループ処理で表示 */}
+            {INDICATOR_CATEGORIES.map(({ category, defaultLabels }) =>
+              defaultLabels.map((defaultLabel, index) =>
+                hasValidIndicatorData(project.indicators, category, index) ? (
+                  <IndicatorChart
+                    key={`${category}-${index}`}
+                    indicators={project.indicators}
+                    category={category}
+                    index={index}
+                    label={formatIndicatorLabel(
+                      project.indicatorLabels[category][index],
+                      defaultLabel
+                    )}
+                  />
+                ) : null
+              )
             )}
           </>
         )}

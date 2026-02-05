@@ -3,7 +3,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { formatJapaneseYen, formatAmount, formatAmountShort } from './utils';
+import {
+  formatJapaneseYen,
+  formatAmount,
+  formatAmountShort,
+  formatIndicatorLabel,
+} from './utils';
 
 describe('formatJapaneseYen', () => {
   it('0千円を0円として表示する', () => {
@@ -134,5 +139,36 @@ describe('formatAmountShort', () => {
       expect(formatAmountShort(-10, 'japanese')).toBe('-1万');
       expect(formatAmountShort(-130005, 'japanese')).toBe('-1.3億');
     });
+  });
+});
+
+describe('formatIndicatorLabel', () => {
+  it('名称と単位の両方がある場合は「名称（単位）」形式で表示する', () => {
+    expect(formatIndicatorLabel({ name: '参加者数', unit: '人' }, 'デフォルト')).toBe('参加者数（人）');
+  });
+
+  it('名称のみの場合は名称を表示する', () => {
+    expect(formatIndicatorLabel({ name: '参加者数', unit: '' }, 'デフォルト')).toBe('参加者数');
+  });
+
+  it('単位のみの場合はデフォルトラベルと単位を表示する', () => {
+    expect(formatIndicatorLabel({ name: '', unit: '人' }, 'デフォルトラベル')).toBe('デフォルトラベル（人）');
+  });
+
+  it('両方とも空の場合はデフォルトラベルを表示する', () => {
+    expect(formatIndicatorLabel({ name: '', unit: '' }, 'デフォルトラベル')).toBe('デフォルトラベル');
+  });
+
+  it('labelがundefinedの場合でもエラーにならずデフォルトラベルを表示する', () => {
+    expect(formatIndicatorLabel(undefined, 'デフォルトラベル')).toBe('デフォルトラベル');
+  });
+
+  it('labelがnullの場合でもエラーにならずデフォルトラベルを表示する', () => {
+    expect(formatIndicatorLabel(null as unknown as { name: string; unit: string }, 'デフォルトラベル')).toBe('デフォルトラベル');
+  });
+
+  it('nameやunitがundefinedの場合でも正しく処理する', () => {
+    expect(formatIndicatorLabel({ name: undefined as unknown as string, unit: '人' }, 'デフォルト')).toBe('デフォルト（人）');
+    expect(formatIndicatorLabel({ name: '参加者数', unit: undefined as unknown as string }, 'デフォルト')).toBe('参加者数');
   });
 });

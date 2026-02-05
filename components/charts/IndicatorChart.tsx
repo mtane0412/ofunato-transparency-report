@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { ChartContainer } from './ChartContainer';
 import { toIndicatorChartData } from '@/lib/chart-data';
@@ -37,8 +38,11 @@ export function IndicatorChart({
   index,
   label,
 }: IndicatorChartProps) {
-  // データ変換
-  const chartData = toIndicatorChartData(indicators, category, index);
+  // データ変換（メモ化により不要な再計算を防ぐ）
+  const chartData = useMemo(
+    () => toIndicatorChartData(indicators, category, index),
+    [indicators, category, index]
+  );
 
   // データが空の場合（nullのみの場合も含む）
   if (chartData.length === 0) {
