@@ -14,30 +14,28 @@ describe('AmountToggle', () => {
     localStorage.clear();
   });
 
-  it('トグルボタンが表示される', () => {
+  it('トグルスイッチが表示される', () => {
     render(
       <AmountDisplayProvider>
         <AmountToggle />
       </AmountDisplayProvider>
     );
 
-    expect(screen.getByLabelText('金額表示形式')).toBeInTheDocument();
-    expect(screen.getByText('億・万・円')).toBeInTheDocument();
-    expect(screen.getByText('千円')).toBeInTheDocument();
+    expect(screen.getByLabelText('千円表記')).toBeInTheDocument();
   });
 
-  it('初期状態では日本語モード（億・万・円）が選択されている', () => {
+  it('初期状態では日本語モード（チェックOFF）である', () => {
     render(
       <AmountDisplayProvider>
         <AmountToggle />
       </AmountDisplayProvider>
     );
 
-    const japaneseButton = screen.getByText('億・万・円');
-    expect(japaneseButton).toHaveAttribute('aria-checked', 'true');
+    const checkbox = screen.getByRole('checkbox', { name: '千円表記' });
+    expect(checkbox).not.toBeChecked();
   });
 
-  it('千円ボタンをクリックすると千円モードに切り替わる', async () => {
+  it('トグルをクリックすると千円モードに切り替わる', async () => {
     const user = userEvent.setup();
 
     render(
@@ -46,17 +44,13 @@ describe('AmountToggle', () => {
       </AmountDisplayProvider>
     );
 
-    const thousandButton = screen.getByText('千円');
-    await user.click(thousandButton);
+    const checkbox = screen.getByRole('checkbox', { name: '千円表記' });
+    await user.click(checkbox);
 
-    expect(thousandButton).toHaveAttribute('aria-checked', 'true');
-    expect(screen.getByText('億・万・円')).toHaveAttribute(
-      'aria-checked',
-      'false'
-    );
+    expect(checkbox).toBeChecked();
   });
 
-  it('日本語ボタンをクリックすると日本語モードに切り替わる', async () => {
+  it('再度クリックすると日本語モードに戻る', async () => {
     const user = userEvent.setup();
 
     // localStorageに千円モードを保存（事前条件）
@@ -68,11 +62,14 @@ describe('AmountToggle', () => {
       </AmountDisplayProvider>
     );
 
-    const japaneseButton = screen.getByText('億・万・円');
-    await user.click(japaneseButton);
+    const checkbox = screen.getByRole('checkbox', { name: '千円表記' });
 
-    expect(japaneseButton).toHaveAttribute('aria-checked', 'true');
-    expect(screen.getByText('千円')).toHaveAttribute('aria-checked', 'false');
+    // 初期状態は千円モード（チェックON）
+    expect(checkbox).toBeChecked();
+
+    // クリックして日本語モードに戻す
+    await user.click(checkbox);
+    expect(checkbox).not.toBeChecked();
   });
 
   it('トグル切り替えが連続して動作する', async () => {
@@ -84,23 +81,22 @@ describe('AmountToggle', () => {
       </AmountDisplayProvider>
     );
 
-    const japaneseButton = screen.getByText('億・万・円');
-    const thousandButton = screen.getByText('千円');
+    const checkbox = screen.getByRole('checkbox', { name: '千円表記' });
 
-    // 初期状態: 日本語モード
-    expect(japaneseButton).toHaveAttribute('aria-checked', 'true');
+    // 初期状態: 日本語モード（チェックOFF）
+    expect(checkbox).not.toBeChecked();
 
     // 千円モードに切り替え
-    await user.click(thousandButton);
-    expect(thousandButton).toHaveAttribute('aria-checked', 'true');
+    await user.click(checkbox);
+    expect(checkbox).toBeChecked();
 
     // 日本語モードに戻す
-    await user.click(japaneseButton);
-    expect(japaneseButton).toHaveAttribute('aria-checked', 'true');
+    await user.click(checkbox);
+    expect(checkbox).not.toBeChecked();
 
     // 再度千円モードに切り替え
-    await user.click(thousandButton);
-    expect(thousandButton).toHaveAttribute('aria-checked', 'true');
+    await user.click(checkbox);
+    expect(checkbox).toBeChecked();
   });
 
   it('アクセシビリティ属性が正しく設定されている', () => {
@@ -110,13 +106,7 @@ describe('AmountToggle', () => {
       </AmountDisplayProvider>
     );
 
-    const radioGroup = screen.getByRole('radiogroup');
-    expect(radioGroup).toHaveAttribute('aria-label', '金額表示形式');
-
-    const japaneseButton = screen.getByText('億・万・円');
-    const thousandButton = screen.getByText('千円');
-
-    expect(japaneseButton).toHaveAttribute('role', 'radio');
-    expect(thousandButton).toHaveAttribute('role', 'radio');
+    const checkbox = screen.getByRole('checkbox', { name: '千円表記' });
+    expect(checkbox).toBeInTheDocument();
   });
 });

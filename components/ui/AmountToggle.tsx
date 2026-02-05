@@ -2,8 +2,8 @@
  * 金額表示形式切り替えトグルコンポーネント
  *
  * ヘッダーに配置する金額表示モードの切り替えトグルです。
- * - 億・万・円（日本語モード）
- * - 千円（千円モード）
+ * - OFF: 億・万・円（日本語モード）
+ * - ON: 千円（千円モード）
  */
 
 'use client';
@@ -13,47 +13,29 @@ import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
 /**
  * AmountToggle コンポーネント
  *
- * 金額表示モードを切り替えるトグルボタンを提供します。
- * アクセシビリティ対応として、role="radiogroup" と role="radio" を使用しています。
+ * 金額表示モードを切り替えるトグルスイッチを提供します。
+ * チェックボックスベースのシンプルなトグルスイッチです。
  */
 export function AmountToggle() {
   const { mode, setMode } = useAmountDisplay();
 
-  return (
-    <div
-      className="flex items-center gap-1 rounded-md bg-gray-100 p-1"
-      role="radiogroup"
-      aria-label="金額表示形式"
-    >
-      {/* 日本語モードボタン */}
-      <button
-        type="button"
-        role="radio"
-        aria-checked={mode === 'japanese'}
-        onClick={() => setMode('japanese')}
-        className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
-          mode === 'japanese'
-            ? 'bg-white text-gray-900 shadow-sm'
-            : 'text-gray-600 hover:text-gray-900'
-        }`}
-      >
-        億・万・円
-      </button>
+  const handleToggle = () => {
+    setMode(mode === 'thousand' ? 'japanese' : 'thousand');
+  };
 
-      {/* 千円モードボタン */}
-      <button
-        type="button"
-        role="radio"
-        aria-checked={mode === 'thousand'}
-        onClick={() => setMode('thousand')}
-        className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
-          mode === 'thousand'
-            ? 'bg-white text-gray-900 shadow-sm'
-            : 'text-gray-600 hover:text-gray-900'
-        }`}
-      >
-        千円
-      </button>
-    </div>
+  return (
+    <label className="flex items-center gap-2 text-sm text-white cursor-pointer">
+      <span>千円表記</span>
+      <div className="relative">
+        <input
+          type="checkbox"
+          checked={mode === 'thousand'}
+          onChange={handleToggle}
+          className="sr-only peer"
+        />
+        <div className="w-9 h-5 bg-gray-300 rounded-full peer-checked:bg-blue-500 transition-colors"></div>
+        <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-4"></div>
+      </div>
+    </label>
   );
 }

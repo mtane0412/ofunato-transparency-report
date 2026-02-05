@@ -56,8 +56,7 @@ describe('Header', () => {
       </AmountDisplayProvider>
     );
 
-    // AmountToggleのボタンが表示されることを確認
-    expect(screen.getByText('億・万・円')).toBeInTheDocument();
-    expect(screen.getByText('千円')).toBeInTheDocument();
+    // AmountToggleのラベルが表示されることを確認
+    expect(screen.getByLabelText('千円表記')).toBeInTheDocument();
   });
 });
