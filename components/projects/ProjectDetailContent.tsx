@@ -21,6 +21,31 @@ interface ProjectDetailContentProps {
 }
 
 /**
+ * 指標ラベルをフォーマットする
+ * - 名称と単位の両方がある場合: "名称（単位）"
+ * - 名称のみの場合: "名称"
+ * - 単位のみの場合: "デフォルトラベル（単位）"
+ * - 両方とも空: "デフォルトラベル"
+ */
+function formatIndicatorLabel(
+  label: { name: string; unit: string },
+  defaultLabel: string
+): string {
+  const { name, unit } = label;
+
+  if (name && unit) {
+    return `${name}（${unit}）`;
+  }
+  if (name) {
+    return name;
+  }
+  if (unit) {
+    return `${defaultLabel}（${unit}）`;
+  }
+  return defaultLabel;
+}
+
+/**
  * ProjectDetailContent コンポーネント
  */
 export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
@@ -262,11 +287,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="activity"
                 index={0}
-                label={
-                  project.indicatorLabels.activity[0].name ||
-                  project.indicatorLabels.activity[0].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.activity[0],
                   '活動指標ア'
-                }
+                )}
               />
             )}
             {hasValidIndicatorData(project.indicators, 'activity', 1) && (
@@ -274,11 +298,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="activity"
                 index={1}
-                label={
-                  project.indicatorLabels.activity[1].name ||
-                  project.indicatorLabels.activity[1].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.activity[1],
                   '活動指標イ'
-                }
+                )}
               />
             )}
             {hasValidIndicatorData(project.indicators, 'activity', 2) && (
@@ -286,11 +309,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="activity"
                 index={2}
-                label={
-                  project.indicatorLabels.activity[2].name ||
-                  project.indicatorLabels.activity[2].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.activity[2],
                   '活動指標ウ'
-                }
+                )}
               />
             )}
 
@@ -300,11 +322,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="target"
                 index={0}
-                label={
-                  project.indicatorLabels.target[0].name ||
-                  project.indicatorLabels.target[0].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.target[0],
                   '対象指標カ'
-                }
+                )}
               />
             )}
             {hasValidIndicatorData(project.indicators, 'target', 1) && (
@@ -312,11 +333,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="target"
                 index={1}
-                label={
-                  project.indicatorLabels.target[1].name ||
-                  project.indicatorLabels.target[1].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.target[1],
                   '対象指標キ'
-                }
+                )}
               />
             )}
             {hasValidIndicatorData(project.indicators, 'target', 2) && (
@@ -324,11 +344,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="target"
                 index={2}
-                label={
-                  project.indicatorLabels.target[2].name ||
-                  project.indicatorLabels.target[2].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.target[2],
                   '対象指標ク'
-                }
+                )}
               />
             )}
 
@@ -338,11 +357,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="outcome"
                 index={0}
-                label={
-                  project.indicatorLabels.outcome[0].name ||
-                  project.indicatorLabels.outcome[0].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.outcome[0],
                   '成果指標サ'
-                }
+                )}
               />
             )}
             {hasValidIndicatorData(project.indicators, 'outcome', 1) && (
@@ -350,11 +368,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="outcome"
                 index={1}
-                label={
-                  project.indicatorLabels.outcome[1].name ||
-                  project.indicatorLabels.outcome[1].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.outcome[1],
                   '成果指標シ'
-                }
+                )}
               />
             )}
             {hasValidIndicatorData(project.indicators, 'outcome', 2) && (
@@ -362,11 +379,10 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="outcome"
                 index={2}
-                label={
-                  project.indicatorLabels.outcome[2].name ||
-                  project.indicatorLabels.outcome[2].unit ||
+                label={formatIndicatorLabel(
+                  project.indicatorLabels.outcome[2],
                   '成果指標ス'
-                }
+                )}
               />
             )}
           </>

@@ -169,19 +169,19 @@ function parseProjectRow(row: unknown[]): Project {
     indicators,
     indicatorLabels: {
       activity: [
-        { name: toString(row[54]), unit: toString(row[53]) }, // BB-BC列: 活動指標ア（名称・単位）
-        { name: toString(row[56]), unit: toString(row[55]) }, // BD-BE列: 活動指標イ（名称・単位）
-        { name: toString(row[58]), unit: toString(row[57]) }, // BF-BG列: 活動指標ウ（名称・単位）
+        { name: toString(row[52]), unit: toString(row[53]) }, // BB-BC列: 活動指標ア（名称・単位）
+        { name: toString(row[54]), unit: toString(row[55]) }, // BD-BE列: 活動指標イ（名称・単位）
+        { name: toString(row[56]), unit: toString(row[57]) }, // BF-BG列: 活動指標ウ（名称・単位）
       ],
       target: [
-        { name: toString(row[60]), unit: toString(row[59]) }, // BH-BI列: 対象指標カ（名称・単位）
-        { name: toString(row[62]), unit: toString(row[61]) }, // BJ-BK列: 対象指標キ（名称・単位）
-        { name: toString(row[64]), unit: toString(row[63]) }, // BL-BM列: 対象指標ク（名称・単位）
+        { name: toString(row[58]), unit: toString(row[59]) }, // BH-BI列: 対象指標カ（名称・単位）
+        { name: toString(row[60]), unit: toString(row[61]) }, // BJ-BK列: 対象指標キ（名称・単位）
+        { name: toString(row[62]), unit: toString(row[63]) }, // BL-BM列: 対象指標ク（名称・単位）
       ],
       outcome: [
-        { name: toString(row[66]), unit: toString(row[65]) }, // BN-BO列: 成果指標サ（名称・単位）
-        { name: toString(row[68]), unit: toString(row[67]) }, // BP-BQ列: 成果指標シ（名称・単位）
-        { name: toString(row[70]), unit: toString(row[69]) }, // BR-BS列: 成果指標ス（名称・単位）
+        { name: toString(row[64]), unit: toString(row[65]) }, // BN-BO列: 成果指標サ（名称・単位）
+        { name: toString(row[66]), unit: toString(row[67]) }, // BP-BQ列: 成果指標シ（名称・単位）
+        { name: toString(row[68]), unit: toString(row[69]) }, // BR-BS列: 成果指標ス（名称・単位）
       ],
     },
     evaluation: {
