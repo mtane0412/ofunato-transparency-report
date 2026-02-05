@@ -196,6 +196,16 @@ export interface ProjectDataset {
 /**
  * データセット統計情報
  */
+/** 政策別・事業区分別の集計データ */
+export interface CategoryStats {
+  /** カテゴリ名称 */
+  name: string;
+  /** 事業数 */
+  count: number;
+  /** 予算合計（最新年度のトータルコスト合計、千円単位） */
+  budget: number;
+}
+
 export interface DatasetStats {
   /** 総事業数 */
   totalProjects: number;
@@ -203,8 +213,8 @@ export interface DatasetStats {
   totalBudget: number;
   /** データ生成日時 */
   generatedAt: string;
-  /** 政策別事業数 */
-  projectsByPolicy: Array<{ name: string; count: number }>;
-  /** 事業区分別事業数 */
-  projectsByCategory: Array<{ name: string; count: number }>;
+  /** 政策別事業数・予算 */
+  projectsByPolicy: CategoryStats[];
+  /** 事業区分別事業数・予算 */
+  projectsByCategory: CategoryStats[];
 }

@@ -11,8 +11,10 @@ import {
   toCostBreakdownChartData,
   toIndicatorChartData,
   hasValidIndicatorData,
+  toPolicyBudgetChartData,
+  toCategoryChartData,
 } from './chart-data';
-import type { YearlyFinancial, YearlyIndicator } from '@/types';
+import type { YearlyFinancial, YearlyIndicator, CategoryStats } from '@/types';
 
 describe('formatFiscalYear', () => {
   it('年度数値を和暦文字列に変換する', () => {
@@ -267,5 +269,66 @@ describe('hasValidIndicatorData', () => {
 
   it('空配列の場合はfalseを返す', () => {
     expect(hasValidIndicatorData([], 'activity', 0)).toBe(false);
+  });
+});
+
+describe('toPolicyBudgetChartData', () => {
+  it('CategoryStats配列を政策別予算グラフ用データに変換する', () => {
+    const policyStats: CategoryStats[] = [
+      { name: '政策A', count: 10, budget: 5000000 },
+      { name: '政策B', count: 20, budget: 3000000 },
+      { name: '政策C', count: 5, budget: 8000000 },
+    ];
+
+    const result = toPolicyBudgetChartData(policyStats);
+
+    // 予算降順ソートされること
+    expect(result).toEqual([
+      { 政策名: '政策C', 予算: 8000000, 事業数: 5 },
+      { 政策名: '政策A', 予算: 5000000, 事業数: 10 },
+      { 政策名: '政策B', 予算: 3000000, 事業数: 20 },
+    ]);
+  });
+
+  it('空配列の場合は空配列を返す', () => {
+    expect(toPolicyBudgetChartData([])).toEqual([]);
+  });
+
+  it('予算が同額の場合は元の順序を維持する', () => {
+    const policyStats: CategoryStats[] = [
+      { name: '政策A', count: 10, budget: 5000000 },
+      { name: '政策B', count: 20, budget: 5000000 },
+    ];
+
+    const result = toPolicyBudgetChartData(policyStats);
+
+    // 安定ソート（元の順序維持）
+    expect(result).toEqual([
+      { 政策名: '政策A', 予算: 5000000, 事業数: 10 },
+      { 政策名: '政策B', 予算: 5000000, 事業数: 20 },
+    ]);
+  });
+});
+
+describe('toCategoryChartData', () => {
+  it('CategoryStats配列を事業区分別グラフ用データに変換する', () => {
+    const categoryStats: CategoryStats[] = [
+      { name: '経常', count: 100, budget: 10000000 },
+      { name: '政策', count: 50, budget: 5000000 },
+      { name: '投資', count: 30, budget: 8000000 },
+    ];
+
+    const result = toCategoryChartData(categoryStats);
+
+    // 順序は元データのまま
+    expect(result).toEqual([
+      { 事業区分: '経常', 予算: 10000000, 事業数: 100 },
+      { 事業区分: '政策', 予算: 5000000, 事業数: 50 },
+      { 事業区分: '投資', 予算: 8000000, 事業数: 30 },
+    ]);
+  });
+
+  it('空配列の場合は空配列を返す', () => {
+    expect(toCategoryChartData([])).toEqual([]);
   });
 });

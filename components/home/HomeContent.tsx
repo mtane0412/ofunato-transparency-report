@@ -12,6 +12,8 @@
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
+import PolicyBudgetChart from '@/components/charts/PolicyBudgetChart';
+import CategoryChart from '@/components/charts/CategoryChart';
 import type { DatasetStats } from '@/types';
 
 interface HomeContentProps {
@@ -48,31 +50,47 @@ export function HomeContent({ stats }: HomeContentProps) {
         </Card>
       </div>
 
-      {/* 政策別事業数 */}
-      <Card title="政策別事業数">
+      {/* 政策別予算配分グラフ */}
+      <PolicyBudgetChart policyStats={stats.projectsByPolicy} />
+
+      {/* 政策別事業数・予算 */}
+      <Card title="政策別事業数・予算">
         <div className="space-y-2">
-          {stats.projectsByPolicy.map((item: { name: string; count: number }) => (
+          {stats.projectsByPolicy.map((item) => (
             <div
               key={item.name}
               className="flex items-center justify-between p-3 bg-gray-50 rounded hover:bg-gray-100"
             >
               <span className="text-gray-800">{item.name}</span>
-              <span className="font-bold text-blue-600">{item.count}件</span>
+              <div className="flex gap-4">
+                <span className="font-bold text-blue-600">{item.count}件</span>
+                <span className="font-bold text-green-600">
+                  <FormattedAmount amount={item.budget} />
+                </span>
+              </div>
             </div>
           ))}
         </div>
       </Card>
 
-      {/* 事業区分別事業数 */}
-      <Card title="事業区分別事業数">
+      {/* 事業区分別予算配分グラフ */}
+      <CategoryChart categoryStats={stats.projectsByCategory} />
+
+      {/* 事業区分別事業数・予算 */}
+      <Card title="事業区分別事業数・予算">
         <div className="space-y-2">
-          {stats.projectsByCategory.map((item: { name: string; count: number }) => (
+          {stats.projectsByCategory.map((item) => (
             <div
               key={item.name}
               className="flex items-center justify-between p-3 bg-gray-50 rounded hover:bg-gray-100"
             >
               <span className="text-gray-800">{item.name}</span>
-              <span className="font-bold text-green-600">{item.count}件</span>
+              <div className="flex gap-4">
+                <span className="font-bold text-blue-600">{item.count}件</span>
+                <span className="font-bold text-green-600">
+                  <FormattedAmount amount={item.budget} />
+                </span>
+              </div>
             </div>
           ))}
         </div>

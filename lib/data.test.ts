@@ -12,6 +12,7 @@ import {
   getAllBasicProjects,
   getAllDepartments,
   getAllCategories,
+  getDatasetStats,
 } from './data';
 
 describe('data.ts', () => {
@@ -158,6 +159,79 @@ describe('data.ts', () => {
       // 重複がないこと
       const uniqueCategories = new Set(categories);
       expect(categories.length).toBe(uniqueCategories.size);
+    });
+  });
+
+  describe('getDatasetStats', () => {
+    it('データセット統計情報を取得できること', () => {
+      const stats = getDatasetStats();
+
+      // 基本フィールドの存在確認
+      expect(stats).toBeDefined();
+      expect(stats.totalProjects).toBeGreaterThan(0);
+      expect(stats.totalBudget).toBeGreaterThan(0);
+      expect(stats.generatedAt).toBeDefined();
+      expect(typeof stats.generatedAt).toBe('string');
+
+      // 政策別統計の検証
+      expect(stats.projectsByPolicy).toBeDefined();
+      expect(stats.projectsByPolicy.length).toBeGreaterThan(0);
+      stats.projectsByPolicy.forEach((policy) => {
+        expect(policy).toHaveProperty('name');
+        expect(policy).toHaveProperty('count');
+        expect(policy).toHaveProperty('budget');
+        expect(typeof policy.name).toBe('string');
+        expect(typeof policy.count).toBe('number');
+        expect(typeof policy.budget).toBe('number');
+        expect(policy.count).toBeGreaterThan(0);
+        expect(policy.budget).toBeGreaterThanOrEqual(0);
+      });
+
+      // 事業区分別統計の検証
+      expect(stats.projectsByCategory).toBeDefined();
+      expect(stats.projectsByCategory.length).toBeGreaterThan(0);
+      stats.projectsByCategory.forEach((category) => {
+        expect(category).toHaveProperty('name');
+        expect(category).toHaveProperty('count');
+        expect(category).toHaveProperty('budget');
+        expect(typeof category.name).toBe('string');
+        expect(typeof category.count).toBe('number');
+        expect(typeof category.budget).toBe('number');
+        expect(category.count).toBeGreaterThan(0);
+        expect(category.budget).toBeGreaterThanOrEqual(0);
+      });
+    });
+
+    it('政策別の予算合計が正しく計算されること', () => {
+      const stats = getDatasetStats();
+      const allProjects = getAllProjects();
+
+      // 最初の政策について予算合計を手動計算
+      const firstPolicy = stats.projectsByPolicy[0];
+      const policies = getAllPolicies();
+      const policyId = policies.find((p) => p.name === firstPolicy.name)?.id;
+
+      if (policyId) {
+        const projectsInPolicy = allProjects.filter((p) => p.policy.id === policyId);
+        const expectedBudget = projectsInPolicy.reduce((sum, project) => {
+          const latestFinancial = project.financials.find((f) => f.year === project.year);
+          return sum + (latestFinancial?.grandTotal || 0);
+        }, 0);
+
+        expect(firstPolicy.budget).toBe(expectedBudget);
+      }
+    });
+
+    it('政策別統計がID順にソートされていること', () => {
+      const stats = getDatasetStats();
+      const policies = getAllPolicies();
+
+      // 政策名からIDを逆引きしてソート順を確認
+      for (let i = 0; i < stats.projectsByPolicy.length - 1; i++) {
+        const currentPolicyId = policies.find((p) => p.name === stats.projectsByPolicy[i].name)?.id || '';
+        const nextPolicyId = policies.find((p) => p.name === stats.projectsByPolicy[i + 1].name)?.id || '';
+        expect(currentPolicyId.localeCompare(nextPolicyId)).toBeLessThanOrEqual(0);
+      }
     });
   });
 });

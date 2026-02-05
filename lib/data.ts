@@ -119,29 +119,72 @@ export function getDatasetStats(): DatasetStats {
     return sum + (latestFinancial?.grandTotal || 0);
   }, 0);
 
-  // 政策別事業数を集計
-  const projectsByPolicy = new Map<string, number>();
+  // 政策別事業数・予算を集計（policy.idベースでグルーピング）
+  const projectsByPolicyMap = new Map<
+    string,
+    { id: string; name: string; count: number; budget: number }
+  >();
   projects.forEach((project) => {
-    const count = projectsByPolicy.get(project.policy.name) || 0;
-    projectsByPolicy.set(project.policy.name, count + 1);
+    const policyId = project.policy.id;
+    const existing = projectsByPolicyMap.get(policyId) || {
+      id: policyId,
+      name: project.policy.name,
+      count: 0,
+      budget: 0,
+    };
+
+    // 最新年度の予算を取得
+    const latestFinancial = project.financials.find(
+      (f) => f.year === project.year
+    );
+
+    projectsByPolicyMap.set(policyId, {
+      ...existing,
+      count: existing.count + 1,
+      budget: existing.budget + (latestFinancial?.grandTotal || 0),
+    });
   });
 
-  // 事業区分別事業数を集計
-  const projectsByCategory = new Map<string, number>();
+  // 事業区分別事業数・予算を集計
+  const projectsByCategoryMap = new Map<
+    string,
+    { name: string; count: number; budget: number }
+  >();
   projects.forEach((project) => {
-    const count = projectsByCategory.get(project.category) || 0;
-    projectsByCategory.set(project.category, count + 1);
+    const category = project.category;
+    const existing = projectsByCategoryMap.get(category) || {
+      name: category,
+      count: 0,
+      budget: 0,
+    };
+
+    // 最新年度の予算を取得
+    const latestFinancial = project.financials.find(
+      (f) => f.year === project.year
+    );
+
+    projectsByCategoryMap.set(category, {
+      ...existing,
+      count: existing.count + 1,
+      budget: existing.budget + (latestFinancial?.grandTotal || 0),
+    });
   });
+
+  // 政策別データをID順にソート
+  const projectsByPolicy = Array.from(projectsByPolicyMap.values())
+    .sort((a, b) => a.id.localeCompare(b.id))
+    .map(({ name, count, budget }) => ({ name, count, budget }));
+
+  // 事業区分別データ
+  const projectsByCategory = Array.from(projectsByCategoryMap.values()).map(
+    ({ name, count, budget }) => ({ name, count, budget })
+  );
 
   return {
     totalProjects: dataset.totalCount,
     totalBudget,
     generatedAt: dataset.generatedAt,
-    projectsByPolicy: Array.from(projectsByPolicy.entries()).map(
-      ([name, count]) => ({ name, count })
-    ),
-    projectsByCategory: Array.from(projectsByCategory.entries()).map(
-      ([name, count]) => ({ name, count })
-    ),
+    projectsByPolicy,
+    projectsByCategory,
   };
 }

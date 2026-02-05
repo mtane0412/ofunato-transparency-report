@@ -31,3 +31,19 @@ export const COST_BREAKDOWN_COLORS = {
 export const INDICATOR_COLORS = {
   実績値: '#3b82f6', // blue-500
 } as const;
+
+/**
+ * 政策別予算グラフ用のカラーパレット
+ * 予算の横棒グラフで使用
+ */
+export const POLICY_BUDGET_COLORS = {
+  予算: '#3b82f6', // blue-500
+} as const;
+
+/**
+ * 事業区分別予算グラフ用のカラーパレット
+ * 予算の縦棒グラフで使用
+ */
+export const CATEGORY_CHART_COLORS = {
+  予算: '#10b981', // emerald-500
+} as const;

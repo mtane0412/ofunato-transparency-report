@@ -3,7 +3,7 @@
  * RawプロジェクトデータをRechartsで使用できる形式に変換
  */
 
-import type { YearlyFinancial, YearlyIndicator } from '@/types';
+import type { YearlyFinancial, YearlyIndicator, CategoryStats } from '@/types';
 
 /**
  * 年度数値を和暦文字列に変換
@@ -112,4 +112,36 @@ export function hasValidIndicatorData(
   index: number
 ): boolean {
   return toIndicatorChartData(indicators, category, index).length > 0;
+}
+
+/**
+ * CategoryStats配列を政策別予算グラフ用データに変換
+ * @param policyStats - 政策別統計データ配列
+ * @returns グラフ用データ配列（政策名, 予算, 事業数）、予算降順ソート
+ */
+export function toPolicyBudgetChartData(
+  policyStats: CategoryStats[]
+): Array<{ 政策名: string; 予算: number; 事業数: number }> {
+  return policyStats
+    .map((stats) => ({
+      政策名: stats.name,
+      予算: stats.budget,
+      事業数: stats.count,
+    }))
+    .sort((a, b) => b.予算 - a.予算);
+}
+
+/**
+ * CategoryStats配列を事業区分別グラフ用データに変換
+ * @param categoryStats - 事業区分別統計データ配列
+ * @returns グラフ用データ配列（事業区分, 予算, 事業数）
+ */
+export function toCategoryChartData(
+  categoryStats: CategoryStats[]
+): Array<{ 事業区分: string; 予算: number; 事業数: number }> {
+  return categoryStats.map((stats) => ({
+    事業区分: stats.name,
+    予算: stats.budget,
+    事業数: stats.count,
+  }));
 }
