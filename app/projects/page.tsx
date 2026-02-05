@@ -39,6 +39,7 @@ function ProjectsContent() {
   // URLパラメータからフィルター状態を取得
   const filters: FilterParams = useMemo(
     () => ({
+      q: searchParams.get('q') || undefined,
       policy: searchParams.get('policy') || undefined,
       measure: searchParams.get('measure') || undefined,
       basicProject: searchParams.get('basicProject') || undefined,
@@ -187,7 +188,13 @@ function ProjectsContent() {
         params.delete('basicProject');
       }
 
-      router.push(`/projects?${params.toString()}`);
+      const url = `/projects?${params.toString()}`;
+      // キーワード検索の場合はreplaceを使用（履歴汚染防止）
+      if ('q' in newFilters) {
+        router.replace(url);
+      } else {
+        router.push(url);
+      }
     },
     [searchParams, router]
   );

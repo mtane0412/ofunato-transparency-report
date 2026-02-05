@@ -3,7 +3,7 @@
  *
  * フィルターパネルが正しく動作することを確認します。
  */
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ProjectFilter } from './ProjectFilter';
@@ -12,6 +12,12 @@ import type { FilterParams } from '@/lib/filter';
 describe('ProjectFilter', () => {
   const mockOnFilterChange = vi.fn();
   const mockOnReset = vi.fn();
+
+  beforeEach(() => {
+    // 各テスト前にモックをクリア
+    mockOnFilterChange.mockClear();
+    mockOnReset.mockClear();
+  });
 
   const defaultProps = {
     filters: {} as FilterParams,
@@ -46,6 +52,14 @@ describe('ProjectFilter', () => {
       { value: '縮小', label: '縮小', count: 7 },
     ],
   };
+
+  it('キーワード検索入力フィールドが表示されること', () => {
+    render(<ProjectFilter {...defaultProps} />);
+
+    const searchInput = screen.getByLabelText('キーワード検索');
+    expect(searchInput).toBeInTheDocument();
+    expect(searchInput).toHaveAttribute('placeholder', '事業名で検索...（Enterで適用）');
+  });
 
   it('すべてのフィルター項目が表示されること', () => {
     render(<ProjectFilter {...defaultProps} />);
@@ -118,5 +132,58 @@ describe('ProjectFilter', () => {
     await user.selectOptions(futureDirectionSelect, '拡充');
 
     expect(mockOnFilterChange).toHaveBeenCalledWith({ futureDirection: '拡充' });
+  });
+
+  it('キーワードを入力してEnterを押したときonFilterChangeが呼ばれること', async () => {
+    const user = userEvent.setup();
+    render(<ProjectFilter {...defaultProps} />);
+
+    const searchInput = screen.getByLabelText('キーワード検索') as HTMLInputElement;
+
+    // キーワードを入力
+    await user.type(searchInput, 'テスト事業');
+
+    // Enterキーを押す前はまだ呼ばれていない
+    expect(mockOnFilterChange).not.toHaveBeenCalled();
+
+    // Enterキーを押す
+    await user.keyboard('{Enter}');
+
+    // onFilterChangeが呼ばれる
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ q: 'テスト事業' });
+  });
+
+  it('既存のキーワードが入力フィールドに反映されること', () => {
+    const filtersWithKeyword: FilterParams = {
+      q: '検索キーワード',
+    };
+
+    render(<ProjectFilter {...defaultProps} filters={filtersWithKeyword} />);
+
+    const searchInput = screen.getByLabelText('キーワード検索') as HTMLInputElement;
+    expect(searchInput.value).toBe('検索キーワード');
+  });
+
+  it('キーワードをクリアしてEnterを押したときundefinedでonFilterChangeが呼ばれること', async () => {
+    const user = userEvent.setup();
+    const filtersWithKeyword: FilterParams = {
+      q: 'テスト',
+    };
+
+    render(<ProjectFilter {...defaultProps} filters={filtersWithKeyword} />);
+
+    const searchInput = screen.getByLabelText('キーワード検索');
+
+    // キーワードをクリア
+    await user.clear(searchInput);
+
+    // Enterキーを押す前はまだ呼ばれていない
+    expect(mockOnFilterChange).not.toHaveBeenCalled();
+
+    // Enterキーを押す
+    await user.keyboard('{Enter}');
+
+    // クリア時はundefinedが渡される（空文字列ではなく）
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ q: undefined });
   });
 });

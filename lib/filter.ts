@@ -11,6 +11,8 @@ import { normalizeEvaluationValue } from '@/lib/data';
  * フィルターパラメータ
  */
 export interface FilterParams {
+  /** キーワード検索（事業名の部分一致） */
+  q?: string;
   /** 政策ID */
   policy?: string;
   /** 施策ID */
@@ -39,6 +41,11 @@ export function filterProjects(
   params: FilterParams
 ): Project[] {
   return projects.filter((project) => {
+    // キーワード検索（事業名の部分一致、大文字小文字区別なし）
+    if (params.q && !project.name.toLowerCase().includes(params.q.toLowerCase())) {
+      return false;
+    }
+
     // 政策でフィルタリング
     if (params.policy && project.policy.id !== params.policy) {
       return false;

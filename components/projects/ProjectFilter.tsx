@@ -4,6 +4,9 @@
  * 事業一覧のフィルターパネルを提供します。
  */
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Select, type SelectOption } from '@/components/ui/Select';
 import type { FilterParams } from '@/lib/filter';
 
@@ -45,6 +48,21 @@ export function ProjectFilter({
   directions,
   futureDirections,
 }: ProjectFilterProps) {
+  // キーワード検索のローカル状態（Enter押下時に反映）
+  const [localKeyword, setLocalKeyword] = useState(filters.q || '');
+
+  // filtersのqが外部から変更された場合、ローカル状態も同期する（リセット時など）
+  useEffect(() => {
+    setLocalKeyword(filters.q || '');
+  }, [filters.q]);
+
+  // Enterキー押下時にフィルターを適用
+  const handleKeywordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onFilterChange({ q: localKeyword || undefined });
+    }
+  };
+
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
       <div className="mb-4 flex items-center justify-between">
@@ -56,6 +74,22 @@ export function ProjectFilter({
         >
           リセット
         </button>
+      </div>
+
+      {/* キーワード検索 */}
+      <div className="mb-4">
+        <label htmlFor="keyword-search" className="mb-1 block text-sm font-medium text-gray-700">
+          キーワード検索
+        </label>
+        <input
+          id="keyword-search"
+          type="text"
+          value={localKeyword}
+          onChange={(e) => setLocalKeyword(e.target.value)}
+          onKeyDown={handleKeywordKeyDown}
+          placeholder="事業名で検索...（Enterで適用）"
+          className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

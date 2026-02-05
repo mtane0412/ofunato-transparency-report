@@ -200,6 +200,58 @@ describe('filter.ts', () => {
       const result = filterProjects(mockProjects, { policy: 'NONEXISTENT' });
       expect(result).toHaveLength(0);
     });
+
+    it('キーワードに一致する事業名のみを返すこと', () => {
+      const result = filterProjects(mockProjects, { q: '事業A' });
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('001');
+    });
+
+    it('部分一致で検索できること', () => {
+      const result = filterProjects(mockProjects, { q: '事業' });
+      expect(result).toHaveLength(3);
+    });
+
+    it('キーワードが空文字/undefinedの場合は全データを返すこと', () => {
+      const result1 = filterProjects(mockProjects, { q: '' });
+      expect(result1).toHaveLength(3);
+
+      const result2 = filterProjects(mockProjects, { q: undefined });
+      expect(result2).toHaveLength(3);
+    });
+
+    it('該当しないキーワードの場合は空配列を返すこと', () => {
+      const result = filterProjects(mockProjects, { q: '存在しない事業名' });
+      expect(result).toHaveLength(0);
+    });
+
+    it('他のフィルターとAND条件で組み合わせられること', () => {
+      const result = filterProjects(mockProjects, {
+        q: '事業',
+        department: '総務部',
+      });
+      expect(result).toHaveLength(2);
+      expect(result[0].id).toBe('001');
+      expect(result[1].id).toBe('003');
+    });
+
+    it('大文字小文字を区別せず検索できること', () => {
+      // モックデータに大文字小文字が混在する事業名を一時的に追加
+      const projectWithMixedCase: Project = {
+        ...mockProjects[0],
+        id: '004',
+        name: 'ABC事業',
+      };
+      const testData = [...mockProjects, projectWithMixedCase];
+
+      const result1 = filterProjects(testData, { q: 'abc' });
+      expect(result1).toHaveLength(1);
+      expect(result1[0].id).toBe('004');
+
+      const result2 = filterProjects(testData, { q: 'ABC' });
+      expect(result2).toHaveLength(1);
+      expect(result2[0].id).toBe('004');
+    });
   });
 
   describe('getAvailableMeasures', () => {
@@ -352,6 +404,28 @@ describe('filter.ts', () => {
 
       expect(result.categories.get('一般事業')).toBe(1);
       expect(result.categories.get('重点事業')).toBeUndefined(); // 改革方向Aではないため0件
+    });
+
+    it('キーワード検索適用時、各フィルターの件数が正しく絞り込まれること', () => {
+      const result = getFilterOptionCounts(mockProjects, { q: '事業A' });
+
+      // 該当するのは事業Aのみ（名前に「事業A」を含む）
+      expect(result.policies.get('P1')).toBe(1);
+      expect(result.policies.get('P2')).toBeUndefined(); // 事業Aは政策P1なので0件
+
+      expect(result.measures.get('M1')).toBe(1);
+      expect(result.measures.get('M2')).toBeUndefined();
+      expect(result.measures.get('M3')).toBeUndefined();
+
+      expect(result.basicProjects.get('BP1')).toBe(1);
+      expect(result.basicProjects.get('BP2')).toBeUndefined();
+      expect(result.basicProjects.get('BP3')).toBeUndefined();
+
+      expect(result.departments.get('総務部')).toBe(1);
+      expect(result.departments.get('企画部')).toBeUndefined();
+
+      expect(result.categories.get('一般事業')).toBe(1);
+      expect(result.categories.get('重点事業')).toBeUndefined();
     });
   });
 });
