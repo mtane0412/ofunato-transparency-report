@@ -354,5 +354,69 @@ describe('data.ts', () => {
         expect(futureDirectionOther!.count).toBeGreaterThan(0);
       }
     });
+
+    it('政策別統計に方向性内訳（directionBreakdown / futureDirectionBreakdown）が含まれること', () => {
+      const stats = getDatasetStats();
+
+      // すべての政策統計に方向性内訳が含まれること
+      stats.projectsByPolicy.forEach((policy) => {
+        expect(policy).toHaveProperty('directionBreakdown');
+        expect(policy).toHaveProperty('futureDirectionBreakdown');
+        expect(typeof policy.directionBreakdown).toBe('object');
+        expect(typeof policy.futureDirectionBreakdown).toBe('object');
+      });
+    });
+
+    it('政策別統計の方向性内訳の件数合計が事業数と一致すること', () => {
+      const stats = getDatasetStats();
+
+      stats.projectsByPolicy.forEach((policy) => {
+        // directionBreakdownの合計件数
+        const directionTotal = Object.values(policy.directionBreakdown).reduce(
+          (sum, count) => sum + count,
+          0
+        );
+        expect(directionTotal).toBe(policy.count);
+
+        // futureDirectionBreakdownの合計件数
+        const futureDirectionTotal = Object.values(policy.futureDirectionBreakdown).reduce(
+          (sum, count) => sum + count,
+          0
+        );
+        expect(futureDirectionTotal).toBe(policy.count);
+      });
+    });
+
+    it('事業区分別統計に方向性内訳（directionBreakdown / futureDirectionBreakdown）が含まれること', () => {
+      const stats = getDatasetStats();
+
+      // すべての事業区分統計に方向性内訳が含まれること
+      stats.projectsByCategory.forEach((category) => {
+        expect(category).toHaveProperty('directionBreakdown');
+        expect(category).toHaveProperty('futureDirectionBreakdown');
+        expect(typeof category.directionBreakdown).toBe('object');
+        expect(typeof category.futureDirectionBreakdown).toBe('object');
+      });
+    });
+
+    it('事業区分別統計の方向性内訳の件数合計が事業数と一致すること', () => {
+      const stats = getDatasetStats();
+
+      stats.projectsByCategory.forEach((category) => {
+        // directionBreakdownの合計件数
+        const directionTotal = Object.values(category.directionBreakdown).reduce(
+          (sum, count) => sum + count,
+          0
+        );
+        expect(directionTotal).toBe(category.count);
+
+        // futureDirectionBreakdownの合計件数
+        const futureDirectionTotal = Object.values(category.futureDirectionBreakdown).reduce(
+          (sum, count) => sum + count,
+          0
+        );
+        expect(futureDirectionTotal).toBe(category.count);
+      });
+    });
   });
 });

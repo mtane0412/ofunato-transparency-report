@@ -7,16 +7,55 @@
 
 import { useState } from 'react';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
-import type { CategoryStats } from '@/types';
+import type { CategoryStats, CategoryStatsWithEvaluation, EvaluationBreakdown } from '@/types';
 
 type SortKey = 'name' | 'count' | 'budget';
 type SortOrder = 'asc' | 'desc';
 
 interface SortableStatsTableProps {
   /** 統計データ */
-  data: CategoryStats[];
+  data: CategoryStats[] | CategoryStatsWithEvaluation[];
   /** テーブルのキャプション */
   caption?: string;
+  /** 評価列を表示するか */
+  showEvaluation?: boolean;
+}
+
+/**
+ * 評価内訳セルコンポーネント
+ * 方向性の内訳をバッジで表示
+ */
+function EvaluationBreakdownCell({ breakdown }: { breakdown: EvaluationBreakdown }) {
+  // 方向性名から短縮ラベルとカラーを取得
+  const getLabel = (name: string): string => {
+    if (name.includes('現状維持')) return '現状維持';
+    if (name.includes('改革改善')) return '改革改善';
+    if (name.includes('終了') || name.includes('廃止')) return '終了';
+    return 'その他';
+  };
+
+  const getColorClass = (name: string): string => {
+    if (name.includes('現状維持')) return 'bg-blue-100 text-blue-800';
+    if (name.includes('改革改善')) return 'bg-yellow-100 text-yellow-800';
+    if (name.includes('終了') || name.includes('廃止')) return 'bg-red-100 text-red-800';
+    return 'bg-gray-100 text-gray-800';
+  };
+
+  // 方向性名でソート（先頭の数字で自然順）
+  const sortedEntries = Object.entries(breakdown).sort(([a], [b]) => a.localeCompare(b));
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {sortedEntries.map(([name, count]) => (
+        <span
+          key={name}
+          className={`inline-block px-2 py-1 text-xs font-medium rounded ${getColorClass(name)}`}
+        >
+          {getLabel(name)} {count}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 /**
@@ -26,6 +65,7 @@ interface SortableStatsTableProps {
 export function SortableStatsTable({
   data,
   caption,
+  showEvaluation = false,
 }: SortableStatsTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>('budget');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
@@ -81,6 +121,11 @@ export function SortableStatsTable({
     );
   };
 
+  // 型ガード: データが評価情報付きかを判定
+  const hasEvaluation = (item: CategoryStats | CategoryStatsWithEvaluation): item is CategoryStatsWithEvaluation => {
+    return 'directionBreakdown' in item && 'futureDirectionBreakdown' in item;
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-300">
@@ -113,6 +158,22 @@ export function SortableStatsTable({
               予算
               <SortIndicator column="budget" />
             </th>
+            {showEvaluation && (
+              <>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                >
+                  改革改善の方向性
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                >
+                  今後の方向性
+                </th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -127,6 +188,16 @@ export function SortableStatsTable({
               <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">
                 <FormattedAmount amount={item.budget} />
               </td>
+              {showEvaluation && hasEvaluation(item) && (
+                <>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    <EvaluationBreakdownCell breakdown={item.directionBreakdown} />
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    <EvaluationBreakdownCell breakdown={item.futureDirectionBreakdown} />
+                  </td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>

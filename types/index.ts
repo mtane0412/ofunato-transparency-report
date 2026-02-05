@@ -206,6 +206,19 @@ export interface CategoryStats {
   budget: number;
 }
 
+/** 方向性の内訳（方向性値 → 件数） */
+export interface EvaluationBreakdown {
+  [directionName: string]: number;
+}
+
+/** 政策別・事業区分別の集計データ（評価情報付き） */
+export interface CategoryStatsWithEvaluation extends CategoryStats {
+  /** 改革改善の方向性の内訳 */
+  directionBreakdown: EvaluationBreakdown;
+  /** 今後の方向性の内訳 */
+  futureDirectionBreakdown: EvaluationBreakdown;
+}
+
 /** 評価カテゴリ別の件数集計 */
 export interface EvaluationCategoryCount {
   /** カテゴリ名称 */
@@ -229,10 +242,10 @@ export interface DatasetStats {
   totalBudget: number;
   /** データ生成日時 */
   generatedAt: string;
-  /** 政策別事業数・予算 */
-  projectsByPolicy: CategoryStats[];
-  /** 事業区分別事業数・予算 */
-  projectsByCategory: CategoryStats[];
+  /** 政策別事業数・予算（評価情報付き） */
+  projectsByPolicy: CategoryStatsWithEvaluation[];
+  /** 事業区分別事業数・予算（評価情報付き） */
+  projectsByCategory: CategoryStatsWithEvaluation[];
   /** 政策数 */
   policyCount: number;
   /** 事業区分数 */

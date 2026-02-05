@@ -4,8 +4,19 @@
  * JSONファイルから事務事業データを読み込む関数を提供します。
  */
 
-import type { Project, ProjectDataset, DatasetStats, EvaluationCategoryCount } from '@/types';
+import type { Project, ProjectDataset, DatasetStats, EvaluationCategoryCount, EvaluationBreakdown } from '@/types';
 import projectsData from '@/data/projects.json';
+
+/**
+ * 評価値を正規化する
+ * 不正データ（数字のみ）を「その他・未設定」に変換
+ *
+ * @param value - 評価値
+ * @returns 正規化された評価値
+ */
+function normalizeEvaluationValue(value: string): string {
+  return /^[0-9]+$/.test(value) ? 'その他・未設定' : value;
+}
 
 /**
  * 評価フィールドを集計する
@@ -22,8 +33,7 @@ function aggregateEvaluationField(
 
   projects.forEach((project) => {
     const value = project.evaluation[fieldName];
-    // 不正データ（数字のみ）を「その他・未設定」に集約
-    const normalizedValue = /^[0-9]+$/.test(value) ? 'その他・未設定' : value;
+    const normalizedValue = normalizeEvaluationValue(value);
     countMap.set(normalizedValue, (countMap.get(normalizedValue) || 0) + 1);
   });
 
@@ -173,10 +183,17 @@ export function getDatasetStats(): DatasetStats {
     policyMostFrequentNameMap.set(policyId, mostFrequentName);
   });
 
-  // ステップ3: 政策別の事業数・予算を集計
+  // ステップ3: 政策別の事業数・予算・方向性内訳を集計
   const projectsByPolicyMap = new Map<
     string,
-    { id: string; name: string; count: number; budget: number }
+    {
+      id: string;
+      name: string;
+      count: number;
+      budget: number;
+      directionBreakdown: EvaluationBreakdown;
+      futureDirectionBreakdown: EvaluationBreakdown;
+    }
   >();
   projects.forEach((project) => {
     const policyId = project.policy.id;
@@ -186,6 +203,8 @@ export function getDatasetStats(): DatasetStats {
       name: mostFrequentName,
       count: 0,
       budget: 0,
+      directionBreakdown: {},
+      futureDirectionBreakdown: {},
     };
 
     // 最新年度の予算を取得
@@ -193,17 +212,33 @@ export function getDatasetStats(): DatasetStats {
       (f) => f.year === project.year
     );
 
+    // 方向性内訳を更新
+    const direction = normalizeEvaluationValue(project.evaluation.direction);
+    const futureDirection = normalizeEvaluationValue(project.evaluation.futureDirection);
+    const newDirectionBreakdown = { ...existing.directionBreakdown };
+    const newFutureDirectionBreakdown = { ...existing.futureDirectionBreakdown };
+    newDirectionBreakdown[direction] = (newDirectionBreakdown[direction] || 0) + 1;
+    newFutureDirectionBreakdown[futureDirection] = (newFutureDirectionBreakdown[futureDirection] || 0) + 1;
+
     projectsByPolicyMap.set(policyId, {
       ...existing,
       count: existing.count + 1,
       budget: existing.budget + (latestFinancial?.grandTotal || 0),
+      directionBreakdown: newDirectionBreakdown,
+      futureDirectionBreakdown: newFutureDirectionBreakdown,
     });
   });
 
-  // 事業区分別事業数・予算を集計
+  // 事業区分別事業数・予算・方向性内訳を集計
   const projectsByCategoryMap = new Map<
     string,
-    { name: string; count: number; budget: number }
+    {
+      name: string;
+      count: number;
+      budget: number;
+      directionBreakdown: EvaluationBreakdown;
+      futureDirectionBreakdown: EvaluationBreakdown;
+    }
   >();
   projects.forEach((project) => {
     const category = project.category;
@@ -211,6 +246,8 @@ export function getDatasetStats(): DatasetStats {
       name: category,
       count: 0,
       budget: 0,
+      directionBreakdown: {},
+      futureDirectionBreakdown: {},
     };
 
     // 最新年度の予算を取得
@@ -218,21 +255,43 @@ export function getDatasetStats(): DatasetStats {
       (f) => f.year === project.year
     );
 
+    // 方向性内訳を更新
+    const direction = normalizeEvaluationValue(project.evaluation.direction);
+    const futureDirection = normalizeEvaluationValue(project.evaluation.futureDirection);
+    const newDirectionBreakdown = { ...existing.directionBreakdown };
+    const newFutureDirectionBreakdown = { ...existing.futureDirectionBreakdown };
+    newDirectionBreakdown[direction] = (newDirectionBreakdown[direction] || 0) + 1;
+    newFutureDirectionBreakdown[futureDirection] = (newFutureDirectionBreakdown[futureDirection] || 0) + 1;
+
     projectsByCategoryMap.set(category, {
       ...existing,
       count: existing.count + 1,
       budget: existing.budget + (latestFinancial?.grandTotal || 0),
+      directionBreakdown: newDirectionBreakdown,
+      futureDirectionBreakdown: newFutureDirectionBreakdown,
     });
   });
 
   // 政策別データをID順にソート
   const projectsByPolicy = Array.from(projectsByPolicyMap.values())
     .sort((a, b) => a.id.localeCompare(b.id))
-    .map(({ name, count, budget }) => ({ name, count, budget }));
+    .map(({ name, count, budget, directionBreakdown, futureDirectionBreakdown }) => ({
+      name,
+      count,
+      budget,
+      directionBreakdown,
+      futureDirectionBreakdown,
+    }));
 
   // 事業区分別データ
   const projectsByCategory = Array.from(projectsByCategoryMap.values()).map(
-    ({ name, count, budget }) => ({ name, count, budget })
+    ({ name, count, budget, directionBreakdown, futureDirectionBreakdown }) => ({
+      name,
+      count,
+      budget,
+      directionBreakdown,
+      futureDirectionBreakdown,
+    })
   );
 
   // 追加指標の計算

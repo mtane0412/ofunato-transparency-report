@@ -115,6 +115,7 @@ export function HomeContent({ stats }: HomeContentProps) {
               <SortableStatsTable
                 data={stats.projectsByPolicy}
                 caption="政策別事業数・予算の詳細テーブル"
+                showEvaluation={true}
               />
             </div>
           )}
@@ -141,6 +142,7 @@ export function HomeContent({ stats }: HomeContentProps) {
               <SortableStatsTable
                 data={stats.projectsByCategory}
                 caption="事業区分別事業数・予算の詳細テーブル"
+                showEvaluation={true}
               />
             </div>
           )}
