@@ -9,11 +9,35 @@
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
+import { YearlyFinancialChart } from '@/components/charts/YearlyFinancialChart';
+import { RevenueSourceChart } from '@/components/charts/RevenueSourceChart';
+import { CostBreakdownChart } from '@/components/charts/CostBreakdownChart';
+import { IndicatorChart } from '@/components/charts/IndicatorChart';
+import { hasValidIndicatorData } from '@/lib/chart-data';
+import { formatIndicatorLabel } from '@/lib/utils';
 import type { Project } from '@/types';
 
 interface ProjectDetailContentProps {
   project: Project;
 }
+
+/**
+ * 指標カテゴリの設定型
+ */
+type IndicatorCategoryConfig = {
+  category: 'activity' | 'target' | 'outcome';
+  defaultLabels: string[];
+};
+
+/**
+ * 指標カテゴリの設定
+ * 各カテゴリには3つの指標（インデックス0, 1, 2）があります
+ */
+const INDICATOR_CATEGORIES: IndicatorCategoryConfig[] = [
+  { category: 'activity', defaultLabels: ['活動指標ア', '活動指標イ', '活動指標ウ'] },
+  { category: 'target', defaultLabels: ['対象指標カ', '対象指標キ', '対象指標ク'] },
+  { category: 'outcome', defaultLabels: ['成果指標サ', '成果指標シ', '成果指標ス'] },
+];
 
 /**
  * ProjectDetailContent コンポーネント
@@ -232,6 +256,45 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
           <p className="text-sm text-gray-500">財政データがありません</p>
         )}
       </Card>
+
+      {/* グラフセクション */}
+      <div className="space-y-6">
+        <h2 className="text-xl font-bold text-gray-900">財政データの推移</h2>
+
+        {/* トータルコスト推移グラフ */}
+        <YearlyFinancialChart financials={project.financials} />
+
+        {/* 財源構成グラフ */}
+        <RevenueSourceChart financials={project.financials} />
+
+        {/* コスト内訳グラフ */}
+        <CostBreakdownChart financials={project.financials} />
+
+        {/* 指標推移グラフ */}
+        {project.indicators.length > 0 && (
+          <>
+            <h2 className="text-xl font-bold text-gray-900 mt-8">指標の推移</h2>
+
+            {/* 各カテゴリの指標をループ処理で表示 */}
+            {INDICATOR_CATEGORIES.map(({ category, defaultLabels }) =>
+              defaultLabels.map((defaultLabel, index) =>
+                hasValidIndicatorData(project.indicators, category, index) ? (
+                  <IndicatorChart
+                    key={`${category}-${index}`}
+                    indicators={project.indicators}
+                    category={category}
+                    index={index}
+                    label={formatIndicatorLabel(
+                      project.indicatorLabels[category][index],
+                      defaultLabel
+                    )}
+                  />
+                ) : null
+              )
+            )}
+          </>
+        )}
+      </div>
 
       {/* 評価情報カード */}
       <Card title="評価情報">

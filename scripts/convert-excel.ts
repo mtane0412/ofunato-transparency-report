@@ -5,14 +5,16 @@
  * 型安全なJSONファイルに変換します。
  */
 
-import * as XLSX from 'xlsx';
-import * as fs from 'fs';
-import * as path from 'path';
+import XLSX from 'xlsx';
+import fs from 'fs';
+import path from 'path';
 import type {
   Project,
   ProjectDataset,
   YearlyFinancial,
   YearlyIndicator,
+  IndicatorLabels,
+  IndicatorLabel,
 } from '../types';
 
 /**
@@ -69,8 +71,9 @@ function parseProjectRow(row: unknown[]): Project {
   const basicProjectId = `${toNumber(row[15])}${toNumber(row[16])}`;
 
   // 財政データ（6年分）を抽出
+  // Excelファイルの列構成は固定（令和2年度〜令和7年度）
   const financials: YearlyFinancial[] = [];
-  const baseYears = [year - 2, year - 1, year, year + 1, year + 2, year + 3];
+  const baseYears = [2, 3, 4, 5, 6, 7];
   const financialBlocks = [
     { start: 70, year: baseYears[0] },
     { start: 89, year: baseYears[1] },
@@ -164,6 +167,23 @@ function parseProjectRow(row: unknown[]): Project {
     legalBasis: toString(row[18]),
     financials,
     indicators,
+    indicatorLabels: {
+      activity: [
+        { name: toString(row[52]), unit: toString(row[53]) }, // BB-BC列: 活動指標ア（名称・単位）
+        { name: toString(row[54]), unit: toString(row[55]) }, // BD-BE列: 活動指標イ（名称・単位）
+        { name: toString(row[56]), unit: toString(row[57]) }, // BF-BG列: 活動指標ウ（名称・単位）
+      ],
+      target: [
+        { name: toString(row[58]), unit: toString(row[59]) }, // BH-BI列: 対象指標カ（名称・単位）
+        { name: toString(row[60]), unit: toString(row[61]) }, // BJ-BK列: 対象指標キ（名称・単位）
+        { name: toString(row[62]), unit: toString(row[63]) }, // BL-BM列: 対象指標ク（名称・単位）
+      ],
+      outcome: [
+        { name: toString(row[64]), unit: toString(row[65]) }, // BN-BO列: 成果指標サ（名称・単位）
+        { name: toString(row[66]), unit: toString(row[67]) }, // BP-BQ列: 成果指標シ（名称・単位）
+        { name: toString(row[68]), unit: toString(row[69]) }, // BR-BS列: 成果指標ス（名称・単位）
+      ],
+    },
     evaluation: {
       direction: toString(row[203]),
       futureDirection: toString(row[207]),

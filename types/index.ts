@@ -40,6 +40,28 @@ export interface YearlyFinancial {
 }
 
 /**
+ * 指標の名称と単位
+ */
+export interface IndicatorLabel {
+  /** 名称 */
+  name: string;
+  /** 単位 */
+  unit: string;
+}
+
+/**
+ * 指標の名称定義
+ */
+export interface IndicatorLabels {
+  /** 活動指標の名称と単位（ア/イ/ウ） */
+  activity: [IndicatorLabel, IndicatorLabel, IndicatorLabel];
+  /** 対象指標の名称と単位（カ/キ/ク） */
+  target: [IndicatorLabel, IndicatorLabel, IndicatorLabel];
+  /** 成果指標の名称と単位（サ/シ/ス） */
+  outcome: [IndicatorLabel, IndicatorLabel, IndicatorLabel];
+}
+
+/**
  * 指標データ（単年）
  */
 export interface YearlyIndicator {
@@ -151,6 +173,8 @@ export interface Project {
   // 指標データ（年度別）
   /** 指標データ一覧（6年分） */
   indicators: YearlyIndicator[];
+  /** 指標の名称定義 */
+  indicatorLabels: IndicatorLabels;
 
   // 評価
   /** 評価情報 */
