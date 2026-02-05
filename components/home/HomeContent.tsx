@@ -39,7 +39,7 @@ export function HomeContent({ stats }: HomeContentProps) {
       </div>
 
       {/* サマリーカード */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card title="総事業数">
           <div className="text-4xl font-bold text-blue-600">
             {stats.totalProjects.toLocaleString()}
