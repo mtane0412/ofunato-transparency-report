@@ -5,9 +5,9 @@
  * 型安全なJSONファイルに変換します。
  */
 
-import * as XLSX from 'xlsx';
-import * as fs from 'fs';
-import * as path from 'path';
+import XLSX from 'xlsx';
+import fs from 'fs';
+import path from 'path';
 import type {
   Project,
   ProjectDataset,
@@ -69,8 +69,9 @@ function parseProjectRow(row: unknown[]): Project {
   const basicProjectId = `${toNumber(row[15])}${toNumber(row[16])}`;
 
   // 財政データ（6年分）を抽出
+  // Excelファイルの列構成は固定（令和2年度〜令和7年度）
   const financials: YearlyFinancial[] = [];
-  const baseYears = [year - 2, year - 1, year, year + 1, year + 2, year + 3];
+  const baseYears = [2, 3, 4, 5, 6, 7];
   const financialBlocks = [
     { start: 70, year: baseYears[0] },
     { start: 89, year: baseYears[1] },
