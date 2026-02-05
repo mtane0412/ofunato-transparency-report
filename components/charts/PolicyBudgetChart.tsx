@@ -73,7 +73,7 @@ export default function PolicyBudgetChart({
       <BarChart
         data={chartData}
         layout="vertical"
-        margin={{ top: 5, right: 30, left: 250, bottom: 5 }}
+        margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
@@ -83,7 +83,7 @@ export default function PolicyBudgetChart({
         <YAxis
           type="category"
           dataKey="name"
-          width={240}
+          width={280}
           tick={{ fontSize: 13 }}
         />
         <Tooltip content={<CustomBarTooltip />} />

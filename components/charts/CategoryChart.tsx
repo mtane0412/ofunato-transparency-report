@@ -73,7 +73,7 @@ export default function CategoryChart({
       <BarChart
         data={chartData}
         layout="vertical"
-        margin={{ top: 5, right: 30, left: 200, bottom: 5 }}
+        margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
@@ -83,7 +83,7 @@ export default function CategoryChart({
         <YAxis
           type="category"
           dataKey="name"
-          width={190}
+          width={150}
           tick={{ fontSize: 13 }}
         />
         <Tooltip content={<CustomBarTooltip />} />
