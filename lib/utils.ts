@@ -167,3 +167,13 @@ export function formatIndicatorLabel(
   }
   return defaultLabel;
 }
+
+/**
+ * 年度数値を令和表記に変換する
+ *
+ * @param year - 年度数値（2〜7）
+ * @returns 令和表記の年度文字列（例: "R2", "R3"）
+ */
+export function formatFiscalYear(year: number): string {
+  return `R${year}`;
+}
