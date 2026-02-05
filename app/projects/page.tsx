@@ -21,6 +21,7 @@ import {
   filterProjects,
   getAvailableMeasures,
   getAvailableBasicProjects,
+  getFilterOptionCounts,
   type FilterParams,
 } from '@/lib/filter';
 import { ProjectFilter } from '@/components/projects/ProjectFilter';
@@ -70,6 +71,69 @@ function ProjectsContent() {
   const availableBasicProjects = useMemo(
     () => getAvailableBasicProjects(allProjects, filters.measure),
     [allProjects, filters.measure]
+  );
+
+  // 各選択肢の件数を計算
+  const optionCounts = useMemo(
+    () => getFilterOptionCounts(allProjects, filters),
+    [allProjects, filters]
+  );
+
+  // 件数付きの選択肢を生成
+  const policiesWithCount = useMemo(
+    () =>
+      policies.map((p) => ({
+        value: p.id,
+        label: p.name,
+        count: optionCounts.policies.get(p.id) || 0,
+      })),
+    [policies, optionCounts.policies]
+  );
+
+  const measuresWithCount = useMemo(
+    () => {
+      const measuresToUse = filters.policy ? availableMeasures : allMeasures;
+      return measuresToUse.map((m) => ({
+        value: m.id,
+        label: m.name,
+        count: optionCounts.measures.get(m.id) || 0,
+      }));
+    },
+    [filters.policy, availableMeasures, allMeasures, optionCounts.measures]
+  );
+
+  const basicProjectsWithCount = useMemo(
+    () => {
+      const basicProjectsToUse = filters.measure
+        ? availableBasicProjects
+        : allBasicProjects;
+      return basicProjectsToUse.map((bp) => ({
+        value: bp.id,
+        label: bp.name,
+        count: optionCounts.basicProjects.get(bp.id) || 0,
+      }));
+    },
+    [filters.measure, availableBasicProjects, allBasicProjects, optionCounts.basicProjects]
+  );
+
+  const departmentsWithCount = useMemo(
+    () =>
+      departments.map((d) => ({
+        value: d,
+        label: d,
+        count: optionCounts.departments.get(d) || 0,
+      })),
+    [departments, optionCounts.departments]
+  );
+
+  const categoriesWithCount = useMemo(
+    () =>
+      categories.map((c) => ({
+        value: c,
+        label: c,
+        count: optionCounts.categories.get(c) || 0,
+      })),
+    [categories, optionCounts.categories]
   );
 
   // フィルター変更ハンドラ
@@ -123,11 +187,11 @@ function ProjectsContent() {
         filters={filters}
         onFilterChange={handleFilterChange}
         onReset={handleReset}
-        policies={policies}
-        measures={filters.policy ? availableMeasures : allMeasures}
-        basicProjects={filters.measure ? availableBasicProjects : allBasicProjects}
-        departments={departments}
-        categories={categories}
+        policies={policiesWithCount}
+        measures={measuresWithCount}
+        basicProjects={basicProjectsWithCount}
+        departments={departmentsWithCount}
+        categories={categoriesWithCount}
       />
 
       {/* 事業一覧テーブル */}

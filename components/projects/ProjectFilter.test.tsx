@@ -18,19 +18,25 @@ describe('ProjectFilter', () => {
     onFilterChange: mockOnFilterChange,
     onReset: mockOnReset,
     policies: [
-      { id: 'P1', name: '政策1' },
-      { id: 'P2', name: '政策2' },
+      { value: 'P1', label: '政策1', count: 10 },
+      { value: 'P2', label: '政策2', count: 5 },
     ],
     measures: [
-      { id: 'M1', name: '施策1' },
-      { id: 'M2', name: '施策2' },
+      { value: 'M1', label: '施策1', count: 8 },
+      { value: 'M2', label: '施策2', count: 2 },
     ],
     basicProjects: [
-      { id: 'BP1', name: '基本事業1' },
-      { id: 'BP2', name: '基本事業2' },
+      { value: 'BP1', label: '基本事業1', count: 6 },
+      { value: 'BP2', label: '基本事業2', count: 4 },
     ],
-    departments: ['総務部', '企画部'],
-    categories: ['一般事業', '重点事業'],
+    departments: [
+      { value: '総務部', label: '総務部', count: 7 },
+      { value: '企画部', label: '企画部', count: 3 },
+    ],
+    categories: [
+      { value: '一般事業', label: '一般事業', count: 5 },
+      { value: '重点事業', label: '重点事業', count: 5 },
+    ],
   };
 
   it('すべてのフィルター項目が表示されること', () => {

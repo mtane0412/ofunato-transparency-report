@@ -4,7 +4,7 @@
  * 事業一覧のフィルターパネルを提供します。
  */
 
-import { Select } from '@/components/ui/Select';
+import { Select, type SelectOption } from '@/components/ui/Select';
 import type { FilterParams } from '@/lib/filter';
 
 export interface ProjectFilterProps {
@@ -14,16 +14,16 @@ export interface ProjectFilterProps {
   onFilterChange: (filters: Partial<FilterParams>) => void;
   /** リセット時のコールバック */
   onReset: () => void;
-  /** 政策の選択肢 */
-  policies: Array<{ id: string; name: string }>;
-  /** 施策の選択肢 */
-  measures: Array<{ id: string; name: string }>;
-  /** 基本事業の選択肢 */
-  basicProjects: Array<{ id: string; name: string }>;
-  /** 部署の選択肢 */
-  departments: string[];
-  /** 事業区分の選択肢 */
-  categories: string[];
+  /** 政策の選択肢（件数付き） */
+  policies: SelectOption[];
+  /** 施策の選択肢（件数付き） */
+  measures: SelectOption[];
+  /** 基本事業の選択肢（件数付き） */
+  basicProjects: SelectOption[];
+  /** 部署の選択肢（件数付き） */
+  departments: SelectOption[];
+  /** 事業区分の選択肢（件数付き） */
+  categories: SelectOption[];
 }
 
 /**
@@ -57,7 +57,7 @@ export function ProjectFilter({
         <Select
           id="policy-filter"
           label="政策"
-          options={policies.map((p) => ({ value: p.id, label: p.name }))}
+          options={policies}
           value={filters.policy || ''}
           onChange={(value) => onFilterChange({ policy: value })}
         />
@@ -66,7 +66,7 @@ export function ProjectFilter({
         <Select
           id="measure-filter"
           label="施策"
-          options={measures.map((m) => ({ value: m.id, label: m.name }))}
+          options={measures}
           value={filters.measure || ''}
           onChange={(value) => onFilterChange({ measure: value })}
           disabled={measures.length === 0}
@@ -76,7 +76,7 @@ export function ProjectFilter({
         <Select
           id="basic-project-filter"
           label="基本事業"
-          options={basicProjects.map((bp) => ({ value: bp.id, label: bp.name }))}
+          options={basicProjects}
           value={filters.basicProject || ''}
           onChange={(value) => onFilterChange({ basicProject: value })}
           disabled={basicProjects.length === 0}
@@ -86,7 +86,7 @@ export function ProjectFilter({
         <Select
           id="department-filter"
           label="部署"
-          options={departments.map((d) => ({ value: d, label: d }))}
+          options={departments}
           value={filters.department || ''}
           onChange={(value) => onFilterChange({ department: value })}
         />
@@ -95,7 +95,7 @@ export function ProjectFilter({
         <Select
           id="category-filter"
           label="事業区分"
-          options={categories.map((c) => ({ value: c, label: c }))}
+          options={categories}
           value={filters.category || ''}
           onChange={(value) => onFilterChange({ category: value })}
         />

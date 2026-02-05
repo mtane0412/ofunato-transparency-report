@@ -5,7 +5,12 @@
  */
 import { describe, it, expect } from 'vitest';
 import type { Project } from '@/types';
-import { filterProjects, getAvailableMeasures, getAvailableBasicProjects } from './filter';
+import {
+  filterProjects,
+  getAvailableMeasures,
+  getAvailableBasicProjects,
+  getFilterOptionCounts,
+} from './filter';
 
 // テスト用のモックデータ
 const mockProjects: Project[] = [
@@ -209,6 +214,70 @@ describe('filter.ts', () => {
       const ids = result.map((basicProject) => basicProject.id);
       const uniqueIds = new Set(ids);
       expect(ids.length).toBe(uniqueIds.size);
+    });
+  });
+
+  describe('getFilterOptionCounts', () => {
+    it('現在のフィルター条件に基づいて各選択肢の件数を返すこと', () => {
+      const result = getFilterOptionCounts(mockProjects, {});
+
+      // 政策の件数
+      expect(result.policies.get('P1')).toBe(2);
+      expect(result.policies.get('P2')).toBe(1);
+
+      // 施策の件数
+      expect(result.measures.get('M1')).toBe(1);
+      expect(result.measures.get('M2')).toBe(1);
+      expect(result.measures.get('M3')).toBe(1);
+
+      // 基本事業の件数
+      expect(result.basicProjects.get('BP1')).toBe(1);
+      expect(result.basicProjects.get('BP2')).toBe(1);
+      expect(result.basicProjects.get('BP3')).toBe(1);
+
+      // 部署の件数
+      expect(result.departments.get('総務部')).toBe(2);
+      expect(result.departments.get('企画部')).toBe(1);
+
+      // 事業区分の件数
+      expect(result.categories.get('一般事業')).toBe(2);
+      expect(result.categories.get('重点事業')).toBe(1);
+    });
+
+    it('政策フィルター適用時、施策と基本事業の件数が絞り込まれること', () => {
+      const result = getFilterOptionCounts(mockProjects, { policy: 'P1' });
+
+      // 施策の件数（P1に属する施策のみ）
+      expect(result.measures.get('M1')).toBe(1);
+      expect(result.measures.get('M2')).toBe(1);
+      expect(result.measures.get('M3')).toBeUndefined(); // P2に属するためカウントされない
+
+      // 基本事業の件数（P1に属する基本事業のみ）
+      expect(result.basicProjects.get('BP1')).toBe(1);
+      expect(result.basicProjects.get('BP2')).toBe(1);
+      expect(result.basicProjects.get('BP3')).toBeUndefined(); // P2に属するためカウントされない
+    });
+
+    it('施策フィルター適用時、基本事業の件数が絞り込まれること', () => {
+      const result = getFilterOptionCounts(mockProjects, { measure: 'M1' });
+
+      // 基本事業の件数（M1に属する基本事業のみ）
+      expect(result.basicProjects.get('BP1')).toBe(1);
+      expect(result.basicProjects.get('BP2')).toBeUndefined(); // M2に属するためカウントされない
+      expect(result.basicProjects.get('BP3')).toBeUndefined(); // M3に属するためカウントされない
+    });
+
+    it('複数のフィルター適用時、正しく件数が計算されること', () => {
+      const result = getFilterOptionCounts(mockProjects, {
+        policy: 'P1',
+        department: '総務部',
+      });
+
+      // 該当するのは事業Aのみ（政策P1 AND 総務部）
+      expect(result.measures.get('M1')).toBe(1);
+      expect(result.measures.get('M2')).toBeUndefined(); // 政策はP1だが部署が企画部のため0件
+      expect(result.basicProjects.get('BP1')).toBe(1);
+      expect(result.basicProjects.get('BP2')).toBeUndefined(); // 政策はP1だが部署が企画部のため0件
     });
   });
 });

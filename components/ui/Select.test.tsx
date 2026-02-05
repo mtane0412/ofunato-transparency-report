@@ -114,4 +114,50 @@ describe('Select', () => {
     const select = screen.getByRole('combobox');
     expect(select).toBeDisabled();
   });
+
+  it('件数が指定された場合、ラベルに件数が表示されること', () => {
+    const optionsWithCounts = [
+      { value: 'opt1', label: 'オプション1', count: 10 },
+      { value: 'opt2', label: 'オプション2', count: 5 },
+      { value: 'opt3', label: 'オプション3', count: 0 },
+    ];
+
+    render(
+      <Select
+        id="test-select"
+        label="テストセレクト"
+        options={optionsWithCounts}
+        value=""
+        onChange={() => {}}
+      />
+    );
+
+    expect(screen.getByText('オプション1 (10件)')).toBeInTheDocument();
+    expect(screen.getByText('オプション2 (5件)')).toBeInTheDocument();
+    expect(screen.getByText('オプション3 (0件)')).toBeInTheDocument();
+  });
+
+  it('件数が0の選択肢は無効化されること', () => {
+    const optionsWithCounts = [
+      { value: 'opt1', label: 'オプション1', count: 10 },
+      { value: 'opt2', label: 'オプション2', count: 0 },
+    ];
+
+    render(
+      <Select
+        id="test-select"
+        label="テストセレクト"
+        options={optionsWithCounts}
+        value=""
+        onChange={() => {}}
+      />
+    );
+
+    const select = screen.getByRole('combobox') as HTMLSelectElement;
+    const option1 = select.querySelector('option[value="opt1"]') as HTMLOptionElement;
+    const option2 = select.querySelector('option[value="opt2"]') as HTMLOptionElement;
+
+    expect(option1.disabled).toBe(false);
+    expect(option2.disabled).toBe(true);
+  });
 });

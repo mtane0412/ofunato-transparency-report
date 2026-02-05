@@ -9,6 +9,8 @@ export interface SelectOption {
   value: string;
   /** オプションのラベル */
   label: string;
+  /** オプションの件数（指定した場合、ラベルに表示される） */
+  count?: number;
 }
 
 export interface SelectProps {
@@ -53,11 +55,19 @@ export function Select({
         className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
       >
         <option value="">{placeholder}</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {options.map((option) => {
+          // 件数が指定されている場合、ラベルに追加
+          const displayLabel =
+            option.count !== undefined ? `${option.label} (${option.count}件)` : option.label;
+          // 件数が0の場合は無効化
+          const isDisabled = option.count === 0;
+
+          return (
+            <option key={option.value} value={option.value} disabled={isDisabled}>
+              {displayLabel}
+            </option>
+          );
+        })}
       </select>
     </div>
   );

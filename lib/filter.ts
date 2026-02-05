@@ -118,3 +118,94 @@ export function getAvailableBasicProjects(
     .map(([id, name]) => ({ id, name }))
     .sort((a, b) => a.id.localeCompare(b.id));
 }
+
+/**
+ * フィルターオプションの件数情報
+ */
+export interface FilterOptionCounts {
+  /** 政策ごとの件数 */
+  policies: Map<string, number>;
+  /** 施策ごとの件数 */
+  measures: Map<string, number>;
+  /** 基本事業ごとの件数 */
+  basicProjects: Map<string, number>;
+  /** 部署ごとの件数 */
+  departments: Map<string, number>;
+  /** 事業区分ごとの件数 */
+  categories: Map<string, number>;
+}
+
+/**
+ * フィルターオプションごとの件数を取得
+ *
+ * 現在のフィルター条件に基づいて、各選択肢に該当する事業数をカウントします。
+ * これにより、0件の選択肢を無効化したり、件数をラベルに表示できます。
+ *
+ * @param projects - 対象の事業データ配列
+ * @param currentFilters - 現在適用中のフィルター条件
+ * @returns 各フィルターオプションの件数
+ */
+export function getFilterOptionCounts(
+  projects: Project[],
+  currentFilters: FilterParams
+): FilterOptionCounts {
+  const counts: FilterOptionCounts = {
+    policies: new Map(),
+    measures: new Map(),
+    basicProjects: new Map(),
+    departments: new Map(),
+    categories: new Map(),
+  };
+
+  // 現在のフィルター条件から各フィルターを除外したものを作成
+  const { policy: _p, ...filtersWithoutPolicy } = currentFilters;
+  const { measure: _m, ...filtersWithoutMeasure } = currentFilters;
+  const { basicProject: _bp, ...filtersWithoutBasicProject } = currentFilters;
+  const { department: _d, ...filtersWithoutDepartment } = currentFilters;
+  const { category: _c, ...filtersWithoutCategory } = currentFilters;
+
+  // 各選択肢について、その選択肢を適用した場合の件数をカウント
+  projects.forEach((project) => {
+    // 政策の件数（政策以外のフィルターを適用）
+    if (filterProjects([project], filtersWithoutPolicy).length > 0) {
+      counts.policies.set(
+        project.policy.id,
+        (counts.policies.get(project.policy.id) || 0) + 1
+      );
+    }
+
+    // 施策の件数（施策以外のフィルターを適用）
+    if (filterProjects([project], filtersWithoutMeasure).length > 0) {
+      counts.measures.set(
+        project.measure.id,
+        (counts.measures.get(project.measure.id) || 0) + 1
+      );
+    }
+
+    // 基本事業の件数（基本事業以外のフィルターを適用）
+    if (filterProjects([project], filtersWithoutBasicProject).length > 0) {
+      counts.basicProjects.set(
+        project.basicProject.id,
+        (counts.basicProjects.get(project.basicProject.id) || 0) + 1
+      );
+    }
+
+    // 部署の件数（部署以外のフィルターを適用）
+    if (filterProjects([project], filtersWithoutDepartment).length > 0) {
+      counts.departments.set(
+        project.department,
+        (counts.departments.get(project.department) || 0) + 1
+      );
+    }
+
+    // 事業区分の件数（事業区分以外のフィルターを適用）
+    if (filterProjects([project], filtersWithoutCategory).length > 0) {
+      counts.categories.set(
+        project.category,
+        (counts.categories.get(project.category) || 0) + 1
+      );
+    }
+  });
+
+  return counts;
+}
