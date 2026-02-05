@@ -1,15 +1,14 @@
 /**
  * 政策別予算配分グラフコンポーネント
- * 円グラフで政策ごとの予算配分を表示
+ * 横棒グラフで政策ごとの予算配分を表示
  */
 
 'use client';
 
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmount } from '@/lib/utils';
+import { formatAmount, formatAmountShort } from '@/lib/utils';
 import { toPolicyBudgetChartData } from '@/lib/chart-data';
-import { POLICY_BUDGET_COLORS } from '@/lib/chart-constants';
 import { ChartContainer } from './ChartContainer';
 import type { CategoryStats } from '@/types';
 
@@ -19,40 +18,10 @@ interface PolicyBudgetChartProps {
 }
 
 /**
- * 円グラフ用カスタムラベル（内側配置）
- * パーセンテージを円の内側に表示（3%未満は非表示）
+ * 横棒グラフ用カスタムツールチップ
+ * 政策名、予算、事業数を表示
  */
-function renderLabel(props: any) {
-  const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props;
-
-  if (!percent || percent < 0.03) return null; // 3%未満は非表示
-
-  const RADIAN = Math.PI / 180;
-  // 円の中心寄り（内側）に配置
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor="middle"
-      dominantBaseline="central"
-      fontSize="14"
-      fontWeight="bold"
-    >
-      {`${(percent * 100).toFixed(1)}%`}
-    </text>
-  );
-}
-
-/**
- * カスタムツールチップ
- * 政策名、予算、事業数、パーセンテージを表示
- */
-function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function CustomBarTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
   const { mode } = useAmountDisplay();
 
   if (!active || !payload || payload.length === 0) {
@@ -60,33 +29,29 @@ function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: any
   }
 
   const data = payload[0].payload;
-  const percent = payload[0].percent;
 
   return (
     <div className="bg-white p-3 border border-gray-300 rounded shadow-lg">
-      <p className="font-bold text-gray-900">{data.name}</p>
+      <p className="font-bold text-gray-900 mb-2">{data.name}</p>
       <p className="text-sm text-gray-700">
         予算: <span className="font-semibold">{formatAmount(data.value, mode)}</span>
       </p>
       <p className="text-sm text-gray-700">
         事業数: <span className="font-semibold">{data.count}件</span>
       </p>
-      {percent !== undefined && (
-        <p className="text-sm text-gray-700">
-          割合: <span className="font-semibold">{(percent * 100).toFixed(1)}%</span>
-        </p>
-      )}
     </div>
   );
 }
 
 /**
  * 政策別予算配分グラフ
- * 予算降順でソートされた円グラフで表示
+ * 予算降順でソートされた横棒グラフで表示
  */
 export default function PolicyBudgetChart({
   policyStats,
 }: PolicyBudgetChartProps) {
+  const { mode } = useAmountDisplay();
+
   // 空データのフォールバック
   if (policyStats.length === 0) {
     return (
@@ -100,35 +65,31 @@ export default function PolicyBudgetChart({
   // グラフ用データに変換（予算降順ソート）
   const chartData = toPolicyBudgetChartData(policyStats);
 
+  // グラフの高さを動的に計算（項目数 × 50px、最低400px）
+  const chartHeight = Math.max(400, chartData.length * 50);
+
   return (
-    <ChartContainer title="政策別予算配分">
-      <ResponsiveContainer width="100%" height={500}>
-        <PieChart>
-          <Pie
-            data={chartData}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="45%"
-            outerRadius={140}
-            label={renderLabel}
-            labelLine={false}
-          >
-            {chartData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={POLICY_BUDGET_COLORS[index % POLICY_BUDGET_COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomPieTooltip />} />
-          <Legend
-            verticalAlign="bottom"
-            height={100}
-            wrapperStyle={{ paddingTop: '20px' }}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+    <ChartContainer title="政策別予算配分" height={chartHeight}>
+      <BarChart
+        data={chartData}
+        layout="vertical"
+        margin={{ top: 5, right: 30, left: 250, bottom: 5 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          type="number"
+          tickFormatter={(value) => formatAmountShort(value, mode)}
+        />
+        <YAxis
+          type="category"
+          dataKey="name"
+          width={240}
+          tick={{ fontSize: 13 }}
+        />
+        <Tooltip content={<CustomBarTooltip />} />
+        <Legend wrapperStyle={{ paddingTop: '10px' }} />
+        <Bar dataKey="value" fill="#3b82f6" name="予算" />
+      </BarChart>
     </ChartContainer>
   );
 }

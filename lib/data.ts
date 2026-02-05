@@ -120,15 +120,44 @@ export function getDatasetStats(): DatasetStats {
   }, 0);
 
   // 政策別事業数・予算を集計（policy.idベースでグルーピング）
+  // ステップ1: 各政策IDごとに名前の出現回数をカウント
+  const policyNameCountMap = new Map<string, Map<string, number>>();
+  projects.forEach((project) => {
+    const policyId = project.policy.id;
+    const policyName = project.policy.name;
+
+    if (!policyNameCountMap.has(policyId)) {
+      policyNameCountMap.set(policyId, new Map<string, number>());
+    }
+    const nameCountMap = policyNameCountMap.get(policyId)!;
+    nameCountMap.set(policyName, (nameCountMap.get(policyName) || 0) + 1);
+  });
+
+  // ステップ2: 各政策IDごとに最も使用頻度の高い名前を取得
+  const policyMostFrequentNameMap = new Map<string, string>();
+  policyNameCountMap.forEach((nameCountMap, policyId) => {
+    let maxCount = 0;
+    let mostFrequentName = '';
+    nameCountMap.forEach((count, name) => {
+      if (count > maxCount) {
+        maxCount = count;
+        mostFrequentName = name;
+      }
+    });
+    policyMostFrequentNameMap.set(policyId, mostFrequentName);
+  });
+
+  // ステップ3: 政策別の事業数・予算を集計
   const projectsByPolicyMap = new Map<
     string,
     { id: string; name: string; count: number; budget: number }
   >();
   projects.forEach((project) => {
     const policyId = project.policy.id;
+    const mostFrequentName = policyMostFrequentNameMap.get(policyId) || project.policy.name;
     const existing = projectsByPolicyMap.get(policyId) || {
       id: policyId,
-      name: project.policy.name,
+      name: mostFrequentName,
       count: 0,
       budget: 0,
     };

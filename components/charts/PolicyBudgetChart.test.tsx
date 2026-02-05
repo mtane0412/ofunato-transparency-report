@@ -1,6 +1,6 @@
 /**
  * PolicyBudgetChart コンポーネントのテスト
- * 政策別予算配分グラフ（横棒グラフ）のスモークテスト
+ * 政策別予算配分を横棒グラフで表示するコンポーネントのスモークテスト
  */
 
 import { describe, it, expect } from 'vitest';

@@ -115,7 +115,7 @@ export function hasValidIndicatorData(
 }
 
 /**
- * CategoryStats配列を政策別予算グラフ用データに変換（円グラフ用）
+ * CategoryStats配列を政策別予算グラフ用データに変換（横棒グラフ用）
  * @param policyStats - 政策別統計データ配列
  * @returns グラフ用データ配列（name, value, count）、予算降順ソート
  */
@@ -132,16 +132,18 @@ export function toPolicyBudgetChartData(
 }
 
 /**
- * CategoryStats配列を事業区分別グラフ用データに変換（円グラフ用）
+ * CategoryStats配列を事業区分別グラフ用データに変換（横棒グラフ用）
  * @param categoryStats - 事業区分別統計データ配列
- * @returns グラフ用データ配列（name, value, count）
+ * @returns グラフ用データ配列（name, value, count）、予算降順ソート
  */
 export function toCategoryChartData(
   categoryStats: CategoryStats[]
 ): Array<{ name: string; value: number; count: number }> {
-  return categoryStats.map((stats) => ({
-    name: stats.name,
-    value: stats.budget,
-    count: stats.count,
-  }));
+  return categoryStats
+    .map((stats) => ({
+      name: stats.name,
+      value: stats.budget,
+      count: stats.count,
+    }))
+    .sort((a, b) => b.value - a.value);
 }

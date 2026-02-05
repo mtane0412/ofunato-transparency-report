@@ -273,7 +273,7 @@ describe('hasValidIndicatorData', () => {
 });
 
 describe('toPolicyBudgetChartData', () => {
-  it('CategoryStats配列を政策別予算グラフ用データに変換する（円グラフ用）', () => {
+  it('CategoryStats配列を政策別予算グラフ用データに変換する（横棒グラフ用）', () => {
     const policyStats: CategoryStats[] = [
       { name: '政策A', count: 10, budget: 5000000 },
       { name: '政策B', count: 20, budget: 3000000 },
@@ -282,7 +282,7 @@ describe('toPolicyBudgetChartData', () => {
 
     const result = toPolicyBudgetChartData(policyStats);
 
-    // 予算降順ソートされること（円グラフ用: name, value, count）
+    // 予算降順ソートされること（横棒グラフ用: name, value, count）
     expect(result).toEqual([
       { name: '政策C', value: 8000000, count: 5 },
       { name: '政策A', value: 5000000, count: 10 },
@@ -311,7 +311,7 @@ describe('toPolicyBudgetChartData', () => {
 });
 
 describe('toCategoryChartData', () => {
-  it('CategoryStats配列を事業区分別グラフ用データに変換する（円グラフ用）', () => {
+  it('CategoryStats配列を事業区分別グラフ用データに変換する（横棒グラフ用）', () => {
     const categoryStats: CategoryStats[] = [
       { name: '経常', count: 100, budget: 10000000 },
       { name: '政策', count: 50, budget: 5000000 },
@@ -320,11 +320,11 @@ describe('toCategoryChartData', () => {
 
     const result = toCategoryChartData(categoryStats);
 
-    // 順序は元データのまま（円グラフ用: name, value, count）
+    // 予算降順でソートされる（横棒グラフ用: name, value, count）
     expect(result).toEqual([
       { name: '経常', value: 10000000, count: 100 },
-      { name: '政策', value: 5000000, count: 50 },
       { name: '投資', value: 8000000, count: 30 },
+      { name: '政策', value: 5000000, count: 50 },
     ]);
   });
 

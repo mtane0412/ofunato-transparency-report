@@ -233,5 +233,39 @@ describe('data.ts', () => {
         expect(currentPolicyId.localeCompare(nextPolicyId)).toBeLessThanOrEqual(0);
       }
     });
+
+    it('各政策IDに対して最も使用頻度の高い名前を使用していること', () => {
+      const stats = getDatasetStats();
+      const allProjects = getAllProjects();
+
+      // 各政策について、最も使用頻度の高い名前が採用されているか確認
+      stats.projectsByPolicy.forEach((policyStat) => {
+        // この政策IDに属するすべてのプロジェクトを取得
+        const policyId = getAllPolicies().find((p) => p.name === policyStat.name)?.id;
+        if (!policyId) return;
+
+        const projectsInPolicy = allProjects.filter((p) => p.policy.id === policyId);
+
+        // 名前の出現回数をカウント
+        const nameCountMap = new Map<string, number>();
+        projectsInPolicy.forEach((project) => {
+          const count = nameCountMap.get(project.policy.name) || 0;
+          nameCountMap.set(project.policy.name, count + 1);
+        });
+
+        // 最も使用頻度の高い名前を取得
+        let maxCount = 0;
+        let mostFrequentName = '';
+        nameCountMap.forEach((count, name) => {
+          if (count > maxCount) {
+            maxCount = count;
+            mostFrequentName = name;
+          }
+        });
+
+        // 統計情報の名前が最も使用頻度の高い名前と一致することを確認
+        expect(policyStat.name).toBe(mostFrequentName);
+      });
+    });
   });
 });

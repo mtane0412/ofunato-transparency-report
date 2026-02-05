@@ -1,6 +1,6 @@
 /**
  * CategoryChart コンポーネントのテスト
- * 事業区分別予算配分グラフ（縦棒グラフ）のスモークテスト
+ * 事業区分別予算配分を横棒グラフで表示するコンポーネントのスモークテスト
  */
 
 import { describe, it, expect } from 'vitest';
