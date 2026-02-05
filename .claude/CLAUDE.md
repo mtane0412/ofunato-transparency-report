@@ -19,6 +19,8 @@
 npm run lint
 ```
 
+**注意**: 現在の環境では`npm run lint`がESLint設定の問題でエラーになる場合があります。その場合は型チェックとビルドで品質を保証してください。
+
 ### 型チェック
 
 ```bash
@@ -54,6 +56,13 @@ npm run convert-data
 ```
 
 これにより、`data/projects.json` が再生成されます。
+
+#### Excelファイル構造の注意点
+
+- JavaScriptの配列インデックスは0始まり（A列=0, B列=1, ...）
+- Excel列名との対応: `row[52]` = BB列, `row[53]` = BC列
+- Excelデータの即座確認: `npx tsx -e "import XLSX from 'xlsx'; ..."`
+- データ変換後の検証: `npm run convert-data && cat data/projects.json | jq '.projects[] | select(.id == "xxxx")'`
 
 ### 開発サーバー起動
 
