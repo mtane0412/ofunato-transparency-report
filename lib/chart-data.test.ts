@@ -273,7 +273,7 @@ describe('hasValidIndicatorData', () => {
 });
 
 describe('toPolicyBudgetChartData', () => {
-  it('CategoryStats配列を政策別予算グラフ用データに変換する', () => {
+  it('CategoryStats配列を政策別予算グラフ用データに変換する（円グラフ用）', () => {
     const policyStats: CategoryStats[] = [
       { name: '政策A', count: 10, budget: 5000000 },
       { name: '政策B', count: 20, budget: 3000000 },
@@ -282,11 +282,11 @@ describe('toPolicyBudgetChartData', () => {
 
     const result = toPolicyBudgetChartData(policyStats);
 
-    // 予算降順ソートされること
+    // 予算降順ソートされること（円グラフ用: name, value, count）
     expect(result).toEqual([
-      { 政策名: '政策C', 予算: 8000000, 事業数: 5 },
-      { 政策名: '政策A', 予算: 5000000, 事業数: 10 },
-      { 政策名: '政策B', 予算: 3000000, 事業数: 20 },
+      { name: '政策C', value: 8000000, count: 5 },
+      { name: '政策A', value: 5000000, count: 10 },
+      { name: '政策B', value: 3000000, count: 20 },
     ]);
   });
 
@@ -304,14 +304,14 @@ describe('toPolicyBudgetChartData', () => {
 
     // 安定ソート（元の順序維持）
     expect(result).toEqual([
-      { 政策名: '政策A', 予算: 5000000, 事業数: 10 },
-      { 政策名: '政策B', 予算: 5000000, 事業数: 20 },
+      { name: '政策A', value: 5000000, count: 10 },
+      { name: '政策B', value: 5000000, count: 20 },
     ]);
   });
 });
 
 describe('toCategoryChartData', () => {
-  it('CategoryStats配列を事業区分別グラフ用データに変換する', () => {
+  it('CategoryStats配列を事業区分別グラフ用データに変換する（円グラフ用）', () => {
     const categoryStats: CategoryStats[] = [
       { name: '経常', count: 100, budget: 10000000 },
       { name: '政策', count: 50, budget: 5000000 },
@@ -320,11 +320,11 @@ describe('toCategoryChartData', () => {
 
     const result = toCategoryChartData(categoryStats);
 
-    // 順序は元データのまま
+    // 順序は元データのまま（円グラフ用: name, value, count）
     expect(result).toEqual([
-      { 事業区分: '経常', 予算: 10000000, 事業数: 100 },
-      { 事業区分: '政策', 予算: 5000000, 事業数: 50 },
-      { 事業区分: '投資', 予算: 8000000, 事業数: 30 },
+      { name: '経常', value: 10000000, count: 100 },
+      { name: '政策', value: 5000000, count: 50 },
+      { name: '投資', value: 8000000, count: 30 },
     ]);
   });
 

@@ -1,25 +1,16 @@
 /**
  * 事業区分別予算配分グラフコンポーネント
- * 縦棒グラフで事業区分ごとの予算配分を表示
+ * 円グラフで事業区分ごとの予算配分を表示
  */
 
 'use client';
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmountShort } from '@/lib/utils';
+import { formatAmount } from '@/lib/utils';
 import { toCategoryChartData } from '@/lib/chart-data';
 import { CATEGORY_CHART_COLORS } from '@/lib/chart-constants';
 import { ChartContainer } from './ChartContainer';
-import { CustomTooltip } from './CustomTooltip';
 import type { CategoryStats } from '@/types';
 
 interface CategoryChartProps {
@@ -28,14 +19,51 @@ interface CategoryChartProps {
 }
 
 /**
+ * 円グラフ用カスタムラベル
+ * パーセンテージを表示
+ */
+function renderLabel(entry: { percent?: number }) {
+  if (!entry.percent) return '';
+  const percent = (entry.percent * 100).toFixed(1);
+  return `${percent}%`;
+}
+
+/**
+ * カスタムツールチップ
+ * 事業区分、予算、事業数、パーセンテージを表示
+ */
+function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+  const { mode } = useAmountDisplay();
+
+  if (!active || !payload || payload.length === 0) {
+    return null;
+  }
+
+  const data = payload[0].payload;
+
+  return (
+    <div className="bg-white p-3 border border-gray-300 rounded shadow-lg">
+      <p className="font-bold text-gray-900">{data.name}</p>
+      <p className="text-sm text-gray-700">
+        予算: <span className="font-semibold">{formatAmount(data.value, mode)}</span>
+      </p>
+      <p className="text-sm text-gray-700">
+        事業数: <span className="font-semibold">{data.count}件</span>
+      </p>
+      <p className="text-sm text-gray-700">
+        割合: <span className="font-semibold">{(payload[0].percent * 100).toFixed(1)}%</span>
+      </p>
+    </div>
+  );
+}
+
+/**
  * 事業区分別予算配分グラフ
- * 縦棒グラフで表示
+ * 円グラフで表示
  */
 export default function CategoryChart({
   categoryStats,
 }: CategoryChartProps) {
-  const { mode } = useAmountDisplay();
-
   // 空データのフォールバック
   if (categoryStats.length === 0) {
     return (
@@ -51,17 +79,28 @@ export default function CategoryChart({
 
   return (
     <ChartContainer title="事業区分別予算配分">
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart
-          data={chartData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="事業区分" />
-          <YAxis tickFormatter={(value) => formatAmountShort(value, mode)} />
-          <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="予算" fill={CATEGORY_CHART_COLORS.予算} />
-        </BarChart>
+      <ResponsiveContainer width="100%" height={400}>
+        <PieChart>
+          <Pie
+            data={chartData}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={120}
+            label={renderLabel}
+            labelLine
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={CATEGORY_CHART_COLORS[index % CATEGORY_CHART_COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Tooltip content={<CustomPieTooltip />} />
+          <Legend />
+        </PieChart>
       </ResponsiveContainer>
     </ChartContainer>
   );

@@ -33,17 +33,29 @@ export const INDICATOR_COLORS = {
 } as const;
 
 /**
- * 政策別予算グラフ用のカラーパレット
- * 予算の横棒グラフで使用
+ * 政策別予算グラフ用のカラーパレット（円グラフ用）
+ * 8-9個の政策に対応する色のバリエーション
  */
-export const POLICY_BUDGET_COLORS = {
-  予算: '#3b82f6', // blue-500
-} as const;
+export const POLICY_BUDGET_COLORS = [
+  '#3b82f6', // blue-500
+  '#10b981', // emerald-500
+  '#f59e0b', // amber-500
+  '#8b5cf6', // violet-500
+  '#ef4444', // red-500
+  '#06b6d4', // cyan-500
+  '#ec4899', // pink-500
+  '#84cc16', // lime-500
+  '#f97316', // orange-500
+] as const;
 
 /**
- * 事業区分別予算グラフ用のカラーパレット
- * 予算の縦棒グラフで使用
+ * 事業区分別予算グラフ用のカラーパレット（円グラフ用）
+ * 5個の事業区分に対応する色のバリエーション
  */
-export const CATEGORY_CHART_COLORS = {
-  予算: '#10b981', // emerald-500
-} as const;
+export const CATEGORY_CHART_COLORS = [
+  '#3b82f6', // blue-500
+  '#10b981', // emerald-500
+  '#f59e0b', // amber-500
+  '#8b5cf6', // violet-500
+  '#ef4444', // red-500
+] as const;
