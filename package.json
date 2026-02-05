@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "convert-data": "tsx scripts/convert-excel.ts",
+    "convert-data": "tsx scripts/convert-excel.ts && tsx scripts/generate-similarities.ts",
+    "generate-similarities": "tsx scripts/generate-similarities.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
@@ -42,6 +43,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^5.1.3",
     "jsdom": "^28.0.0",
+    "tiny-segmenter": "^0.2.0",
     "tsx": "^4.21.0",
     "vitest": "^4.0.18"
   }

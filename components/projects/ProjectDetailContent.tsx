@@ -13,12 +13,15 @@ import { YearlyFinancialChart } from '@/components/charts/YearlyFinancialChart';
 import { RevenueSourceChart } from '@/components/charts/RevenueSourceChart';
 import { CostBreakdownChart } from '@/components/charts/CostBreakdownChart';
 import { IndicatorChart } from '@/components/charts/IndicatorChart';
+import { SimilarProjects } from '@/components/projects/SimilarProjects';
 import { hasValidIndicatorData } from '@/lib/chart-data';
 import { formatIndicatorLabel } from '@/lib/utils';
 import type { Project } from '@/types';
+import type { SimilarProjectDisplay } from '@/types/similarity';
 
 interface ProjectDetailContentProps {
   project: Project;
+  similarProjects: SimilarProjectDisplay[];
 }
 
 /**
@@ -42,7 +45,10 @@ const INDICATOR_CATEGORIES: IndicatorCategoryConfig[] = [
 /**
  * ProjectDetailContent コンポーネント
  */
-export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
+export function ProjectDetailContent({
+  project,
+  similarProjects,
+}: ProjectDetailContentProps) {
   // 最新年度の財政データを取得
   const latestFinancial = project.financials.find(
     (f) => f.year === project.year
@@ -327,6 +333,9 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
           ))}
         </div>
       </Card>
+
+      {/* 類似事業 */}
+      <SimilarProjects projects={similarProjects} />
 
       {/* 戻るリンク */}
       <div className="text-center">

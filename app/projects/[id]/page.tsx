@@ -11,6 +11,7 @@
 
 import { notFound } from 'next/navigation';
 import { getProjectById, getAllProjects } from '@/lib/data';
+import { getSimilarProjects } from '@/lib/similarity';
 import { ProjectDetailContent } from '@/components/projects/ProjectDetailContent';
 
 interface PageProps {
@@ -39,5 +40,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  return <ProjectDetailContent project={project} />;
+  // 類似事業を取得
+  const similarProjects = getSimilarProjects(id, 5);
+
+  return (
+    <ProjectDetailContent project={project} similarProjects={similarProjects} />
+  );
 }
