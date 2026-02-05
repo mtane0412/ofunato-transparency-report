@@ -4,8 +4,34 @@
  * JSONファイルから事務事業データを読み込む関数を提供します。
  */
 
-import type { Project, ProjectDataset, DatasetStats } from '@/types';
+import type { Project, ProjectDataset, DatasetStats, EvaluationCategoryCount } from '@/types';
 import projectsData from '@/data/projects.json';
+
+/**
+ * 評価フィールドを集計する
+ *
+ * @param projects - 事業データ一覧
+ * @param fieldName - 集計対象フィールド名（'direction' または 'futureDirection'）
+ * @returns カテゴリ別件数の配列（名前順ソート）
+ */
+function aggregateEvaluationField(
+  projects: Project[],
+  fieldName: 'direction' | 'futureDirection'
+): EvaluationCategoryCount[] {
+  const countMap = new Map<string, number>();
+
+  projects.forEach((project) => {
+    const value = project.evaluation[fieldName];
+    // 不正データ（数字のみ）を「その他・未設定」に集約
+    const normalizedValue = /^[0-9]+$/.test(value) ? 'その他・未設定' : value;
+    countMap.set(normalizedValue, (countMap.get(normalizedValue) || 0) + 1);
+  });
+
+  // 名前順ソート（先頭の数字「１」「２」「３」で自然順）
+  return Array.from(countMap.entries())
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
 
 /**
  * 全事業データを取得
@@ -214,6 +240,10 @@ export function getDatasetStats(): DatasetStats {
   const categoryCount = projectsByCategoryMap.size;
   const averageBudget = Math.round(totalBudget / dataset.totalCount);
 
+  // 評価情報の集計
+  const directionCounts = aggregateEvaluationField(projects, 'direction');
+  const futureDirectionCounts = aggregateEvaluationField(projects, 'futureDirection');
+
   return {
     totalProjects: dataset.totalCount,
     totalBudget,
@@ -223,5 +253,9 @@ export function getDatasetStats(): DatasetStats {
     policyCount,
     categoryCount,
     averageBudget,
+    evaluationStats: {
+      directionCounts,
+      futureDirectionCounts,
+    },
   };
 }

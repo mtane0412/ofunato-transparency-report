@@ -25,6 +25,19 @@ describe('HomeContent', () => {
     policyCount: 8,
     categoryCount: 5,
     averageBudget: 122850,
+    evaluationStats: {
+      directionCounts: [
+        { name: '１　現状維持', count: 225 },
+        { name: '２　改革改善（縮小・統合含む）', count: 168 },
+        { name: '３　終了・廃止・休止', count: 13 },
+        { name: 'その他・未設定', count: 1 },
+      ],
+      futureDirectionCounts: [
+        { name: '１　現状維持', count: 207 },
+        { name: '２　改革改善（縮小・統合含む）', count: 185 },
+        { name: '３　終了・廃止・休止', count: 15 },
+      ],
+    },
   };
 
   it('基本的なコンテンツが表示されること', () => {

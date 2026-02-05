@@ -15,7 +15,9 @@ import { Card } from '@/components/ui/Card';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
 import PolicyBudgetChart from '@/components/charts/PolicyBudgetChart';
 import CategoryChart from '@/components/charts/CategoryChart';
+import { EvaluationChart } from '@/components/charts/EvaluationChart';
 import { SortableStatsTable } from './SortableStatsTable';
+import { toEvaluationChartData } from '@/lib/chart-data';
 import type { DatasetStats } from '@/types';
 
 interface HomeContentProps {
@@ -67,6 +69,30 @@ export function HomeContent({ stats }: HomeContentProps) {
           </div>
           <div className="mt-2 text-sm text-gray-600">1事業あたり</div>
         </Card>
+      </div>
+
+      {/* 事業評価の概要 */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">事業評価の概要</h2>
+          <p className="mt-2 text-gray-600">
+            各事務事業の「改革改善の方向性」と「今後の方向性」の集計です。
+            事業見直しの全体像を把握できます。
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <EvaluationChart
+            title="改革改善の方向性"
+            data={toEvaluationChartData(stats.evaluationStats.directionCounts)}
+            description="事業の見直し方向性（現状維持・改革改善・終了等）を示します"
+          />
+          <EvaluationChart
+            title="今後の方向性"
+            data={toEvaluationChartData(stats.evaluationStats.futureDirectionCounts)}
+            description="今後の事業の方向性（現状維持・改革改善・終了等）を示します"
+          />
+        </div>
       </div>
 
       {/* 政策別予算配分グラフ */}

@@ -206,6 +206,22 @@ export interface CategoryStats {
   budget: number;
 }
 
+/** 評価カテゴリ別の件数集計 */
+export interface EvaluationCategoryCount {
+  /** カテゴリ名称 */
+  name: string;
+  /** 件数 */
+  count: number;
+}
+
+/** 評価情報の統計データ */
+export interface EvaluationStats {
+  /** 改革改善の方向性の件数集計 */
+  directionCounts: EvaluationCategoryCount[];
+  /** 今後の方向性の件数集計 */
+  futureDirectionCounts: EvaluationCategoryCount[];
+}
+
 export interface DatasetStats {
   /** 総事業数 */
   totalProjects: number;
@@ -223,4 +239,6 @@ export interface DatasetStats {
   categoryCount: number;
   /** 平均事業予算（千円単位） */
   averageBudget: number;
+  /** 評価情報の統計 */
+  evaluationStats: EvaluationStats;
 }

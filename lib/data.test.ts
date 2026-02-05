@@ -291,5 +291,68 @@ describe('data.ts', () => {
       expect(stats.averageBudget).toBe(expectedAverage);
       expect(stats.averageBudget).toBeGreaterThan(0);
     });
+
+    it('評価統計情報が存在すること', () => {
+      const stats = getDatasetStats();
+
+      // evaluationStatsフィールドの存在確認
+      expect(stats).toHaveProperty('evaluationStats');
+      expect(stats.evaluationStats).toBeDefined();
+      expect(stats.evaluationStats).toHaveProperty('directionCounts');
+      expect(stats.evaluationStats).toHaveProperty('futureDirectionCounts');
+    });
+
+    it('改革改善の方向性の件数合計が総事業数と一致すること', () => {
+      const stats = getDatasetStats();
+
+      // directionCountsの合計件数を計算
+      const totalDirectionCount = stats.evaluationStats.directionCounts.reduce(
+        (sum, item) => sum + item.count,
+        0
+      );
+
+      // 総事業数と一致することを確認
+      expect(totalDirectionCount).toBe(stats.totalProjects);
+    });
+
+    it('今後の方向性の件数合計が総事業数と一致すること', () => {
+      const stats = getDatasetStats();
+
+      // futureDirectionCountsの合計件数を計算
+      const totalFutureDirectionCount = stats.evaluationStats.futureDirectionCounts.reduce(
+        (sum, item) => sum + item.count,
+        0
+      );
+
+      // 総事業数と一致することを確認
+      expect(totalFutureDirectionCount).toBe(stats.totalProjects);
+    });
+
+    it('不正データが「その他・未設定」として集約されること', () => {
+      const stats = getDatasetStats();
+
+      // 不正データ（数字のみ）が「その他・未設定」に集約されているか確認
+      const directionOther = stats.evaluationStats.directionCounts.find(
+        (item) => item.name === 'その他・未設定'
+      );
+      const futureDirectionOther = stats.evaluationStats.futureDirectionCounts.find(
+        (item) => item.name === 'その他・未設定'
+      );
+
+      // 不正データが存在する場合、「その他・未設定」カテゴリが存在すること
+      const allProjects = getAllProjects();
+      const hasInvalidDirection = allProjects.some((p) => /^[0-9]+$/.test(p.evaluation.direction));
+      const hasInvalidFutureDirection = allProjects.some((p) => /^[0-9]+$/.test(p.evaluation.futureDirection));
+
+      if (hasInvalidDirection) {
+        expect(directionOther).toBeDefined();
+        expect(directionOther!.count).toBeGreaterThan(0);
+      }
+
+      if (hasInvalidFutureDirection) {
+        expect(futureDirectionOther).toBeDefined();
+        expect(futureDirectionOther!.count).toBeGreaterThan(0);
+      }
+    });
   });
 });

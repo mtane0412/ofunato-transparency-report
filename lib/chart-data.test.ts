@@ -13,8 +13,9 @@ import {
   hasValidIndicatorData,
   toPolicyBudgetChartData,
   toCategoryChartData,
+  toEvaluationChartData,
 } from './chart-data';
-import type { YearlyFinancial, YearlyIndicator, CategoryStats } from '@/types';
+import type { YearlyFinancial, YearlyIndicator, CategoryStats, EvaluationCategoryCount } from '@/types';
 
 describe('formatFiscalYear', () => {
   it('年度数値を和暦文字列に変換する', () => {
@@ -330,5 +331,45 @@ describe('toCategoryChartData', () => {
 
   it('空配列の場合は空配列を返す', () => {
     expect(toCategoryChartData([])).toEqual([]);
+  });
+});
+
+describe('toEvaluationChartData', () => {
+  it('EvaluationCategoryCount配列を評価グラフ用データに変換する（件数降順）', () => {
+    const evaluationCounts: EvaluationCategoryCount[] = [
+      { name: '１　現状維持', count: 225 },
+      { name: '２　改革改善（縮小・統合含む）', count: 168 },
+      { name: '３　終了・廃止・休止', count: 13 },
+      { name: 'その他・未設定', count: 1 },
+    ];
+
+    const result = toEvaluationChartData(evaluationCounts);
+
+    // 件数降順でソートされること
+    expect(result).toEqual([
+      { name: '１　現状維持', value: 225 },
+      { name: '２　改革改善（縮小・統合含む）', value: 168 },
+      { name: '３　終了・廃止・休止', value: 13 },
+      { name: 'その他・未設定', value: 1 },
+    ]);
+  });
+
+  it('空配列の場合は空配列を返す', () => {
+    expect(toEvaluationChartData([])).toEqual([]);
+  });
+
+  it('件数が同数の場合は元の順序を維持する', () => {
+    const evaluationCounts: EvaluationCategoryCount[] = [
+      { name: 'カテゴリA', count: 10 },
+      { name: 'カテゴリB', count: 10 },
+    ];
+
+    const result = toEvaluationChartData(evaluationCounts);
+
+    // 安定ソート（元の順序維持）
+    expect(result).toEqual([
+      { name: 'カテゴリA', value: 10 },
+      { name: 'カテゴリB', value: 10 },
+    ]);
   });
 });

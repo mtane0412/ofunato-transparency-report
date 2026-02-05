@@ -31,3 +31,14 @@ export const COST_BREAKDOWN_COLORS = {
 export const INDICATOR_COLORS = {
   実績値: '#3b82f6', // blue-500
 } as const;
+
+/**
+ * 評価グラフ用のカラーパレット
+ * 改革改善の方向性・今後の方向性の4カテゴリ
+ */
+export const EVALUATION_COLORS: Record<string, string> = {
+  '１　現状維持': '#3b82f6', // blue-500
+  '２　改革改善（縮小・統合含む）': '#f59e0b', // amber-500
+  '３　終了・廃止・休止': '#ef4444', // red-500
+  'その他・未設定': '#9ca3af', // gray-400
+} as const;
