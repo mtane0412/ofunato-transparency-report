@@ -43,6 +43,10 @@ describe('Header', () => {
     expect(
       screen.getByRole('link', { name: 'ダッシュボード' })
     ).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: '予算分析' })).toHaveAttribute(
+      'href',
+      '/analysis'
+    );
     expect(screen.getByRole('link', { name: '事業一覧' })).toHaveAttribute(
       'href',
       '/projects'

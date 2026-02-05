@@ -8,6 +8,7 @@ import {
   formatAmount,
   formatAmountShort,
   formatIndicatorLabel,
+  formatFiscalYear,
 } from './utils';
 
 describe('formatJapaneseYen', () => {
@@ -170,5 +171,23 @@ describe('formatIndicatorLabel', () => {
   it('nameやunitがundefinedの場合でも正しく処理する', () => {
     expect(formatIndicatorLabel({ name: undefined as unknown as string, unit: '人' }, 'デフォルト')).toBe('デフォルト（人）');
     expect(formatIndicatorLabel({ name: '参加者数', unit: undefined as unknown as string }, 'デフォルト')).toBe('参加者数');
+  });
+});
+
+describe('formatFiscalYear', () => {
+  it('年度2をR2に変換する', () => {
+    expect(formatFiscalYear(2)).toBe('R2');
+  });
+
+  it('年度3をR3に変換する', () => {
+    expect(formatFiscalYear(3)).toBe('R3');
+  });
+
+  it('年度7をR7に変換する', () => {
+    expect(formatFiscalYear(7)).toBe('R7');
+  });
+
+  it('年度1をR1に変換する', () => {
+    expect(formatFiscalYear(1)).toBe('R1');
   });
 });

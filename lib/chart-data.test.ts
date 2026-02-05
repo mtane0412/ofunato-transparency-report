@@ -14,8 +14,15 @@ import {
   toPolicyBudgetChartData,
   toCategoryChartData,
   toEvaluationChartData,
+  toYearlyTotalBudgetChartData,
 } from './chart-data';
-import type { YearlyFinancial, YearlyIndicator, CategoryStats, EvaluationCategoryCount } from '@/types';
+import type {
+  YearlyFinancial,
+  YearlyIndicator,
+  CategoryStats,
+  EvaluationCategoryCount,
+  YearlyTotalBudget,
+} from '@/types';
 
 describe('formatFiscalYear', () => {
   it('年度数値を和暦文字列に変換する', () => {
@@ -371,5 +378,28 @@ describe('toEvaluationChartData', () => {
       { name: 'カテゴリA', value: 10 },
       { name: 'カテゴリB', value: 10 },
     ]);
+  });
+});
+
+describe('toYearlyTotalBudgetChartData', () => {
+  it('YearlyTotalBudget配列をグラフ用データに変換する', () => {
+    const yearlyBudgets: YearlyTotalBudget[] = [
+      { year: 'R2', budget: 5700000 },
+      { year: 'R3', budget: 6600000 },
+      { year: 'R7', budget: 9200000 },
+    ];
+
+    const result = toYearlyTotalBudgetChartData(yearlyBudgets);
+
+    // year, budgetの形式に変換される
+    expect(result).toEqual([
+      { year: 'R2', budget: 5700000 },
+      { year: 'R3', budget: 6600000 },
+      { year: 'R7', budget: 9200000 },
+    ]);
+  });
+
+  it('空配列の場合は空配列を返す', () => {
+    expect(toYearlyTotalBudgetChartData([])).toEqual([]);
   });
 });

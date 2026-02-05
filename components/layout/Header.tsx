@@ -23,6 +23,9 @@ export function Header() {
               <Link href="/" className="hover:text-blue-100">
                 ダッシュボード
               </Link>
+              <Link href="/analysis" className="hover:text-blue-100">
+                予算分析
+              </Link>
               <Link href="/projects" className="hover:text-blue-100">
                 事業一覧
               </Link>

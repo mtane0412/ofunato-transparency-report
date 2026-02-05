@@ -255,3 +255,45 @@ export interface DatasetStats {
   /** 評価情報の統計 */
   evaluationStats: EvaluationStats;
 }
+
+/**
+ * 年度別総予算データ（予算分析用）
+ */
+export interface YearlyTotalBudget {
+  /** 年度（例: "R2", "R3"） */
+  year: string;
+  /** 予算合計（千円単位） */
+  budget: number;
+}
+
+/**
+ * 政策別・年度別予算データポイント（Recharts LineChart用）
+ */
+export interface PolicyYearlyChartDataPoint {
+  /** 年度（例: "R2", "R3"） */
+  year: string;
+  /** 各政策の予算（キー: 政策名、値: 予算額） */
+  [policyName: string]: string | number;
+}
+
+/**
+ * 部署別予算データ
+ */
+export interface DepartmentBudget {
+  /** 部署名 */
+  name: string;
+  /** 予算合計（最新年度、千円単位） */
+  budget: number;
+  /** 事業数 */
+  count: number;
+}
+
+/**
+ * 財源構成データ
+ */
+export interface RevenueComposition {
+  /** 財源名 */
+  name: string;
+  /** 金額（千円単位） */
+  value: number;
+}

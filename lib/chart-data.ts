@@ -3,16 +3,17 @@
  * RawプロジェクトデータをRechartsで使用できる形式に変換
  */
 
-import type { YearlyFinancial, YearlyIndicator, CategoryStats, EvaluationCategoryCount } from '@/types';
+import type {
+  YearlyFinancial,
+  YearlyIndicator,
+  CategoryStats,
+  EvaluationCategoryCount,
+  YearlyTotalBudget,
+} from '@/types';
+import { formatFiscalYear } from './utils';
 
-/**
- * 年度数値を和暦文字列に変換
- * @param year - 年度（例: 5）
- * @returns 和暦文字列（例: "R5"）
- */
-export function formatFiscalYear(year: number): string {
-  return `R${year}`;
-}
+// utils.tsのformatFiscalYearを再エクスポート（既存のテストとの互換性のため）
+export { formatFiscalYear };
 
 /**
  * 財政データからトータルコスト推移用のグラフデータに変換
@@ -162,4 +163,18 @@ export function toEvaluationChartData(
       value: evaluation.count,
     }))
     .sort((a, b) => b.value - a.value);
+}
+
+/**
+ * YearlyTotalBudget配列を年度別総予算グラフ用データに変換
+ * @param yearlyBudgets - 年度別総予算データ配列
+ * @returns グラフ用データ配列（year, budget）
+ */
+export function toYearlyTotalBudgetChartData(
+  yearlyBudgets: YearlyTotalBudget[]
+): Array<{ year: string; budget: number }> {
+  return yearlyBudgets.map((item) => ({
+    year: item.year,
+    budget: item.budget,
+  }));
 }
