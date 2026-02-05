@@ -267,5 +267,29 @@ describe('data.ts', () => {
         expect(policyStat.name).toBe(mostFrequentName);
       });
     });
+
+    it('政策数が正しく計算されること', () => {
+      const stats = getDatasetStats();
+      const policies = getAllPolicies();
+
+      expect(stats.policyCount).toBe(policies.length);
+      expect(stats.policyCount).toBeGreaterThan(0);
+    });
+
+    it('事業区分数が正しく計算されること', () => {
+      const stats = getDatasetStats();
+      const categories = getAllCategories();
+
+      expect(stats.categoryCount).toBe(categories.length);
+      expect(stats.categoryCount).toBeGreaterThan(0);
+    });
+
+    it('平均事業予算が正しく計算されること', () => {
+      const stats = getDatasetStats();
+
+      const expectedAverage = Math.round(stats.totalBudget / stats.totalProjects);
+      expect(stats.averageBudget).toBe(expectedAverage);
+      expect(stats.averageBudget).toBeGreaterThan(0);
+    });
   });
 });

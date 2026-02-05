@@ -22,6 +22,9 @@ describe('HomeContent', () => {
       { name: '経常', count: 100, budget: 10000000 },
       { name: '政策', count: 50, budget: 5000000 },
     ],
+    policyCount: 8,
+    categoryCount: 5,
+    averageBudget: 122850,
   };
 
   it('基本的なコンテンツが表示されること', () => {
@@ -37,5 +40,16 @@ describe('HomeContent', () => {
     // グラフが表示されること
     expect(screen.getByText('政策別予算配分')).toBeInTheDocument();
     expect(screen.getByText('事業区分別予算配分')).toBeInTheDocument();
+  });
+
+  it('詳細テーブルが初期状態では非表示であること', () => {
+    render(
+      <AmountDisplayProvider>
+        <HomeContent stats={mockStats} />
+      </AmountDisplayProvider>
+    );
+
+    // 詳細を表示ボタンが存在すること
+    expect(screen.getAllByText('詳細を表示').length).toBeGreaterThan(0);
   });
 });

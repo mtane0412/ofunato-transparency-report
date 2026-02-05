@@ -209,11 +209,19 @@ export function getDatasetStats(): DatasetStats {
     ({ name, count, budget }) => ({ name, count, budget })
   );
 
+  // 追加指標の計算
+  const policyCount = projectsByPolicyMap.size;
+  const categoryCount = projectsByCategoryMap.size;
+  const averageBudget = Math.round(totalBudget / dataset.totalCount);
+
   return {
     totalProjects: dataset.totalCount,
     totalBudget,
     generatedAt: dataset.generatedAt,
     projectsByPolicy,
     projectsByCategory,
+    policyCount,
+    categoryCount,
+    averageBudget,
   };
 }

@@ -217,4 +217,10 @@ export interface DatasetStats {
   projectsByPolicy: CategoryStats[];
   /** 事業区分別事業数・予算 */
   projectsByCategory: CategoryStats[];
+  /** 政策数 */
+  policyCount: number;
+  /** 事業区分数 */
+  categoryCount: number;
+  /** 平均事業予算（千円単位） */
+  averageBudget: number;
 }
