@@ -1,0 +1,64 @@
+/**
+ * Selectコンポーネント
+ *
+ * セレクトボックスを提供します。
+ */
+
+export interface SelectOption {
+  /** オプションの値 */
+  value: string;
+  /** オプションのラベル */
+  label: string;
+}
+
+export interface SelectProps {
+  /** セレクトボックスのID */
+  id: string;
+  /** ラベルテキスト */
+  label: string;
+  /** 選択肢の配列 */
+  options: SelectOption[];
+  /** 現在選択されている値 */
+  value: string;
+  /** 値変更時のコールバック */
+  onChange: (value: string) => void;
+  /** プレースホルダーテキスト（デフォルト: "すべて"） */
+  placeholder?: string;
+  /** 無効化フラグ */
+  disabled?: boolean;
+}
+
+/**
+ * セレクトボックスコンポーネント
+ */
+export function Select({
+  id,
+  label,
+  options,
+  value,
+  onChange,
+  placeholder = 'すべて',
+  disabled = false,
+}: SelectProps) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label htmlFor={id} className="text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+      >
+        <option value="">{placeholder}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}

@@ -56,6 +56,22 @@ export function getAllMeasures(): Array<{ id: string; name: string }> {
 }
 
 /**
+ * 基本事業の一覧を取得（重複を除く）
+ */
+export function getAllBasicProjects(): Array<{ id: string; name: string }> {
+  const projects = getAllProjects();
+  const basicProjectMap = new Map<string, string>();
+
+  projects.forEach((project) => {
+    basicProjectMap.set(project.basicProject.id, project.basicProject.name);
+  });
+
+  return Array.from(basicProjectMap.entries())
+    .map(([id, name]) => ({ id, name }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/**
  * 部署の一覧を取得（重複を除く）
  */
 export function getAllDepartments(): string[] {
@@ -68,7 +84,7 @@ export function getAllDepartments(): string[] {
     }
   });
 
-  return Array.from(departments).sort();
+  return Array.from(departments).sort((a, b) => a.localeCompare(b));
 }
 
 /**
@@ -84,7 +100,7 @@ export function getAllCategories(): string[] {
     }
   });
 
-  return Array.from(categories).sort();
+  return Array.from(categories).sort((a, b) => a.localeCompare(b));
 }
 
 /**
