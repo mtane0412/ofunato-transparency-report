@@ -6,6 +6,7 @@
 
 import Link from 'next/link';
 import type { Project } from '@/types';
+import { normalizeEvaluationValue } from '@/lib/data';
 
 export interface ProjectTableProps {
   /** 表示する事業データの配列 */
@@ -27,51 +28,63 @@ export function ProjectTable({ projects }: ProjectTableProps) {
 
   return (
     <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow">
-      <table className="min-w-full divide-y divide-gray-200">
+      <table className="min-w-full divide-y divide-gray-200 table-fixed">
         <thead className="bg-gray-50">
           <tr>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              className="w-[20%] px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
             >
               事業名
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              className="w-[13%] px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
             >
               政策
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              className="w-[13%] px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
             >
               施策
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              className="w-[13%] px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
             >
               基本事業
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              className="w-[10%] px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
             >
               部署
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              className="w-[9%] px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
             >
               事業区分
+            </th>
+            <th
+              scope="col"
+              className="w-[11%] px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+            >
+              改革改善の方向性
+            </th>
+            <th
+              scope="col"
+              className="w-[11%] px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+            >
+              今後の方向性
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {projects.map((project) => (
             <tr key={project.id} className="hover:bg-gray-50">
-              <td className="whitespace-nowrap px-6 py-4">
+              <td className="px-6 py-4">
                 <Link
                   href={`/projects/${project.id}`}
                   className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
@@ -82,11 +95,17 @@ export function ProjectTable({ projects }: ProjectTableProps) {
               <td className="px-6 py-4 text-sm text-gray-900">{project.policy.name}</td>
               <td className="px-6 py-4 text-sm text-gray-900">{project.measure.name}</td>
               <td className="px-6 py-4 text-sm text-gray-900">{project.basicProject.name}</td>
-              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+              <td className="px-6 py-4 text-sm text-gray-900">
                 {project.department}
               </td>
-              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+              <td className="px-6 py-4 text-sm text-gray-900">
                 {project.category}
+              </td>
+              <td className="px-6 py-4 text-sm text-gray-900">
+                {normalizeEvaluationValue(project.evaluation.direction)}
+              </td>
+              <td className="px-6 py-4 text-sm text-gray-900">
+                {normalizeEvaluationValue(project.evaluation.futureDirection)}
               </td>
             </tr>
           ))}

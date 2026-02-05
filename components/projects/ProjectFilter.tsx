@@ -24,6 +24,10 @@ export interface ProjectFilterProps {
   departments: SelectOption[];
   /** 事業区分の選択肢（件数付き） */
   categories: SelectOption[];
+  /** 改革改善の方向性の選択肢（件数付き） */
+  directions: SelectOption[];
+  /** 今後の方向性の選択肢（件数付き） */
+  futureDirections: SelectOption[];
 }
 
 /**
@@ -38,6 +42,8 @@ export function ProjectFilter({
   basicProjects,
   departments,
   categories,
+  directions,
+  futureDirections,
 }: ProjectFilterProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
@@ -98,6 +104,24 @@ export function ProjectFilter({
           options={categories}
           value={filters.category || ''}
           onChange={(value) => onFilterChange({ category: value })}
+        />
+
+        {/* 改革改善の方向性フィルター */}
+        <Select
+          id="direction-filter"
+          label="改革改善の方向性"
+          options={directions}
+          value={filters.direction || ''}
+          onChange={(value) => onFilterChange({ direction: value })}
+        />
+
+        {/* 今後の方向性フィルター */}
+        <Select
+          id="future-direction-filter"
+          label="今後の方向性"
+          options={futureDirections}
+          value={filters.futureDirection || ''}
+          onChange={(value) => onFilterChange({ futureDirection: value })}
         />
       </div>
     </div>

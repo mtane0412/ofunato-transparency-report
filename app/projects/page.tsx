@@ -16,6 +16,8 @@ import {
   getAllBasicProjects,
   getAllDepartments,
   getAllCategories,
+  getAllDirections,
+  getAllFutureDirections,
 } from '@/lib/data';
 import {
   filterProjects,
@@ -42,6 +44,8 @@ function ProjectsContent() {
       basicProject: searchParams.get('basicProject') || undefined,
       department: searchParams.get('department') || undefined,
       category: searchParams.get('category') || undefined,
+      direction: searchParams.get('direction') || undefined,
+      futureDirection: searchParams.get('futureDirection') || undefined,
     }),
     [searchParams]
   );
@@ -61,6 +65,8 @@ function ProjectsContent() {
   const allBasicProjects = useMemo(() => getAllBasicProjects(), []);
   const departments = useMemo(() => getAllDepartments(), []);
   const categories = useMemo(() => getAllCategories(), []);
+  const directions = useMemo(() => getAllDirections(), []);
+  const futureDirections = useMemo(() => getAllFutureDirections(), []);
 
   // カスケードフィルターの選択肢を取得
   const availableMeasures = useMemo(
@@ -136,6 +142,26 @@ function ProjectsContent() {
     [categories, optionCounts.categories]
   );
 
+  const directionsWithCount = useMemo(
+    () =>
+      directions.map((d) => ({
+        value: d,
+        label: d,
+        count: optionCounts.directions.get(d) || 0,
+      })),
+    [directions, optionCounts.directions]
+  );
+
+  const futureDirectionsWithCount = useMemo(
+    () =>
+      futureDirections.map((fd) => ({
+        value: fd,
+        label: fd,
+        count: optionCounts.futureDirections.get(fd) || 0,
+      })),
+    [futureDirections, optionCounts.futureDirections]
+  );
+
   // フィルター変更ハンドラ
   const handleFilterChange = useCallback(
     (newFilters: Partial<FilterParams>) => {
@@ -192,6 +218,8 @@ function ProjectsContent() {
         basicProjects={basicProjectsWithCount}
         departments={departmentsWithCount}
         categories={categoriesWithCount}
+        directions={directionsWithCount}
+        futureDirections={futureDirectionsWithCount}
       />
 
       {/* 事業一覧テーブル */}

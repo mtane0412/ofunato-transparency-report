@@ -5,6 +5,7 @@
  */
 
 import type { Project } from '@/types';
+import { normalizeEvaluationValue } from '@/lib/data';
 
 /**
  * フィルターパラメータ
@@ -20,6 +21,10 @@ export interface FilterParams {
   department?: string;
   /** 事業区分 */
   category?: string;
+  /** 改革改善の方向性 */
+  direction?: string;
+  /** 今後の方向性 */
+  futureDirection?: string;
 }
 
 /**
@@ -56,6 +61,16 @@ export function filterProjects(
 
     // 事業区分でフィルタリング
     if (params.category && project.category !== params.category) {
+      return false;
+    }
+
+    // 改革改善の方向性でフィルタリング（正規化後の値で比較）
+    if (params.direction && normalizeEvaluationValue(project.evaluation.direction) !== params.direction) {
+      return false;
+    }
+
+    // 今後の方向性でフィルタリング（正規化後の値で比較）
+    if (params.futureDirection && normalizeEvaluationValue(project.evaluation.futureDirection) !== params.futureDirection) {
       return false;
     }
 
@@ -133,6 +148,10 @@ export interface FilterOptionCounts {
   departments: Map<string, number>;
   /** 事業区分ごとの件数 */
   categories: Map<string, number>;
+  /** 改革改善の方向性ごとの件数 */
+  directions: Map<string, number>;
+  /** 今後の方向性ごとの件数 */
+  futureDirections: Map<string, number>;
 }
 
 /**
@@ -155,6 +174,8 @@ export function getFilterOptionCounts(
     basicProjects: new Map(),
     departments: new Map(),
     categories: new Map(),
+    directions: new Map(),
+    futureDirections: new Map(),
   };
 
   // 現在のフィルター条件から各フィルターを除外したものを作成
@@ -163,6 +184,8 @@ export function getFilterOptionCounts(
   const { basicProject: _bp, ...filtersWithoutBasicProject } = currentFilters;
   const { department: _d, ...filtersWithoutDepartment } = currentFilters;
   const { category: _c, ...filtersWithoutCategory } = currentFilters;
+  const { direction: _dir, ...filtersWithoutDirection } = currentFilters;
+  const { futureDirection: _fdir, ...filtersWithoutFutureDirection } = currentFilters;
 
   // 各選択肢について、その選択肢を適用した場合の件数をカウント
   projects.forEach((project) => {
@@ -203,6 +226,24 @@ export function getFilterOptionCounts(
       counts.categories.set(
         project.category,
         (counts.categories.get(project.category) || 0) + 1
+      );
+    }
+
+    // 改革改善の方向性の件数（方向性以外のフィルターを適用）
+    if (filterProjects([project], filtersWithoutDirection).length > 0) {
+      const normalizedDirection = normalizeEvaluationValue(project.evaluation.direction);
+      counts.directions.set(
+        normalizedDirection,
+        (counts.directions.get(normalizedDirection) || 0) + 1
+      );
+    }
+
+    // 今後の方向性の件数（今後の方向性以外のフィルターを適用）
+    if (filterProjects([project], filtersWithoutFutureDirection).length > 0) {
+      const normalizedFutureDirection = normalizeEvaluationValue(project.evaluation.futureDirection);
+      counts.futureDirections.set(
+        normalizedFutureDirection,
+        (counts.futureDirections.get(normalizedFutureDirection) || 0) + 1
       );
     }
   });

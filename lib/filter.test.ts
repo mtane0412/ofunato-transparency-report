@@ -159,6 +159,18 @@ describe('filter.ts', () => {
       expect(result[0].id).toBe('002');
     });
 
+    it('改革改善の方向性でフィルタリングできること', () => {
+      const result = filterProjects(mockProjects, { direction: '改革方向A' });
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('001');
+    });
+
+    it('今後の方向性でフィルタリングできること', () => {
+      const result = filterProjects(mockProjects, { futureDirection: '今後の方向性B' });
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('002');
+    });
+
     it('複数条件でフィルタリングできること（AND条件）', () => {
       const result = filterProjects(mockProjects, {
         policy: 'P1',
@@ -166,6 +178,22 @@ describe('filter.ts', () => {
       });
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe('001');
+    });
+
+    it('方向性と他フィルターの複合条件でフィルタリングできること', () => {
+      const result = filterProjects(mockProjects, {
+        direction: '改革方向A',
+        department: '総務部',
+      });
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('001');
+
+      // 条件に該当しないケース
+      const result2 = filterProjects(mockProjects, {
+        direction: '改革方向A',
+        department: '企画部',
+      });
+      expect(result2).toHaveLength(0);
     });
 
     it('該当するデータがない場合は空配列を返すこと', () => {
@@ -264,6 +292,16 @@ describe('filter.ts', () => {
       // 事業区分の件数
       expect(result.categories.get('一般事業')).toBe(2);
       expect(result.categories.get('重点事業')).toBe(1);
+
+      // 改革改善の方向性の件数
+      expect(result.directions.get('改革方向A')).toBe(1);
+      expect(result.directions.get('改革方向B')).toBe(1);
+      expect(result.directions.get('改革方向C')).toBe(1);
+
+      // 今後の方向性の件数
+      expect(result.futureDirections.get('今後の方向性A')).toBe(1);
+      expect(result.futureDirections.get('今後の方向性B')).toBe(1);
+      expect(result.futureDirections.get('今後の方向性C')).toBe(1);
     });
 
     it('政策フィルター適用時、施策と基本事業の件数が絞り込まれること', () => {
@@ -300,6 +338,20 @@ describe('filter.ts', () => {
       expect(result.measures.get('M2')).toBeUndefined(); // 政策はP1だが部署が企画部のため0件
       expect(result.basicProjects.get('BP1')).toBe(1);
       expect(result.basicProjects.get('BP2')).toBeUndefined(); // 政策はP1だが部署が企画部のため0件
+    });
+
+    it('方向性フィルター適用時、他フィルターの件数が正しく絞り込まれること', () => {
+      const result = getFilterOptionCounts(mockProjects, { direction: '改革方向A' });
+
+      // 該当するのは事業Aのみ（改革方向A）
+      expect(result.policies.get('P1')).toBe(1);
+      expect(result.policies.get('P2')).toBeUndefined(); // 改革方向Aではないため0件
+
+      expect(result.departments.get('総務部')).toBe(1);
+      expect(result.departments.get('企画部')).toBeUndefined(); // 改革方向Aではないため0件
+
+      expect(result.categories.get('一般事業')).toBe(1);
+      expect(result.categories.get('重点事業')).toBeUndefined(); // 改革方向Aではないため0件
     });
   });
 });
