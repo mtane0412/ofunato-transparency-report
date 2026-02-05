@@ -31,6 +31,23 @@ const mockProjects: Project[] = [
     legalBasis: '',
     financials: [],
     indicators: [],
+    indicatorLabels: {
+      activity: [
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+      ],
+      target: [
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+      ],
+      outcome: [
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+      ],
+    },
     evaluation: {
       direction: '改革方向A',
       futureDirection: '今後の方向性A',
@@ -58,6 +75,23 @@ const mockProjects: Project[] = [
     legalBasis: '',
     financials: [],
     indicators: [],
+    indicatorLabels: {
+      activity: [
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+      ],
+      target: [
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+      ],
+      outcome: [
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+        { name: '', unit: '' },
+      ],
+    },
     evaluation: {
       direction: '改革方向B',
       futureDirection: '今後の方向性B',

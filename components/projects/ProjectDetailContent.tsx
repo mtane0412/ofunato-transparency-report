@@ -262,7 +262,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="activity"
                 index={0}
-                label="活動指標ア"
+                label={
+                  project.indicatorLabels.activity[0].name ||
+                  project.indicatorLabels.activity[0].unit ||
+                  '活動指標ア'
+                }
               />
             )}
             {hasValidIndicatorData(project.indicators, 'activity', 1) && (
@@ -270,7 +274,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="activity"
                 index={1}
-                label="活動指標イ"
+                label={
+                  project.indicatorLabels.activity[1].name ||
+                  project.indicatorLabels.activity[1].unit ||
+                  '活動指標イ'
+                }
               />
             )}
             {hasValidIndicatorData(project.indicators, 'activity', 2) && (
@@ -278,7 +286,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="activity"
                 index={2}
-                label="活動指標ウ"
+                label={
+                  project.indicatorLabels.activity[2].name ||
+                  project.indicatorLabels.activity[2].unit ||
+                  '活動指標ウ'
+                }
               />
             )}
 
@@ -288,7 +300,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="target"
                 index={0}
-                label="対象指標カ"
+                label={
+                  project.indicatorLabels.target[0].name ||
+                  project.indicatorLabels.target[0].unit ||
+                  '対象指標カ'
+                }
               />
             )}
             {hasValidIndicatorData(project.indicators, 'target', 1) && (
@@ -296,7 +312,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="target"
                 index={1}
-                label="対象指標キ"
+                label={
+                  project.indicatorLabels.target[1].name ||
+                  project.indicatorLabels.target[1].unit ||
+                  '対象指標キ'
+                }
               />
             )}
             {hasValidIndicatorData(project.indicators, 'target', 2) && (
@@ -304,7 +324,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="target"
                 index={2}
-                label="対象指標ク"
+                label={
+                  project.indicatorLabels.target[2].name ||
+                  project.indicatorLabels.target[2].unit ||
+                  '対象指標ク'
+                }
               />
             )}
 
@@ -314,7 +338,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="outcome"
                 index={0}
-                label="成果指標サ"
+                label={
+                  project.indicatorLabels.outcome[0].name ||
+                  project.indicatorLabels.outcome[0].unit ||
+                  '成果指標サ'
+                }
               />
             )}
             {hasValidIndicatorData(project.indicators, 'outcome', 1) && (
@@ -322,7 +350,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="outcome"
                 index={1}
-                label="成果指標シ"
+                label={
+                  project.indicatorLabels.outcome[1].name ||
+                  project.indicatorLabels.outcome[1].unit ||
+                  '成果指標シ'
+                }
               />
             )}
             {hasValidIndicatorData(project.indicators, 'outcome', 2) && (
@@ -330,7 +362,11 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
                 indicators={project.indicators}
                 category="outcome"
                 index={2}
-                label="成果指標ス"
+                label={
+                  project.indicatorLabels.outcome[2].name ||
+                  project.indicatorLabels.outcome[2].unit ||
+                  '成果指標ス'
+                }
               />
             )}
           </>
