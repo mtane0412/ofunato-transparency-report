@@ -1,17 +1,19 @@
 /**
  * トップページ（概要ダッシュボード）
  *
- * 大船渡市の事務事業評価シートの概要を表示します。
+ * 大船渡市の事務事業評価データの概要を表示します。
  * - 総事業数
  * - 総予算
  * - 政策別事業数
  * - 事業区分別事業数
  */
 
+'use client';
+
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { getDatasetStats } from '@/lib/data';
-import { formatThousandYen } from '@/lib/utils';
+import { FormattedAmount } from '@/components/ui/FormattedAmount';
 
 export default function Home() {
   const stats = getDatasetStats();
@@ -21,10 +23,10 @@ export default function Home() {
       {/* ページタイトル */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">
-          事務事業評価シート 概要ダッシュボード
+          事務事業評価データ 概要ダッシュボード
         </h1>
         <p className="mt-2 text-gray-600">
-          大船渡市の事務事業評価シートの概要を表示しています。
+          大船渡市の事務事業評価データの概要を表示しています。
         </p>
       </div>
 
@@ -39,7 +41,7 @@ export default function Home() {
 
         <Card title="総予算（最新年度）">
           <div className="text-4xl font-bold text-green-600">
-            {formatThousandYen(stats.totalBudget)}
+            <FormattedAmount amount={stats.totalBudget} />
           </div>
           <div className="mt-2 text-sm text-gray-600">トータルコスト合計</div>
         </Card>
