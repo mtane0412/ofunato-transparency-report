@@ -220,8 +220,32 @@ describe('ProjectFilter', () => {
 
     // IME変換中は文字が削除されてもonFilterChangeが呼ばれない
     expect(mockOnFilterChange).not.toHaveBeenCalled();
+  });
 
-    // IME変換終了
-    searchInput.dispatchEvent(new CompositionEvent('compositionend'));
+  it('IME変換確定時（compositionend）に即座にフィルターが適用されること', () => {
+    render(<ProjectFilter {...defaultProps} />);
+
+    const searchInput = screen.getByLabelText('キーワード検索') as HTMLInputElement;
+
+    // IME変換開始をシミュレート
+    searchInput.dispatchEvent(new CompositionEvent('compositionstart'));
+
+    // 変換中に文字を変更（例: 「てすと」→「テスト」）
+    searchInput.value = 'テスト事業';
+    searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+    // 変換中はまだ呼ばれない
+    expect(mockOnFilterChange).not.toHaveBeenCalled();
+
+    // IME変換確定（Enterキー押下など）
+    const compositionEndEvent = new CompositionEvent('compositionend', { bubbles: true });
+    Object.defineProperty(compositionEndEvent, 'currentTarget', {
+      value: searchInput,
+      writable: false,
+    });
+    searchInput.dispatchEvent(compositionEndEvent);
+
+    // 変換確定時に即座にonFilterChangeが呼ばれる
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ q: 'テスト事業' });
   });
 });

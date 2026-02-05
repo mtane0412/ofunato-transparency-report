@@ -88,9 +88,12 @@ export function ProjectFilter({
     setIsComposing(true);
   };
 
-  // IME変換終了
-  const handleCompositionEnd = () => {
+  // IME変換終了（変換確定時にフィルターを適用）
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
     setIsComposing(false);
+    // 変換確定時に即座にフィルターを適用
+    const value = e.currentTarget.value;
+    onFilterChange({ q: value || undefined });
   };
 
   return (
