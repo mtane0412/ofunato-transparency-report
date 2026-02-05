@@ -5,30 +5,37 @@
  */
 
 /**
+ * 金額表示モード
+ * - 'thousand': 千円表記（例: "130,005千円"）
+ * - 'japanese': 日本語表記（例: "1億3,000万5,000円"）
+ */
+export type AmountDisplayMode = 'thousand' | 'japanese';
+
+/**
  * 年度別財政データ
  */
 export interface YearlyFinancial {
   /** 年度 */
   year: number;
-  /** 国庫支出金（円） */
+  /** 国庫支出金（千円） */
   nationalSubsidy: number;
-  /** 都道府県支出金（円） */
+  /** 都道府県支出金（千円） */
   prefecturalSubsidy: number;
-  /** 地方債（円） */
+  /** 地方債（千円） */
   localBond: number;
-  /** その他（円） */
+  /** その他（千円） */
   other: number;
-  /** 一般財源（円） */
+  /** 一般財源（千円） */
   generalRevenue: number;
-  /** 事業費計（円） */
+  /** 事業費計（千円） */
   totalCost: number;
   /** 正規職員従事人数（人） */
   personnelCount: number;
   /** 延べ業務時間（時間） */
   workHours: number;
-  /** 人件費計（円） */
+  /** 人件費計（千円） */
   personnelCost: number;
-  /** トータルコスト（円） */
+  /** トータルコスト（千円） */
   grandTotal: number;
 }
 
