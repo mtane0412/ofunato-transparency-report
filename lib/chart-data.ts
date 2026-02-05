@@ -3,7 +3,7 @@
  * RawプロジェクトデータをRechartsで使用できる形式に変換
  */
 
-import type { YearlyFinancial, YearlyIndicator } from '@/types';
+import type { YearlyFinancial, YearlyIndicator, CategoryStats, EvaluationCategoryCount } from '@/types';
 
 /**
  * 年度数値を和暦文字列に変換
@@ -112,4 +112,54 @@ export function hasValidIndicatorData(
   index: number
 ): boolean {
   return toIndicatorChartData(indicators, category, index).length > 0;
+}
+
+/**
+ * CategoryStats配列を政策別予算グラフ用データに変換（横棒グラフ用）
+ * @param policyStats - 政策別統計データ配列
+ * @returns グラフ用データ配列（name, value, count）、予算降順ソート
+ */
+export function toPolicyBudgetChartData(
+  policyStats: CategoryStats[]
+): Array<{ name: string; value: number; count: number }> {
+  return policyStats
+    .map((stats) => ({
+      name: stats.name,
+      value: stats.budget,
+      count: stats.count,
+    }))
+    .sort((a, b) => b.value - a.value);
+}
+
+/**
+ * CategoryStats配列を事業区分別グラフ用データに変換（横棒グラフ用）
+ * @param categoryStats - 事業区分別統計データ配列
+ * @returns グラフ用データ配列（name, value, count）、予算降順ソート
+ */
+export function toCategoryChartData(
+  categoryStats: CategoryStats[]
+): Array<{ name: string; value: number; count: number }> {
+  return categoryStats
+    .map((stats) => ({
+      name: stats.name,
+      value: stats.budget,
+      count: stats.count,
+    }))
+    .sort((a, b) => b.value - a.value);
+}
+
+/**
+ * EvaluationCategoryCount配列を評価グラフ用データに変換（横棒グラフ用）
+ * @param evaluationCounts - 評価カテゴリ別件数データ配列
+ * @returns グラフ用データ配列（name, value）、件数降順ソート
+ */
+export function toEvaluationChartData(
+  evaluationCounts: EvaluationCategoryCount[]
+): Array<{ name: string; value: number }> {
+  return evaluationCounts
+    .map((evaluation) => ({
+      name: evaluation.name,
+      value: evaluation.count,
+    }))
+    .sort((a, b) => b.value - a.value);
 }

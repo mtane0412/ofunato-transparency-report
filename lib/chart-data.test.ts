@@ -11,8 +11,11 @@ import {
   toCostBreakdownChartData,
   toIndicatorChartData,
   hasValidIndicatorData,
+  toPolicyBudgetChartData,
+  toCategoryChartData,
+  toEvaluationChartData,
 } from './chart-data';
-import type { YearlyFinancial, YearlyIndicator } from '@/types';
+import type { YearlyFinancial, YearlyIndicator, CategoryStats, EvaluationCategoryCount } from '@/types';
 
 describe('formatFiscalYear', () => {
   it('年度数値を和暦文字列に変換する', () => {
@@ -267,5 +270,106 @@ describe('hasValidIndicatorData', () => {
 
   it('空配列の場合はfalseを返す', () => {
     expect(hasValidIndicatorData([], 'activity', 0)).toBe(false);
+  });
+});
+
+describe('toPolicyBudgetChartData', () => {
+  it('CategoryStats配列を政策別予算グラフ用データに変換する（横棒グラフ用）', () => {
+    const policyStats: CategoryStats[] = [
+      { name: '政策A', count: 10, budget: 5000000 },
+      { name: '政策B', count: 20, budget: 3000000 },
+      { name: '政策C', count: 5, budget: 8000000 },
+    ];
+
+    const result = toPolicyBudgetChartData(policyStats);
+
+    // 予算降順ソートされること（横棒グラフ用: name, value, count）
+    expect(result).toEqual([
+      { name: '政策C', value: 8000000, count: 5 },
+      { name: '政策A', value: 5000000, count: 10 },
+      { name: '政策B', value: 3000000, count: 20 },
+    ]);
+  });
+
+  it('空配列の場合は空配列を返す', () => {
+    expect(toPolicyBudgetChartData([])).toEqual([]);
+  });
+
+  it('予算が同額の場合は元の順序を維持する', () => {
+    const policyStats: CategoryStats[] = [
+      { name: '政策A', count: 10, budget: 5000000 },
+      { name: '政策B', count: 20, budget: 5000000 },
+    ];
+
+    const result = toPolicyBudgetChartData(policyStats);
+
+    // 安定ソート（元の順序維持）
+    expect(result).toEqual([
+      { name: '政策A', value: 5000000, count: 10 },
+      { name: '政策B', value: 5000000, count: 20 },
+    ]);
+  });
+});
+
+describe('toCategoryChartData', () => {
+  it('CategoryStats配列を事業区分別グラフ用データに変換する（横棒グラフ用）', () => {
+    const categoryStats: CategoryStats[] = [
+      { name: '経常', count: 100, budget: 10000000 },
+      { name: '政策', count: 50, budget: 5000000 },
+      { name: '投資', count: 30, budget: 8000000 },
+    ];
+
+    const result = toCategoryChartData(categoryStats);
+
+    // 予算降順でソートされる（横棒グラフ用: name, value, count）
+    expect(result).toEqual([
+      { name: '経常', value: 10000000, count: 100 },
+      { name: '投資', value: 8000000, count: 30 },
+      { name: '政策', value: 5000000, count: 50 },
+    ]);
+  });
+
+  it('空配列の場合は空配列を返す', () => {
+    expect(toCategoryChartData([])).toEqual([]);
+  });
+});
+
+describe('toEvaluationChartData', () => {
+  it('EvaluationCategoryCount配列を評価グラフ用データに変換する（件数降順）', () => {
+    const evaluationCounts: EvaluationCategoryCount[] = [
+      { name: '１　現状維持', count: 225 },
+      { name: '２　改革改善（縮小・統合含む）', count: 168 },
+      { name: '３　終了・廃止・休止', count: 13 },
+      { name: 'その他・未設定', count: 1 },
+    ];
+
+    const result = toEvaluationChartData(evaluationCounts);
+
+    // 件数降順でソートされること
+    expect(result).toEqual([
+      { name: '１　現状維持', value: 225 },
+      { name: '２　改革改善（縮小・統合含む）', value: 168 },
+      { name: '３　終了・廃止・休止', value: 13 },
+      { name: 'その他・未設定', value: 1 },
+    ]);
+  });
+
+  it('空配列の場合は空配列を返す', () => {
+    expect(toEvaluationChartData([])).toEqual([]);
+  });
+
+  it('件数が同数の場合は元の順序を維持する', () => {
+    const evaluationCounts: EvaluationCategoryCount[] = [
+      { name: 'カテゴリA', count: 10 },
+      { name: 'カテゴリB', count: 10 },
+    ];
+
+    const result = toEvaluationChartData(evaluationCounts);
+
+    // 安定ソート（元の順序維持）
+    expect(result).toEqual([
+      { name: 'カテゴリA', value: 10 },
+      { name: 'カテゴリB', value: 10 },
+    ]);
   });
 });

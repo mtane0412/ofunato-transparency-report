@@ -180,3 +180,163 @@ const { policy: _p, ...filtersWithoutPolicy } = currentFilters;
 3. **検索機能**: キーワードによる全文検索
 4. **予算分析ページ**: 政策別・施策別の予算配分分析
 5. **エクスポート機能**: フィルター結果のCSV/Excel出力
+
+---
+
+## デジタル庁ダッシュボードガイドライン
+
+**参考**: [デジタル庁ダッシュボードデザインガイドライン](https://www.digital.go.jp/)
+
+このプロジェクトではデジタル庁が推奨するダッシュボード設計の原則に従っています。
+
+### 1. グラフ選択の原則
+
+**基本方針**: データの可視化目的に応じて適切なグラフを選択する
+
+| 目的 | 推奨グラフ | 非推奨グラフ | 理由 |
+|------|----------|------------|------|
+| **構成要素同士の比較** | 棒グラフ（横/縦） | 円グラフ | 項目が多い場合、円グラフは読みにくい |
+| **全体に対する割合** | 円グラフ（3〜5項目） | 棒グラフ | 項目が少なければ円グラフが直感的 |
+| **時系列の推移** | 折れ線グラフ | 棒グラフ | トレンドの把握が容易 |
+| **複数系列の比較** | 積み上げ棒グラフ | 複数の円グラフ | 一つのグラフで全体を把握できる |
+
+**実装例**:
+- 政策別予算配分（8項目）: 横棒グラフを採用（`PolicyBudgetChart.tsx`）
+- 事業区分別予算配分（5項目）: 横棒グラフを採用（`CategoryChart.tsx`）
+
+### 2. データの冗長性を避ける
+
+**原則**: 同じ情報を複数の形式で重複表示しない
+
+❌ **悪い例**: グラフとテキストリストの両方で同じデータを表示
+```tsx
+<PolicyBudgetChart data={stats.projectsByPolicy} />
+<Card title="政策別事業数・予算">
+  {/* グラフと同じデータをリスト形式で表示 */}
+</Card>
+```
+
+✅ **良い例**: グラフのみで表示し、詳細はアコーディオンで提供
+```tsx
+<PolicyBudgetChart data={stats.projectsByPolicy} />
+<Accordion>
+  <SortableStatsTable data={stats.projectsByPolicy} />
+</Accordion>
+```
+
+### 3. 情報の階層化
+
+**原則**: 重要度に応じて情報を階層化する
+
+```
+概要（サマリー）
+  ↓
+主要な可視化（グラフ）
+  ↓
+詳細データ（テーブル・必要に応じて展開）
+  ↓
+アクション（事業一覧へ等）
+```
+
+**実装パターン**:
+1. **サマリーカード**: 重要指標を2列で表示（総事業数、総予算、政策数、平均予算）
+2. **グラフ**: データの比較・傾向を視覚化
+3. **詳細テーブル**: アコーディオン形式で展開可能
+4. **アクション**: 「事業一覧を見る」ボタン
+
+### 4. インタラクティブ機能
+
+**推奨**: ユーザーが自由にデータを探索できる機能を提供
+
+**実装済み機能**:
+- **ソート機能**: テーブルの列ヘッダーをクリックでソート（`SortableStatsTable.tsx`）
+- **アコーディオン**: 詳細情報を必要に応じて展開/折りたたみ
+- **金額表示モード切替**: 千円表記 ⇔ 日本語表記（`AmountDisplayContext`）
+- **フィルター**: URLパラメータ方式でブックマーク・共有可能
+
+### 5. アクセシビリティ
+
+**必須事項**:
+- 適切なHTMLタグを使用（`<table>`、`<th>`、`<td>`）
+- ARIA属性の設定（`aria-label`、`aria-expanded`）
+- キーボード操作対応
+- カラーコントラスト比の確保
+
+**実装例**:
+```tsx
+// ソート可能なテーブル
+<table>
+  <caption className="sr-only">政策別事業数・予算の詳細テーブル</caption>
+  <thead>
+    <tr>
+      <th scope="col" onClick={handleSort}>
+        名称 <SortIndicator />
+      </th>
+    </tr>
+  </thead>
+</table>
+
+// アコーディオンボタン
+<button aria-expanded={showDetails}>
+  詳細を表示
+</button>
+```
+
+### 6. レスポンシブデザイン
+
+**原則**: モバイル・タブレット・デスクトップで最適な表示
+
+**グリッドレイアウト**:
+```tsx
+// サマリーカード: モバイル1列、タブレット以上2列
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+// グラフ: 動的な高さ計算
+const chartHeight = Math.max(400, data.length * 50);
+```
+
+### 7. パフォーマンス最適化
+
+**推奨事項**:
+- グラフの高さを動的に計算（項目数に応じて調整）
+- 大量データの場合はページネーション
+- useMemoで重い計算をメモ化
+
+**実装例**:
+```tsx
+// 動的な高さ計算
+const chartHeight = Math.max(400, chartData.length * 50);
+
+// メモ化
+const filteredProjects = useMemo(() => {
+  return projects.filter(/* ... */);
+}, [projects, filters]);
+```
+
+### 8. データ可視化のベストプラクティス
+
+**グラフ設計**:
+- **ソート**: 予算降順でソート（重要なデータが上に）
+- **ツールチップ**: ホバー時に詳細情報を表示
+- **レジェンド**: グラフの下部に配置
+- **軸ラベル**: 金額は省略表記（`formatAmountShort`）
+- **カラー**: 単色または一貫したカラーパレット
+
+**実装パターン**:
+```tsx
+<BarChart data={chartData} layout="vertical">
+  <CartesianGrid strokeDasharray="3 3" />
+  <XAxis type="number" tickFormatter={(value) => formatAmountShort(value, mode)} />
+  <YAxis type="category" dataKey="name" width={240} />
+  <Tooltip content={<CustomBarTooltip />} />
+  <Bar dataKey="value" fill="#3b82f6" />
+</BarChart>
+```
+
+---
+
+## 参考リンク
+
+- **デジタル庁ダッシュボードガイドライン**: https://www.digital.go.jp/
+- **Recharts公式ドキュメント**: https://recharts.org/
+- **WAI-ARIA**: https://www.w3.org/WAI/ARIA/

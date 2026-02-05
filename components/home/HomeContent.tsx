@@ -9,9 +9,15 @@
 
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
+import PolicyBudgetChart from '@/components/charts/PolicyBudgetChart';
+import CategoryChart from '@/components/charts/CategoryChart';
+import { EvaluationChart } from '@/components/charts/EvaluationChart';
+import { SortableStatsTable } from './SortableStatsTable';
+import { toEvaluationChartData } from '@/lib/chart-data';
 import type { DatasetStats } from '@/types';
 
 interface HomeContentProps {
@@ -19,6 +25,9 @@ interface HomeContentProps {
 }
 
 export function HomeContent({ stats }: HomeContentProps) {
+  const [showPolicyDetails, setShowPolicyDetails] = useState(false);
+  const [showCategoryDetails, setShowCategoryDetails] = useState(false);
+
   return (
     <div className="space-y-8">
       {/* ページタイトル */}
@@ -46,37 +55,99 @@ export function HomeContent({ stats }: HomeContentProps) {
           </div>
           <div className="mt-2 text-sm text-gray-600">トータルコスト合計</div>
         </Card>
+
+        <Card title="政策数">
+          <div className="text-4xl font-bold text-purple-600">
+            {stats.policyCount.toLocaleString()}
+          </div>
+          <div className="mt-2 text-sm text-gray-600">政策項目</div>
+        </Card>
+
+        <Card title="平均事業予算">
+          <div className="text-4xl font-bold text-orange-600">
+            <FormattedAmount amount={stats.averageBudget} />
+          </div>
+          <div className="mt-2 text-sm text-gray-600">1事業あたり</div>
+        </Card>
       </div>
 
-      {/* 政策別事業数 */}
-      <Card title="政策別事業数">
-        <div className="space-y-2">
-          {stats.projectsByPolicy.map((item: { name: string; count: number }) => (
-            <div
-              key={item.name}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded hover:bg-gray-100"
-            >
-              <span className="text-gray-800">{item.name}</span>
-              <span className="font-bold text-blue-600">{item.count}件</span>
-            </div>
-          ))}
+      {/* 事業評価の概要 */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">事業評価の概要</h2>
+          <p className="mt-2 text-gray-600">
+            各事務事業の「改革改善の方向性」と「今後の方向性」の集計です。
+            事業見直しの全体像を把握できます。
+          </p>
         </div>
-      </Card>
 
-      {/* 事業区分別事業数 */}
-      <Card title="事業区分別事業数">
-        <div className="space-y-2">
-          {stats.projectsByCategory.map((item: { name: string; count: number }) => (
-            <div
-              key={item.name}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded hover:bg-gray-100"
-            >
-              <span className="text-gray-800">{item.name}</span>
-              <span className="font-bold text-green-600">{item.count}件</span>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <EvaluationChart
+            title="改革改善の方向性"
+            data={toEvaluationChartData(stats.evaluationStats.directionCounts)}
+            description="事業の見直し方向性（現状維持・改革改善・終了等）を示します"
+          />
+          <EvaluationChart
+            title="今後の方向性"
+            data={toEvaluationChartData(stats.evaluationStats.futureDirectionCounts)}
+            description="今後の事業の方向性（現状維持・改革改善・終了等）を示します"
+          />
         </div>
-      </Card>
+      </div>
+
+      {/* 政策別予算配分グラフ */}
+      <div className="space-y-4">
+        <PolicyBudgetChart policyStats={stats.projectsByPolicy} />
+
+        {/* 詳細テーブル（アコーディオン） */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <button
+            onClick={() => setShowPolicyDetails(!showPolicyDetails)}
+            className="w-full flex items-center justify-between text-left font-semibold text-gray-900 hover:text-blue-600 transition-colors"
+            aria-expanded={showPolicyDetails}
+          >
+            <span>詳細を表示</span>
+            <span className="text-2xl">{showPolicyDetails ? '−' : '+'}</span>
+          </button>
+
+          {showPolicyDetails && (
+            <div className="mt-4 border-t pt-4">
+              <SortableStatsTable
+                data={stats.projectsByPolicy}
+                caption="政策別事業数・予算の詳細テーブル"
+                showEvaluation={true}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 事業区分別予算配分グラフ */}
+      <div className="space-y-4">
+        <CategoryChart categoryStats={stats.projectsByCategory} />
+
+        {/* 詳細テーブル（アコーディオン） */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <button
+            onClick={() => setShowCategoryDetails(!showCategoryDetails)}
+            className="w-full flex items-center justify-between text-left font-semibold text-gray-900 hover:text-blue-600 transition-colors"
+            aria-expanded={showCategoryDetails}
+          >
+            <span>詳細を表示</span>
+            <span className="text-2xl">{showCategoryDetails ? '−' : '+'}</span>
+          </button>
+
+          {showCategoryDetails && (
+            <div className="mt-4 border-t pt-4">
+              <SortableStatsTable
+                data={stats.projectsByCategory}
+                caption="事業区分別事業数・予算の詳細テーブル"
+                showEvaluation={true}
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* 事業一覧へのリンク */}
       <div className="text-center">

@@ -196,6 +196,45 @@ export interface ProjectDataset {
 /**
  * データセット統計情報
  */
+/** 政策別・事業区分別の集計データ */
+export interface CategoryStats {
+  /** カテゴリ名称 */
+  name: string;
+  /** 事業数 */
+  count: number;
+  /** 予算合計（最新年度のトータルコスト合計、千円単位） */
+  budget: number;
+}
+
+/** 方向性の内訳（方向性値 → 件数） */
+export interface EvaluationBreakdown {
+  [directionName: string]: number;
+}
+
+/** 政策別・事業区分別の集計データ（評価情報付き） */
+export interface CategoryStatsWithEvaluation extends CategoryStats {
+  /** 改革改善の方向性の内訳 */
+  directionBreakdown: EvaluationBreakdown;
+  /** 今後の方向性の内訳 */
+  futureDirectionBreakdown: EvaluationBreakdown;
+}
+
+/** 評価カテゴリ別の件数集計 */
+export interface EvaluationCategoryCount {
+  /** カテゴリ名称 */
+  name: string;
+  /** 件数 */
+  count: number;
+}
+
+/** 評価情報の統計データ */
+export interface EvaluationStats {
+  /** 改革改善の方向性の件数集計 */
+  directionCounts: EvaluationCategoryCount[];
+  /** 今後の方向性の件数集計 */
+  futureDirectionCounts: EvaluationCategoryCount[];
+}
+
 export interface DatasetStats {
   /** 総事業数 */
   totalProjects: number;
@@ -203,8 +242,16 @@ export interface DatasetStats {
   totalBudget: number;
   /** データ生成日時 */
   generatedAt: string;
-  /** 政策別事業数 */
-  projectsByPolicy: Array<{ name: string; count: number }>;
-  /** 事業区分別事業数 */
-  projectsByCategory: Array<{ name: string; count: number }>;
+  /** 政策別事業数・予算（評価情報付き） */
+  projectsByPolicy: CategoryStatsWithEvaluation[];
+  /** 事業区分別事業数・予算（評価情報付き） */
+  projectsByCategory: CategoryStatsWithEvaluation[];
+  /** 政策数 */
+  policyCount: number;
+  /** 事業区分数 */
+  categoryCount: number;
+  /** 平均事業予算（千円単位） */
+  averageBudget: number;
+  /** 評価情報の統計 */
+  evaluationStats: EvaluationStats;
 }
