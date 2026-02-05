@@ -19,15 +19,33 @@ interface PolicyBudgetChartProps {
 }
 
 /**
- * 円グラフ用カスタムラベル
- * パーセンテージを表示（5%未満は非表示にして重なりを防ぐ）
+ * 円グラフ用カスタムラベル（内側配置）
+ * パーセンテージを円の内側に表示（3%未満は非表示）
  */
-function renderLabel(entry: { percent?: number }) {
-  if (!entry.percent) return '';
-  const percent = entry.percent * 100;
-  // 5%未満のセグメントにはラベルを表示しない（重なり防止）
-  if (percent < 5) return '';
-  return `${percent.toFixed(1)}%`;
+function renderLabel(props: any) {
+  const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props;
+
+  if (!percent || percent < 0.03) return null; // 3%未満は非表示
+
+  const RADIAN = Math.PI / 180;
+  // 円の中心寄り（内側）に配置
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor="middle"
+      dominantBaseline="central"
+      fontSize="14"
+      fontWeight="bold"
+    >
+      {`${(percent * 100).toFixed(1)}%`}
+    </text>
+  );
 }
 
 /**
@@ -85,16 +103,16 @@ export default function PolicyBudgetChart({
   return (
     <ChartContainer title="政策別予算配分">
       <ResponsiveContainer width="100%" height={500}>
-        <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+        <PieChart>
           <Pie
             data={chartData}
             dataKey="value"
             nameKey="name"
             cx="50%"
-            cy="42%"
-            outerRadius={100}
+            cy="45%"
+            outerRadius={140}
             label={renderLabel}
-            labelLine
+            labelLine={false}
           >
             {chartData.map((entry, index) => (
               <Cell
