@@ -9,6 +9,11 @@
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
+import { YearlyFinancialChart } from '@/components/charts/YearlyFinancialChart';
+import { RevenueSourceChart } from '@/components/charts/RevenueSourceChart';
+import { CostBreakdownChart } from '@/components/charts/CostBreakdownChart';
+import { IndicatorChart } from '@/components/charts/IndicatorChart';
+import { hasValidIndicatorData } from '@/lib/chart-data';
 import type { Project } from '@/types';
 
 interface ProjectDetailContentProps {
@@ -232,6 +237,105 @@ export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
           <p className="text-sm text-gray-500">財政データがありません</p>
         )}
       </Card>
+
+      {/* グラフセクション */}
+      <div className="space-y-6">
+        <h2 className="text-xl font-bold text-gray-900">財政データの推移</h2>
+
+        {/* トータルコスト推移グラフ */}
+        <YearlyFinancialChart financials={project.financials} />
+
+        {/* 財源構成グラフ */}
+        <RevenueSourceChart financials={project.financials} />
+
+        {/* コスト内訳グラフ */}
+        <CostBreakdownChart financials={project.financials} />
+
+        {/* 指標推移グラフ */}
+        {project.indicators.length > 0 && (
+          <>
+            <h2 className="text-xl font-bold text-gray-900 mt-8">指標の推移</h2>
+
+            {/* 活動指標 */}
+            {hasValidIndicatorData(project.indicators, 'activity', 0) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="activity"
+                index={0}
+                label="活動指標ア"
+              />
+            )}
+            {hasValidIndicatorData(project.indicators, 'activity', 1) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="activity"
+                index={1}
+                label="活動指標イ"
+              />
+            )}
+            {hasValidIndicatorData(project.indicators, 'activity', 2) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="activity"
+                index={2}
+                label="活動指標ウ"
+              />
+            )}
+
+            {/* 対象指標 */}
+            {hasValidIndicatorData(project.indicators, 'target', 0) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="target"
+                index={0}
+                label="対象指標カ"
+              />
+            )}
+            {hasValidIndicatorData(project.indicators, 'target', 1) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="target"
+                index={1}
+                label="対象指標キ"
+              />
+            )}
+            {hasValidIndicatorData(project.indicators, 'target', 2) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="target"
+                index={2}
+                label="対象指標ク"
+              />
+            )}
+
+            {/* 成果指標 */}
+            {hasValidIndicatorData(project.indicators, 'outcome', 0) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="outcome"
+                index={0}
+                label="成果指標サ"
+              />
+            )}
+            {hasValidIndicatorData(project.indicators, 'outcome', 1) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="outcome"
+                index={1}
+                label="成果指標シ"
+              />
+            )}
+            {hasValidIndicatorData(project.indicators, 'outcome', 2) && (
+              <IndicatorChart
+                indicators={project.indicators}
+                category="outcome"
+                index={2}
+                label="成果指標ス"
+              />
+            )}
+          </>
+        )}
+      </div>
 
       {/* 評価情報カード */}
       <Card title="評価情報">
