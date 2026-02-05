@@ -4,7 +4,7 @@
  * JSONファイルから事務事業データを読み込む関数を提供します。
  */
 
-import type { Project, ProjectDataset } from '@/types';
+import type { Project, ProjectDataset, DatasetStats } from '@/types';
 import projectsData from '@/data/projects.json';
 
 /**
@@ -106,7 +106,7 @@ export function getAllCategories(): string[] {
 /**
  * データセット全体の統計情報を取得
  */
-export function getDatasetStats() {
+export function getDatasetStats(): DatasetStats {
   const projects = getAllProjects();
   const dataset = projectsData as ProjectDataset;
 

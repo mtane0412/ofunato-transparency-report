@@ -63,16 +63,24 @@ export function AmountDisplayProvider({
 
   // クライアントサイドでlocalStorageから復元
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'thousand' || stored === 'japanese') {
-      setMode(stored);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === 'thousand' || stored === 'japanese') {
+        setMode(stored);
+      }
+    } catch {
+      // localStorage が利用できない場合は、デフォルトモード（'japanese'）のままにする
     }
   }, []);
 
   // モード変更時にlocalStorageに保存
   const handleSetMode = (newMode: AmountDisplayMode) => {
     setMode(newMode);
-    localStorage.setItem(STORAGE_KEY, newMode);
+    try {
+      localStorage.setItem(STORAGE_KEY, newMode);
+    } catch {
+      // localStorage が利用できない場合でも、状態の更新は維持する
+    }
   };
 
   return (

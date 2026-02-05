@@ -168,3 +168,19 @@ export interface ProjectDataset {
   /** 事業データ一覧 */
   projects: Project[];
 }
+
+/**
+ * データセット統計情報
+ */
+export interface DatasetStats {
+  /** 総事業数 */
+  totalProjects: number;
+  /** 総予算（最新年度のトータルコスト合計、千円単位） */
+  totalBudget: number;
+  /** データ生成日時 */
+  generatedAt: string;
+  /** 政策別事業数 */
+  projectsByPolicy: Array<{ name: string; count: number }>;
+  /** 事業区分別事業数 */
+  projectsByCategory: Array<{ name: string; count: number }>;
+}
