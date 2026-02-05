@@ -56,6 +56,19 @@ export function ProjectFilter({
     setLocalKeyword(filters.q || '');
   }, [filters.q]);
 
+  // キーワード入力変更ハンドラ
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    const oldValue = localKeyword;
+
+    setLocalKeyword(newValue);
+
+    // 文字が削除された場合（入力値が短くなった場合）は即座に反映
+    if (newValue.length < oldValue.length) {
+      onFilterChange({ q: newValue || undefined });
+    }
+  };
+
   // Enterキー押下時にフィルターを適用
   const handleKeywordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -85,9 +98,9 @@ export function ProjectFilter({
           id="keyword-search"
           type="text"
           value={localKeyword}
-          onChange={(e) => setLocalKeyword(e.target.value)}
+          onChange={handleKeywordChange}
           onKeyDown={handleKeywordKeyDown}
-          placeholder="事業名で検索...（Enterで適用）"
+          placeholder="事業名で検索...（Enterで適用 / 削除は自動反映）"
           className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>

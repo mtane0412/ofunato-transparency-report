@@ -58,7 +58,7 @@ describe('ProjectFilter', () => {
 
     const searchInput = screen.getByLabelText('キーワード検索');
     expect(searchInput).toBeInTheDocument();
-    expect(searchInput).toHaveAttribute('placeholder', '事業名で検索...（Enterで適用）');
+    expect(searchInput).toHaveAttribute('placeholder', '事業名で検索...（Enterで適用 / 削除は自動反映）');
   });
 
   it('すべてのフィルター項目が表示されること', () => {
@@ -164,7 +164,25 @@ describe('ProjectFilter', () => {
     expect(searchInput.value).toBe('検索キーワード');
   });
 
-  it('キーワードをクリアしてEnterを押したときundefinedでonFilterChangeが呼ばれること', async () => {
+  it('文字を削除したとき即座にonFilterChangeが呼ばれること', async () => {
+    const user = userEvent.setup();
+    const filtersWithKeyword: FilterParams = {
+      q: 'テスト事業',
+    };
+
+    render(<ProjectFilter {...defaultProps} filters={filtersWithKeyword} />);
+
+    const searchInput = screen.getByLabelText('キーワード検索') as HTMLInputElement;
+
+    // 末尾の1文字を削除（Backspace）
+    await user.click(searchInput);
+    await user.keyboard('{Backspace}');
+
+    // 文字削除時は即座にonFilterChangeが呼ばれる
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ q: 'テスト事' });
+  });
+
+  it('文字を追加したときはEnterを押すまでonFilterChangeが呼ばれないこと', async () => {
     const user = userEvent.setup();
     const filtersWithKeyword: FilterParams = {
       q: 'テスト',
@@ -172,18 +190,19 @@ describe('ProjectFilter', () => {
 
     render(<ProjectFilter {...defaultProps} filters={filtersWithKeyword} />);
 
-    const searchInput = screen.getByLabelText('キーワード検索');
+    const searchInput = screen.getByLabelText('キーワード検索') as HTMLInputElement;
 
-    // キーワードをクリア
-    await user.clear(searchInput);
+    // 末尾に文字を追加
+    await user.click(searchInput);
+    await user.keyboard('事業');
 
-    // Enterキーを押す前はまだ呼ばれていない
+    // 文字追加時は即座には呼ばれない
     expect(mockOnFilterChange).not.toHaveBeenCalled();
 
     // Enterキーを押す
     await user.keyboard('{Enter}');
 
-    // クリア時はundefinedが渡される（空文字列ではなく）
-    expect(mockOnFilterChange).toHaveBeenCalledWith({ q: undefined });
+    // Enterキー押下後にonFilterChangeが呼ばれる
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ q: 'テスト事業' });
   });
 });
