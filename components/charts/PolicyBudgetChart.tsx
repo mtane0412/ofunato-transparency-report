@@ -42,6 +42,7 @@ function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: any
   }
 
   const data = payload[0].payload;
+  const percent = payload[0].percent;
 
   return (
     <div className="bg-white p-3 border border-gray-300 rounded shadow-lg">
@@ -52,9 +53,11 @@ function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: any
       <p className="text-sm text-gray-700">
         事業数: <span className="font-semibold">{data.count}件</span>
       </p>
-      <p className="text-sm text-gray-700">
-        割合: <span className="font-semibold">{(payload[0].percent * 100).toFixed(1)}%</span>
-      </p>
+      {percent !== undefined && (
+        <p className="text-sm text-gray-700">
+          割合: <span className="font-semibold">{(percent * 100).toFixed(1)}%</span>
+        </p>
+      )}
     </div>
   );
 }
@@ -82,13 +85,13 @@ export default function PolicyBudgetChart({
   return (
     <ChartContainer title="政策別予算配分">
       <ResponsiveContainer width="100%" height={500}>
-        <PieChart>
+        <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
           <Pie
             data={chartData}
             dataKey="value"
             nameKey="name"
             cx="50%"
-            cy="45%"
+            cy="42%"
             outerRadius={100}
             label={renderLabel}
             labelLine
