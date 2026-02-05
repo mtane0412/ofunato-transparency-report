@@ -13,6 +13,9 @@ import {
   getAllDepartments,
   getAllCategories,
   getDatasetStats,
+  normalizeEvaluationValue,
+  getAllDirections,
+  getAllFutureDirections,
 } from './data';
 
 describe('data.ts', () => {
@@ -416,6 +419,86 @@ describe('data.ts', () => {
           0
         );
         expect(futureDirectionTotal).toBe(category.count);
+      });
+    });
+  });
+
+  describe('normalizeEvaluationValue', () => {
+    it('数字のみの値を「その他・未設定」に変換すること', () => {
+      expect(normalizeEvaluationValue('1')).toBe('その他・未設定');
+      expect(normalizeEvaluationValue('123')).toBe('その他・未設定');
+      expect(normalizeEvaluationValue('0')).toBe('その他・未設定');
+    });
+
+    it('通常の値をそのまま返すこと', () => {
+      expect(normalizeEvaluationValue('現状維持')).toBe('現状維持');
+      expect(normalizeEvaluationValue('改革・改善')).toBe('改革・改善');
+      expect(normalizeEvaluationValue('拡充')).toBe('拡充');
+    });
+
+    it('空文字を「その他・未設定」に変換すること', () => {
+      expect(normalizeEvaluationValue('')).toBe('その他・未設定');
+    });
+  });
+
+  describe('getAllDirections', () => {
+    it('重複除去・ソート済みの文字列配列を返すこと', () => {
+      const directions = getAllDirections();
+      expect(directions).toBeDefined();
+      expect(Array.isArray(directions)).toBe(true);
+      expect(directions.length).toBeGreaterThan(0);
+
+      // 各要素が文字列であること
+      directions.forEach((direction) => {
+        expect(typeof direction).toBe('string');
+      });
+
+      // アルファベット順ソートされていること
+      for (let i = 0; i < directions.length - 1; i++) {
+        expect(directions[i].localeCompare(directions[i + 1])).toBeLessThanOrEqual(0);
+      }
+
+      // 重複がないこと
+      const uniqueDirections = new Set(directions);
+      expect(directions.length).toBe(uniqueDirections.size);
+    });
+
+    it('正規化された値を返すこと', () => {
+      const directions = getAllDirections();
+      // 数字のみの値は含まれないこと
+      directions.forEach((direction) => {
+        expect(/^[0-9]+$/.test(direction)).toBe(false);
+      });
+    });
+  });
+
+  describe('getAllFutureDirections', () => {
+    it('重複除去・ソート済みの文字列配列を返すこと', () => {
+      const futureDirections = getAllFutureDirections();
+      expect(futureDirections).toBeDefined();
+      expect(Array.isArray(futureDirections)).toBe(true);
+      expect(futureDirections.length).toBeGreaterThan(0);
+
+      // 各要素が文字列であること
+      futureDirections.forEach((futureDirection) => {
+        expect(typeof futureDirection).toBe('string');
+      });
+
+      // アルファベット順ソートされていること
+      for (let i = 0; i < futureDirections.length - 1; i++) {
+        expect(futureDirections[i].localeCompare(futureDirections[i + 1])).toBeLessThanOrEqual(0);
+      }
+
+      // 重複がないこと
+      const uniqueFutureDirections = new Set(futureDirections);
+      expect(futureDirections.length).toBe(uniqueFutureDirections.size);
+    });
+
+    it('正規化された値を返すこと', () => {
+      const futureDirections = getAllFutureDirections();
+      // 数字のみの値は含まれないこと
+      futureDirections.forEach((futureDirection) => {
+        expect(/^[0-9]+$/.test(futureDirection)).toBe(false);
       });
     });
   });

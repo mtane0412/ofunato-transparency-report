@@ -37,6 +37,14 @@ describe('ProjectFilter', () => {
       { value: '一般事業', label: '一般事業', count: 5 },
       { value: '重点事業', label: '重点事業', count: 5 },
     ],
+    directions: [
+      { value: '現状維持', label: '現状維持', count: 4 },
+      { value: '改革・改善', label: '改革・改善', count: 6 },
+    ],
+    futureDirections: [
+      { value: '拡充', label: '拡充', count: 3 },
+      { value: '縮小', label: '縮小', count: 7 },
+    ],
   };
 
   it('すべてのフィルター項目が表示されること', () => {
@@ -47,6 +55,8 @@ describe('ProjectFilter', () => {
     expect(screen.getByLabelText('基本事業')).toBeInTheDocument();
     expect(screen.getByLabelText('部署')).toBeInTheDocument();
     expect(screen.getByLabelText('事業区分')).toBeInTheDocument();
+    expect(screen.getByLabelText('改革改善の方向性')).toBeInTheDocument();
+    expect(screen.getByLabelText('今後の方向性')).toBeInTheDocument();
   });
 
   it('リセットボタンが表示されること', () => {
@@ -88,5 +98,25 @@ describe('ProjectFilter', () => {
 
     expect(policySelect.value).toBe('P1');
     expect(departmentSelect.value).toBe('総務部');
+  });
+
+  it('改革改善の方向性を選択したときonFilterChangeが呼ばれること', async () => {
+    const user = userEvent.setup();
+    render(<ProjectFilter {...defaultProps} />);
+
+    const directionSelect = screen.getByLabelText('改革改善の方向性');
+    await user.selectOptions(directionSelect, '現状維持');
+
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ direction: '現状維持' });
+  });
+
+  it('今後の方向性を選択したときonFilterChangeが呼ばれること', async () => {
+    const user = userEvent.setup();
+    render(<ProjectFilter {...defaultProps} />);
+
+    const futureDirectionSelect = screen.getByLabelText('今後の方向性');
+    await user.selectOptions(futureDirectionSelect, '拡充');
+
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ futureDirection: '拡充' });
   });
 });

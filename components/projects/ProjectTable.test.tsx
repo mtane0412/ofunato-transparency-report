@@ -98,6 +98,8 @@ describe('ProjectTable', () => {
     expect(screen.getByText('基本事業')).toBeInTheDocument();
     expect(screen.getByText('部署')).toBeInTheDocument();
     expect(screen.getByText('事業区分')).toBeInTheDocument();
+    expect(screen.getByText('改革改善の方向性')).toBeInTheDocument();
+    expect(screen.getByText('今後の方向性')).toBeInTheDocument();
 
     // 事業データが表示されること
     expect(screen.getByText('事業A')).toBeInTheDocument();
@@ -119,5 +121,17 @@ describe('ProjectTable', () => {
     expect(links).toHaveLength(2);
     expect(links[0]).toHaveAttribute('href', '/projects/001');
     expect(links[1]).toHaveAttribute('href', '/projects/002');
+  });
+
+  it('正規化された方向性データが表示されること', () => {
+    render(<ProjectTable projects={mockProjects} />);
+
+    // 改革改善の方向性が表示されること
+    expect(screen.getByText('改革方向A')).toBeInTheDocument();
+    expect(screen.getByText('改革方向B')).toBeInTheDocument();
+
+    // 今後の方向性が表示されること
+    expect(screen.getByText('今後の方向性A')).toBeInTheDocument();
+    expect(screen.getByText('今後の方向性B')).toBeInTheDocument();
   });
 });

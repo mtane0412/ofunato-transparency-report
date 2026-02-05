@@ -14,8 +14,8 @@ import projectsData from '@/data/projects.json';
  * @param value - 評価値
  * @returns 正規化された評価値
  */
-function normalizeEvaluationValue(value: string): string {
-  return /^[0-9]+$/.test(value) ? 'その他・未設定' : value;
+export function normalizeEvaluationValue(value: string): string {
+  return /^[0-9]+$/.test(value) || value === '' ? 'その他・未設定' : value;
 }
 
 /**
@@ -137,6 +137,40 @@ export function getAllCategories(): string[] {
   });
 
   return Array.from(categories).sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * 改革改善の方向性の一覧を取得（重複を除く、正規化済み）
+ */
+export function getAllDirections(): string[] {
+  const projects = getAllProjects();
+  const directions = new Set<string>();
+
+  projects.forEach((project) => {
+    const normalized = normalizeEvaluationValue(project.evaluation.direction);
+    if (normalized) {
+      directions.add(normalized);
+    }
+  });
+
+  return Array.from(directions).sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * 今後の方向性の一覧を取得（重複を除く、正規化済み）
+ */
+export function getAllFutureDirections(): string[] {
+  const projects = getAllProjects();
+  const futureDirections = new Set<string>();
+
+  projects.forEach((project) => {
+    const normalized = normalizeEvaluationValue(project.evaluation.futureDirection);
+    if (normalized) {
+      futureDirections.add(normalized);
+    }
+  });
+
+  return Array.from(futureDirections).sort((a, b) => a.localeCompare(b));
 }
 
 /**
