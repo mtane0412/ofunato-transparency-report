@@ -8,6 +8,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 // import { EVALUATION_COLORS } from '@/lib/chart-constants';
 import { ChartContainer } from './ChartContainer';
+import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 
 interface EvaluationChartProps {
   /** グラフタイトル */
@@ -57,8 +58,7 @@ function CustomEvaluationTooltip({ active, payload }: { active?: boolean; payloa
  * 件数降順でソートされた横棒グラフで表示（カテゴリ別色分け）
  */
 export function EvaluationChart({ title, data, description }: EvaluationChartProps) {
-  // デバッグログ
-  console.log(`[EvaluationChart] ${title}:`, data);
+  const { yAxisWidth, fontSize } = useChartYAxisWidth(120);
 
   // 空データのフォールバック
   if (data.length === 0) {
@@ -85,8 +85,8 @@ export function EvaluationChart({ title, data, description }: EvaluationChartPro
         <YAxis
           type="category"
           dataKey="name"
-          width={120}
-          tick={{ fontSize: 13 }}
+          width={yAxisWidth}
+          tick={{ fontSize }}
           tickFormatter={formatLabel}
         />
         <Tooltip content={<CustomEvaluationTooltip />} />

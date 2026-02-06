@@ -32,7 +32,7 @@ export function HomeContent({ stats }: HomeContentProps) {
     <div className="space-y-8">
       {/* ページタイトル */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-xl md:text-3xl font-bold text-gray-900">
           事務事業評価データ 概要ダッシュボード
         </h1>
         <p className="mt-2 text-gray-600">
@@ -43,28 +43,28 @@ export function HomeContent({ stats }: HomeContentProps) {
       {/* サマリーカード */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card title="総事業数">
-          <div className="text-4xl font-bold text-blue-600">
+          <div className="text-2xl md:text-4xl font-bold text-blue-600">
             {stats.totalProjects.toLocaleString()}
           </div>
           <div className="mt-2 text-sm text-gray-600">件の事務事業</div>
         </Card>
 
         <Card title="総予算（最新年度）">
-          <div className="text-4xl font-bold text-green-600">
+          <div className="text-2xl md:text-4xl font-bold text-green-600">
             <FormattedAmount amount={stats.totalBudget} />
           </div>
           <div className="mt-2 text-sm text-gray-600">トータルコスト合計</div>
         </Card>
 
         <Card title="政策数">
-          <div className="text-4xl font-bold text-purple-600">
+          <div className="text-2xl md:text-4xl font-bold text-purple-600">
             {stats.policyCount.toLocaleString()}
           </div>
           <div className="mt-2 text-sm text-gray-600">政策項目</div>
         </Card>
 
         <Card title="平均事業予算">
-          <div className="text-4xl font-bold text-orange-600">
+          <div className="text-2xl md:text-4xl font-bold text-orange-600">
             <FormattedAmount amount={stats.averageBudget} />
           </div>
           <div className="mt-2 text-sm text-gray-600">1事業あたり</div>
@@ -74,7 +74,7 @@ export function HomeContent({ stats }: HomeContentProps) {
       {/* 事業評価の概要 */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">事業評価の概要</h2>
+          <h2 className="text-lg md:text-2xl font-bold text-gray-900">事業評価の概要</h2>
           <p className="mt-2 text-gray-600">
             各事務事業の「改革改善の方向性」と「今後の方向性」の集計です。
             事業見直しの全体像を把握できます。

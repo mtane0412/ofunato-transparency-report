@@ -10,6 +10,7 @@ import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
 import { formatAmount, formatAmountShort } from '@/lib/utils';
 import { toCategoryChartData } from '@/lib/chart-data';
 import { ChartContainer } from './ChartContainer';
+import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 import type { CategoryStats } from '@/types';
 
 interface CategoryChartProps {
@@ -51,6 +52,7 @@ export default function CategoryChart({
   categoryStats,
 }: CategoryChartProps) {
   const { mode } = useAmountDisplay();
+  const { yAxisWidth, fontSize } = useChartYAxisWidth(150);
 
   // 空データのフォールバック
   if (categoryStats.length === 0) {
@@ -83,8 +85,8 @@ export default function CategoryChart({
         <YAxis
           type="category"
           dataKey="name"
-          width={150}
-          tick={{ fontSize: 13 }}
+          width={yAxisWidth}
+          tick={{ fontSize }}
         />
         <Tooltip content={<CustomBarTooltip />} />
         <Legend wrapperStyle={{ paddingTop: '10px' }} />

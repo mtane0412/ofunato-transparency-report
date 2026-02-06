@@ -136,7 +136,7 @@ export function SortableStatsTable({
           <tr>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+              className="px-2 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
               onClick={() => handleSort('name')}
             >
               名称
@@ -144,7 +144,7 @@ export function SortableStatsTable({
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+              className="px-2 py-2 md:px-6 md:py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
               onClick={() => handleSort('count')}
             >
               事業数
@@ -152,7 +152,7 @@ export function SortableStatsTable({
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+              className="px-2 py-2 md:px-6 md:py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
               onClick={() => handleSort('budget')}
             >
               予算
@@ -162,13 +162,13 @@ export function SortableStatsTable({
               <>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                  className="px-2 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                 >
                   改革改善の方向性
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                  className="px-2 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                 >
                   今後の方向性
                 </th>
@@ -179,21 +179,21 @@ export function SortableStatsTable({
         <tbody className="bg-white divide-y divide-gray-200">
           {sortedData.map((item) => (
             <tr key={item.name} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className="px-2 py-2 md:px-6 md:py-4 whitespace-nowrap text-sm text-gray-900">
                 {item.name}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-blue-600 font-medium">
+              <td className="px-2 py-2 md:px-6 md:py-4 whitespace-nowrap text-sm text-right text-blue-600 font-medium">
                 {item.count.toLocaleString()}件
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">
+              <td className="px-2 py-2 md:px-6 md:py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">
                 <FormattedAmount amount={item.budget} />
               </td>
               {showEvaluation && hasEvaluation(item) && (
                 <>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">
                     <EvaluationBreakdownCell breakdown={item.directionBreakdown} />
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">
                     <EvaluationBreakdownCell breakdown={item.futureDirectionBreakdown} />
                   </td>
                 </>

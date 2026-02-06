@@ -76,19 +76,19 @@ export function AnalysisContent({
   const yearlyTotalChartData = toYearlyTotalBudgetChartData(yearlyTotalBudget);
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <div>
       {/* ページタイトル */}
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">予算分析</h1>
+      <h1 className="text-xl md:text-3xl font-bold text-gray-900 mb-8">予算分析</h1>
 
       {/* サマリーカード */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-2">分析対象事業数</h2>
-          <p className="text-3xl font-bold text-blue-600">{totalProjects}件</p>
+          <p className="text-xl md:text-3xl font-bold text-blue-600">{totalProjects}件</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-2">分析対象年度</h2>
-          <p className="text-3xl font-bold text-blue-600">R2〜R7</p>
+          <p className="text-xl md:text-3xl font-bold text-blue-600">R2〜R7</p>
         </div>
       </div>
 
@@ -133,6 +133,6 @@ export function AnalysisContent({
           事業一覧を見る
         </Link>
       </div>
-    </main>
+    </div>
   );
 }

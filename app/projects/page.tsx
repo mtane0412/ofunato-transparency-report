@@ -208,7 +208,7 @@ function ProjectsContent() {
     <div className="space-y-6">
       {/* ページタイトル */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">事業一覧</h1>
+        <h1 className="text-xl md:text-3xl font-bold text-gray-900">事業一覧</h1>
         <p className="mt-2 text-gray-600">
           全{allProjects.length}件中、{filteredProjects.length}
           件の事務事業を表示しています。
