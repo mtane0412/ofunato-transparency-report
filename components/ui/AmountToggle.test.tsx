@@ -2,11 +2,11 @@
  * AmountToggle コンポーネントのテスト
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { AmountToggle } from './AmountToggle';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
+import { AmountToggle } from './AmountToggle';
 
 describe('AmountToggle', () => {
   beforeEach(() => {

@@ -2,10 +2,10 @@
  * Header コンポーネントのテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Header } from './Header';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
+import { Header } from './Header';
 
 describe('Header', () => {
   it('サイト名が正しく表示される', () => {
@@ -15,9 +15,7 @@ describe('Header', () => {
       </AmountDisplayProvider>
     );
 
-    expect(
-      screen.getByText('大船渡市 事務事業評価データ（非公式）')
-    ).toBeInTheDocument();
+    expect(screen.getByText('大船渡市 事務事業評価データ（非公式）')).toBeInTheDocument();
   });
 
   it('サイト名がリンクになっている', () => {
@@ -40,17 +38,9 @@ describe('Header', () => {
       </AmountDisplayProvider>
     );
 
-    expect(
-      screen.getByRole('link', { name: 'ダッシュボード' })
-    ).toHaveAttribute('href', '/');
-    expect(screen.getByRole('link', { name: '予算分析' })).toHaveAttribute(
-      'href',
-      '/analysis'
-    );
-    expect(screen.getByRole('link', { name: '事業一覧' })).toHaveAttribute(
-      'href',
-      '/projects'
-    );
+    expect(screen.getByRole('link', { name: 'ダッシュボード' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: '予算分析' })).toHaveAttribute('href', '/analysis');
+    expect(screen.getByRole('link', { name: '事業一覧' })).toHaveAttribute('href', '/projects');
   });
 
   it('AmountToggleコンポーネントが表示される', () => {

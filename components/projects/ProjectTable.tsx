@@ -5,8 +5,8 @@
  */
 
 import Link from 'next/link';
-import type { Project } from '@/types';
 import { normalizeEvaluationValue } from '@/lib/data';
+import type { Project } from '@/types';
 
 export interface ProjectTableProps {
   /** 表示する事業データの配列 */
@@ -92,9 +92,15 @@ export function ProjectTable({ projects }: ProjectTableProps) {
                   {project.name}
                 </Link>
               </td>
-              <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">{project.policy.name}</td>
-              <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">{project.measure.name}</td>
-              <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">{project.basicProject.name}</td>
+              <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">
+                {project.policy.name}
+              </td>
+              <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">
+                {project.measure.name}
+              </td>
+              <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">
+                {project.basicProject.name}
+              </td>
               <td className="px-2 py-2 md:px-6 md:py-4 text-sm text-gray-900">
                 {project.department}
               </td>

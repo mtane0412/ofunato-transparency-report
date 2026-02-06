@@ -6,12 +6,12 @@
 'use client';
 
 import { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmount, formatAmountShort } from '@/lib/utils';
-import { ChartContainer } from './ChartContainer';
 import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
+import { formatAmount, formatAmountShort } from '@/lib/utils';
 import type { DepartmentBudget } from '@/types';
+import { ChartContainer } from './ChartContainer';
 
 interface DepartmentBudgetChartProps {
   /** 部署別予算データ */
@@ -49,9 +49,7 @@ function CustomBarTooltip({ active, payload }: { active?: boolean; payload?: any
  * 予算降順でソートされた横棒グラフで表示
  * 20件以上ある場合はtop20表示 + 「すべて表示」ボタン
  */
-export default function DepartmentBudgetChart({
-  departmentBudgets,
-}: DepartmentBudgetChartProps) {
+export default function DepartmentBudgetChart({ departmentBudgets }: DepartmentBudgetChartProps) {
   const { mode } = useAmountDisplay();
   const { yAxisWidth, fontSize } = useChartYAxisWidth(240);
   const [showAll, setShowAll] = useState(false);
@@ -89,16 +87,8 @@ export default function DepartmentBudgetChart({
           margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            type="number"
-            tickFormatter={(value) => formatAmountShort(value, mode)}
-          />
-          <YAxis
-            type="category"
-            dataKey="name"
-            width={yAxisWidth}
-            tick={{ fontSize }}
-          />
+          <XAxis type="number" tickFormatter={(value) => formatAmountShort(value, mode)} />
+          <YAxis type="category" dataKey="name" width={yAxisWidth} tick={{ fontSize }} />
           <Tooltip content={<CustomBarTooltip />} />
           <Legend wrapperStyle={{ paddingTop: '10px' }} />
           <Bar dataKey="budget" fill="#3b82f6" name="予算" />
@@ -109,6 +99,7 @@ export default function DepartmentBudgetChart({
       {departmentBudgets.length > 20 && (
         <div className="text-center">
           <button
+            type="button"
             onClick={() => setShowAll(!showAll)}
             className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >

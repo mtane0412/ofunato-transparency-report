@@ -2,11 +2,11 @@
  * IndicatorChart コンポーネントのテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { IndicatorChart } from './IndicatorChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { YearlyIndicator } from '@/types';
+import { IndicatorChart } from './IndicatorChart';
 
 describe('IndicatorChart', () => {
   const mockIndicators: YearlyIndicator[] = [
@@ -57,21 +57,14 @@ describe('IndicatorChart', () => {
       </AmountDisplayProvider>
     );
 
-    const responsiveContainer = container.querySelector(
-      '.recharts-responsive-container'
-    );
+    const responsiveContainer = container.querySelector('.recharts-responsive-container');
     expect(responsiveContainer).toBeInTheDocument();
   });
 
   it('空データの場合はメッセージを表示する', () => {
     render(
       <AmountDisplayProvider>
-        <IndicatorChart
-          indicators={[]}
-          category="activity"
-          index={0}
-          label="活動指標ア"
-        />
+        <IndicatorChart indicators={[]} category="activity" index={0} label="活動指標ア" />
       </AmountDisplayProvider>
     );
 

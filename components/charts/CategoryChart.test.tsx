@@ -3,11 +3,11 @@
  * 事業区分別予算配分を横棒グラフで表示するコンポーネントのスモークテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import CategoryChart from './CategoryChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { CategoryStats } from '@/types';
+import CategoryChart from './CategoryChart';
 
 describe('CategoryChart', () => {
   it('事業区分別予算データをレンダリングできること', () => {

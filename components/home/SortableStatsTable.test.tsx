@@ -3,11 +3,11 @@
  * ソート可能な統計テーブルのテスト
  */
 
-import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { SortableStatsTable } from './SortableStatsTable';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { CategoryStats, CategoryStatsWithEvaluation } from '@/types';
+import { SortableStatsTable } from './SortableStatsTable';
 
 describe('SortableStatsTable', () => {
   const mockData: CategoryStats[] = [

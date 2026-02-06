@@ -10,9 +10,9 @@
  */
 
 import { notFound } from 'next/navigation';
-import { getProjectById, getAllProjects } from '@/lib/data';
-import { getSimilarProjects } from '@/lib/similarity';
 import { ProjectDetailContent } from '@/components/projects/ProjectDetailContent';
+import { getAllProjects, getProjectById } from '@/lib/data';
+import { getSimilarProjects } from '@/lib/similarity';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -43,7 +43,5 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   // 類似事業を取得
   const similarProjects = getSimilarProjects(id, 5);
 
-  return (
-    <ProjectDetailContent project={project} similarProjects={similarProjects} />
-  );
+  return <ProjectDetailContent project={project} similarProjects={similarProjects} />;
 }

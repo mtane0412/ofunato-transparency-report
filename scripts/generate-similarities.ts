@@ -5,12 +5,12 @@
  * data/similarities.json に出力します。
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { findSimilarProjects } from '../lib/similarity';
 import type { ProjectDataset } from '../types';
 import type { SimilarityData } from '../types/similarity';
-import { findSimilarProjects } from '../lib/similarity';
 
 // ES Modules環境で__dirnameを取得
 const __filename = fileURLToPath(import.meta.url);
@@ -24,9 +24,7 @@ function main(): void {
 
   // プロジェクトデータを読み込む
   const projectsPath = path.join(__dirname, '../data/projects.json');
-  const projectsData: ProjectDataset = JSON.parse(
-    fs.readFileSync(projectsPath, 'utf-8')
-  );
+  const projectsData: ProjectDataset = JSON.parse(fs.readFileSync(projectsPath, 'utf-8'));
 
   const projects = projectsData.projects;
   console.log(`対象事業数: ${projects.length}件`);

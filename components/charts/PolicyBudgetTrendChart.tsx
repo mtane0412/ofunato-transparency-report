@@ -5,12 +5,12 @@
 
 'use client';
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmount, formatAmountShort } from '@/lib/utils';
 import { POLICY_COLORS } from '@/lib/chart-constants';
-import { ChartContainer } from './ChartContainer';
+import { formatAmount, formatAmountShort } from '@/lib/utils';
 import type { PolicyYearlyChartDataPoint } from '@/types';
+import { ChartContainer } from './ChartContainer';
 
 interface PolicyBudgetTrendChartProps {
   /** 政策別・年度別予算推移データ */
@@ -49,10 +49,7 @@ function CustomLineTooltip({ active, payload }: { active?: boolean; payload?: an
  * 政策別・年度別予算推移グラフ
  * 複数系列折れ線グラフで各政策の予算推移を表示
  */
-export default function PolicyBudgetTrendChart({
-  data,
-  policyNames,
-}: PolicyBudgetTrendChartProps) {
+export default function PolicyBudgetTrendChart({ data, policyNames }: PolicyBudgetTrendChartProps) {
   const { mode } = useAmountDisplay();
 
   // 空データのフォールバック
@@ -67,10 +64,7 @@ export default function PolicyBudgetTrendChart({
 
   return (
     <ChartContainer title="政策別・年度別予算推移" height={400}>
-      <LineChart
-        data={data}
-        margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
-      >
+      <LineChart data={data} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="year" />
         <YAxis tickFormatter={(value) => formatAmountShort(value, mode)} />

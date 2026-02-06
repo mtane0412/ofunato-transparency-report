@@ -4,8 +4,14 @@
  * JSONファイルから事務事業データを読み込む関数を提供します。
  */
 
-import type { Project, ProjectDataset, DatasetStats, EvaluationCategoryCount, EvaluationBreakdown } from '@/types';
 import projectsData from '@/data/projects.json';
+import type {
+  DatasetStats,
+  EvaluationBreakdown,
+  EvaluationCategoryCount,
+  Project,
+  ProjectDataset,
+} from '@/types';
 
 /**
  * 評価値を正規化する
@@ -183,9 +189,7 @@ export function getDatasetStats(): DatasetStats {
   // 総予算を計算（最新年度のトータルコストを合計）
   const totalBudget = projects.reduce((sum, project) => {
     // 年度が最新のものを選択
-    const latestFinancial = project.financials.find(
-      (f) => f.year === project.year
-    );
+    const latestFinancial = project.financials.find((f) => f.year === project.year);
     return sum + (latestFinancial?.grandTotal || 0);
   }, 0);
 
@@ -242,9 +246,7 @@ export function getDatasetStats(): DatasetStats {
     };
 
     // 最新年度の予算を取得
-    const latestFinancial = project.financials.find(
-      (f) => f.year === project.year
-    );
+    const latestFinancial = project.financials.find((f) => f.year === project.year);
 
     // 方向性内訳を更新
     const direction = normalizeEvaluationValue(project.evaluation.direction);
@@ -252,7 +254,8 @@ export function getDatasetStats(): DatasetStats {
     const newDirectionBreakdown = { ...existing.directionBreakdown };
     const newFutureDirectionBreakdown = { ...existing.futureDirectionBreakdown };
     newDirectionBreakdown[direction] = (newDirectionBreakdown[direction] || 0) + 1;
-    newFutureDirectionBreakdown[futureDirection] = (newFutureDirectionBreakdown[futureDirection] || 0) + 1;
+    newFutureDirectionBreakdown[futureDirection] =
+      (newFutureDirectionBreakdown[futureDirection] || 0) + 1;
 
     projectsByPolicyMap.set(policyId, {
       ...existing,
@@ -285,9 +288,7 @@ export function getDatasetStats(): DatasetStats {
     };
 
     // 最新年度の予算を取得
-    const latestFinancial = project.financials.find(
-      (f) => f.year === project.year
-    );
+    const latestFinancial = project.financials.find((f) => f.year === project.year);
 
     // 方向性内訳を更新
     const direction = normalizeEvaluationValue(project.evaluation.direction);
@@ -295,7 +296,8 @@ export function getDatasetStats(): DatasetStats {
     const newDirectionBreakdown = { ...existing.directionBreakdown };
     const newFutureDirectionBreakdown = { ...existing.futureDirectionBreakdown };
     newDirectionBreakdown[direction] = (newDirectionBreakdown[direction] || 0) + 1;
-    newFutureDirectionBreakdown[futureDirection] = (newFutureDirectionBreakdown[futureDirection] || 0) + 1;
+    newFutureDirectionBreakdown[futureDirection] =
+      (newFutureDirectionBreakdown[futureDirection] || 0) + 1;
 
     projectsByCategoryMap.set(category, {
       ...existing,

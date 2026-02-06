@@ -13,13 +13,31 @@
 
 ## 品質チェックコマンド
 
-### Lint
+### Lint（Biome）
+
+**⚠️ CRITICAL: Lintエラーゼロポリシー**
+
+このプロジェクトでは**Biome**を使用しています（Next.js 16から`next lint`が廃止されたため）。
+
+**すべてのコミット・PR作成前に、Lintエラーをゼロにすることが必須です。**
 
 ```bash
+# Lintチェック（エラーがあれば失敗）
 npm run lint
+
+# 自動修正（safe fixes）
+npm run lint:fix
+
+# フォーマット実行
+npm run format
 ```
 
-**注意**: 現在の環境では`npm run lint`がESLint設定の問題でエラーになる場合があります。その場合は型チェックとビルドで品質を保証してください。
+**Biomeの特徴**:
+- Linter + Formatter統合（ESLint + Prettier不要）
+- 高速（Rustベース、ESLintより10-100倍高速）
+- React/TypeScript/アクセシビリティルール有効化済み
+
+**設定ファイル**: `biome.json`
 
 ### 型チェック
 

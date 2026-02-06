@@ -3,10 +3,11 @@
  *
  * 事業一覧テーブルが正しく表示されることを確認します。
  */
-import { describe, it, expect } from 'vitest';
+
 import { render, screen } from '@testing-library/react';
-import { ProjectTable } from './ProjectTable';
+import { describe, expect, it } from 'vitest';
 import type { Project } from '@/types';
+import { ProjectTable } from './ProjectTable';
 
 // テスト用の共通定数
 const EMPTY_INDICATOR_LABELS: Project['indicatorLabels'] = {

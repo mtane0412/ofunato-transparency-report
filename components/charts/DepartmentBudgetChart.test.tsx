@@ -3,11 +3,11 @@
  * 部署別予算配分を横棒グラフで表示するコンポーネントのスモークテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import DepartmentBudgetChart from './DepartmentBudgetChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { DepartmentBudget } from '@/types';
+import DepartmentBudgetChart from './DepartmentBudgetChart';
 
 describe('DepartmentBudgetChart', () => {
   it('部署別予算データをレンダリングできること', () => {

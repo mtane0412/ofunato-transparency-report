@@ -3,11 +3,11 @@
  * トップページコンテンツの統合テスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { HomeContent } from './HomeContent';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { DatasetStats } from '@/types';
+import { HomeContent } from './HomeContent';
 
 describe('HomeContent', () => {
   const mockStats: DatasetStats = {

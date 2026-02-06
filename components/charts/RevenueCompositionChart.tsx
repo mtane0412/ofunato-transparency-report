@@ -5,12 +5,12 @@
 
 'use client';
 
-import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmount, formatPercent } from '@/lib/utils';
 import { REVENUE_PIE_COLORS } from '@/lib/chart-constants';
-import { ChartContainer } from './ChartContainer';
+import { formatAmount, formatPercent } from '@/lib/utils';
 import type { RevenueComposition } from '@/types';
+import { ChartContainer } from './ChartContainer';
 
 interface RevenueCompositionChartProps {
   /** 財源構成データ */
@@ -106,9 +106,7 @@ function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: any
  * 財源構成グラフ
  * ドーナツチャートで財源の内訳を表示
  */
-export default function RevenueCompositionChart({
-  data,
-}: RevenueCompositionChartProps) {
+export default function RevenueCompositionChart({ data }: RevenueCompositionChartProps) {
   // 空データのフォールバック
   if (data.length === 0) {
     return (
@@ -143,7 +141,10 @@ export default function RevenueCompositionChart({
           labelLine={false}
         >
           {chartData.map((_, index) => (
-            <Cell key={`cell-${index}`} fill={REVENUE_PIE_COLORS[index % REVENUE_PIE_COLORS.length]} />
+            <Cell
+              key={`cell-${index}`}
+              fill={REVENUE_PIE_COLORS[index % REVENUE_PIE_COLORS.length]}
+            />
           ))}
         </Pie>
         <Tooltip content={<CustomPieTooltip />} />

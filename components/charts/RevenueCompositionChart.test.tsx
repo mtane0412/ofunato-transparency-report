@@ -3,11 +3,11 @@
  * 財源構成をドーナツチャートで表示するコンポーネントのスモークテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import RevenueCompositionChart from './RevenueCompositionChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { RevenueComposition } from '@/types';
+import RevenueCompositionChart from './RevenueCompositionChart';
 
 describe('RevenueCompositionChart', () => {
   it('財源構成データをレンダリングできること', () => {

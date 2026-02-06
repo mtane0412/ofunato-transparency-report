@@ -5,10 +5,10 @@
 
 'use client';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
+import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 // import { EVALUATION_COLORS } from '@/lib/chart-constants';
 import { ChartContainer } from './ChartContainer';
-import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 
 interface EvaluationChartProps {
   /** グラフタイトル */

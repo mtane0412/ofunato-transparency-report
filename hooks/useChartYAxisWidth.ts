@@ -42,9 +42,7 @@ export function useChartYAxisWidth(desktopWidth: number) {
       return DESKTOP_FONT_SIZE;
     }
 
-    return window.innerWidth < MOBILE_BREAKPOINT
-      ? MOBILE_FONT_SIZE
-      : DESKTOP_FONT_SIZE;
+    return window.innerWidth < MOBILE_BREAKPOINT ? MOBILE_FONT_SIZE : DESKTOP_FONT_SIZE;
   }, []);
 
   // SSR/クライアント間のハイドレーションミスマッチを防ぐため、初期値は常にデスクトップ値で固定

@@ -7,13 +7,13 @@
 'use client';
 
 import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
-import { FormattedAmount } from '@/components/ui/FormattedAmount';
-import { YearlyFinancialChart } from '@/components/charts/YearlyFinancialChart';
-import { RevenueSourceChart } from '@/components/charts/RevenueSourceChart';
 import { CostBreakdownChart } from '@/components/charts/CostBreakdownChart';
 import { IndicatorChart } from '@/components/charts/IndicatorChart';
+import { RevenueSourceChart } from '@/components/charts/RevenueSourceChart';
+import { YearlyFinancialChart } from '@/components/charts/YearlyFinancialChart';
 import { SimilarProjects } from '@/components/projects/SimilarProjects';
+import { Card } from '@/components/ui/Card';
+import { FormattedAmount } from '@/components/ui/FormattedAmount';
 import { hasValidIndicatorData } from '@/lib/chart-data';
 import { formatIndicatorLabel } from '@/lib/utils';
 import type { Project } from '@/types';
@@ -45,14 +45,9 @@ const INDICATOR_CATEGORIES: IndicatorCategoryConfig[] = [
 /**
  * ProjectDetailContent コンポーネント
  */
-export function ProjectDetailContent({
-  project,
-  similarProjects,
-}: ProjectDetailContentProps) {
+export function ProjectDetailContent({ project, similarProjects }: ProjectDetailContentProps) {
   // 最新年度の財政データを取得
-  const latestFinancial = project.financials.find(
-    (f) => f.year === project.year
-  );
+  const latestFinancial = project.financials.find((f) => f.year === project.year);
 
   return (
     <div className="space-y-6">
@@ -72,9 +67,7 @@ export function ProjectDetailContent({
       {/* ページタイトル */}
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <span className="text-sm font-medium text-gray-500">
-            ID: {project.id}
-          </span>
+          <span className="text-sm font-medium text-gray-500">ID: {project.id}</span>
           <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
             {project.category}
           </span>
@@ -87,27 +80,19 @@ export function ProjectDetailContent({
         <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <dt className="text-sm font-medium text-gray-500">政策</dt>
-            <dd className="mt-1 text-sm text-gray-900">
-              {project.policy.name}
-            </dd>
+            <dd className="mt-1 text-sm text-gray-900">{project.policy.name}</dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">施策</dt>
-            <dd className="mt-1 text-sm text-gray-900">
-              {project.measure.name}
-            </dd>
+            <dd className="mt-1 text-sm text-gray-900">{project.measure.name}</dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">基本事業</dt>
-            <dd className="mt-1 text-sm text-gray-900">
-              {project.basicProject.name}
-            </dd>
+            <dd className="mt-1 text-sm text-gray-900">{project.basicProject.name}</dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">担当部署</dt>
-            <dd className="mt-1 text-sm text-gray-900">
-              {project.department}
-            </dd>
+            <dd className="mt-1 text-sm text-gray-900">{project.department}</dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">課長名</dt>
@@ -119,9 +104,7 @@ export function ProjectDetailContent({
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">根拠法令</dt>
-            <dd className="mt-1 text-sm text-gray-900">
-              {project.legalBasis || 'なし'}
-            </dd>
+            <dd className="mt-1 text-sm text-gray-900">{project.legalBasis || 'なし'}</dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">事業期間</dt>
@@ -140,33 +123,21 @@ export function ProjectDetailContent({
         <div className="space-y-4">
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-2">概要</h3>
-            <p className="text-sm text-gray-900 whitespace-pre-wrap">
-              {project.overview}
-            </p>
+            <p className="text-sm text-gray-900 whitespace-pre-wrap">{project.overview}</p>
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-2">
               対象（誰・何を対象にしているか）
             </h3>
-            <p className="text-sm text-gray-900 whitespace-pre-wrap">
-              {project.target}
-            </p>
+            <p className="text-sm text-gray-900 whitespace-pre-wrap">{project.target}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">
-              意図（対象をどう変えるのか）
-            </h3>
-            <p className="text-sm text-gray-900 whitespace-pre-wrap">
-              {project.intent}
-            </p>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">意図（対象をどう変えるのか）</h3>
+            <p className="text-sm text-gray-900 whitespace-pre-wrap">{project.intent}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">
-              結果（基本事業への貢献）
-            </h3>
-            <p className="text-sm text-gray-900 whitespace-pre-wrap">
-              {project.result}
-            </p>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">結果（基本事業への貢献）</h3>
+            <p className="text-sm text-gray-900 whitespace-pre-wrap">{project.result}</p>
           </div>
         </div>
       </Card>
@@ -177,21 +148,15 @@ export function ProjectDetailContent({
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div>
-                <dt className="text-sm font-medium text-gray-500">
-                  国庫支出金
-                </dt>
+                <dt className="text-sm font-medium text-gray-500">国庫支出金</dt>
                 <dd className="mt-1 text-lg font-bold text-gray-900">
                   <FormattedAmount amount={latestFinancial.nationalSubsidy} />
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">
-                  都道府県支出金
-                </dt>
+                <dt className="text-sm font-medium text-gray-500">都道府県支出金</dt>
                 <dd className="mt-1 text-lg font-bold text-gray-900">
-                  <FormattedAmount
-                    amount={latestFinancial.prefecturalSubsidy}
-                  />
+                  <FormattedAmount amount={latestFinancial.prefecturalSubsidy} />
                 </dd>
               </div>
               <div>
@@ -213,9 +178,7 @@ export function ProjectDetailContent({
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">
-                  事業費計
-                </dt>
+                <dt className="text-sm font-medium text-gray-500">事業費計</dt>
                 <dd className="mt-1 text-lg font-bold text-gray-900">
                   <FormattedAmount amount={latestFinancial.totalCost} />
                 </dd>
@@ -224,33 +187,25 @@ export function ProjectDetailContent({
             <div className="pt-4 border-t border-gray-200">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    正規職員従事人数
-                  </dt>
+                  <dt className="text-sm font-medium text-gray-500">正規職員従事人数</dt>
                   <dd className="mt-1 text-lg font-bold text-gray-900">
                     {latestFinancial.personnelCount}人
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    延べ業務時間
-                  </dt>
+                  <dt className="text-sm font-medium text-gray-500">延べ業務時間</dt>
                   <dd className="mt-1 text-lg font-bold text-gray-900">
                     {latestFinancial.workHours}時間
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    人件費計
-                  </dt>
+                  <dt className="text-sm font-medium text-gray-500">人件費計</dt>
                   <dd className="mt-1 text-lg font-bold text-gray-900">
                     <FormattedAmount amount={latestFinancial.personnelCost} />
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
-                    トータルコスト
-                  </dt>
+                  <dt className="text-sm font-medium text-gray-500">トータルコスト</dt>
                   <dd className="mt-1 text-lg font-bold text-blue-600">
                     <FormattedAmount amount={latestFinancial.grandTotal} />
                   </dd>
@@ -306,26 +261,16 @@ export function ProjectDetailContent({
       <Card title="評価情報">
         <div className="space-y-4">
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">
-              改革改善の方向性
-            </h3>
-            <p className="text-sm text-gray-900">
-              {project.evaluation.direction || 'なし'}
-            </p>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">改革改善の方向性</h3>
+            <p className="text-sm text-gray-900">{project.evaluation.direction || 'なし'}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">
-              今後の方向性
-            </h3>
-            <p className="text-sm text-gray-900">
-              {project.evaluation.futureDirection || 'なし'}
-            </p>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">今後の方向性</h3>
+            <p className="text-sm text-gray-900">{project.evaluation.futureDirection || 'なし'}</p>
           </div>
           {project.evaluation.comments.map((comment, index) => (
             <div key={index}>
-              <h3 className="text-sm font-medium text-gray-500 mb-2">
-                {comment.role}意見
-              </h3>
+              <h3 className="text-sm font-medium text-gray-500 mb-2">{comment.role}意見</h3>
               <p className="text-sm text-gray-900 whitespace-pre-wrap">
                 {comment.comment || 'なし'}
               </p>

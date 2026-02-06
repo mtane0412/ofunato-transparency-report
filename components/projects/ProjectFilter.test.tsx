@@ -3,11 +3,12 @@
  *
  * フィルターパネルが正しく動作することを確認します。
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ProjectFilter } from './ProjectFilter';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FilterParams } from '@/lib/filter';
+import { ProjectFilter } from './ProjectFilter';
 
 describe('ProjectFilter', () => {
   const mockOnFilterChange = vi.fn();
@@ -58,7 +59,10 @@ describe('ProjectFilter', () => {
 
     const searchInput = screen.getByLabelText('キーワード検索');
     expect(searchInput).toBeInTheDocument();
-    expect(searchInput).toHaveAttribute('placeholder', '事業名で検索...（Enterで適用 / 削除は自動反映）');
+    expect(searchInput).toHaveAttribute(
+      'placeholder',
+      '事業名で検索...（Enterで適用 / 削除は自動反映）'
+    );
   });
 
   it('すべてのフィルター項目が表示されること', () => {

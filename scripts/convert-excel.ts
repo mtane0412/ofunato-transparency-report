@@ -5,17 +5,10 @@
  * 型安全なJSONファイルに変換します。
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
 import XLSX from 'xlsx';
-import fs from 'fs';
-import path from 'path';
-import type {
-  Project,
-  ProjectDataset,
-  YearlyFinancial,
-  YearlyIndicator,
-  IndicatorLabels,
-  IndicatorLabel,
-} from '../types';
+import type { Project, ProjectDataset, YearlyFinancial, YearlyIndicator } from '../types';
 
 /**
  * Excelファイルのパス
@@ -35,13 +28,13 @@ function toNumber(value: unknown): number {
     return 0;
   }
   const num = Number(value);
-  return isNaN(num) ? 0 : num;
+  return Number.isNaN(num) ? 0 : num;
 }
 
 /**
  * 文字列に変換する（nullや空文字はそのまま空文字に）
  */
-function toString(value: unknown): string {
+function toStringValue(value: unknown): string {
   if (value === null || value === undefined) {
     return '';
   }
@@ -134,67 +127,67 @@ function parseProjectRow(row: unknown[]): Project {
   }
 
   const project: Project = {
-    id: toString(row[6]),
-    name: toString(row[7]),
+    id: toStringValue(row[6]),
+    name: toStringValue(row[7]),
     year,
     createdAt,
     policy: {
       id: policyId,
-      name: toString(row[11]),
+      name: toStringValue(row[11]),
     },
     measure: {
       id: measureId,
-      name: toString(row[14]),
+      name: toStringValue(row[14]),
     },
     basicProject: {
       id: basicProjectId,
-      name: toString(row[17]),
+      name: toStringValue(row[17]),
     },
-    department: toString(row[19]),
-    manager: toString(row[20]),
-    section: toString(row[21]),
-    contact: toString(row[22]),
-    category: toString(row[35]),
+    department: toStringValue(row[19]),
+    manager: toStringValue(row[20]),
+    section: toStringValue(row[21]),
+    contact: toStringValue(row[22]),
+    category: toStringValue(row[35]),
     period: {
-      type: toString(row[27]),
-      start: toString(row[28]),
-      end: toString(row[29]),
+      type: toStringValue(row[27]),
+      start: toStringValue(row[28]),
+      end: toStringValue(row[29]),
     },
-    overview: toString(row[36]),
-    target: toString(row[49]),
-    intent: toString(row[50]),
-    result: toString(row[51]),
-    legalBasis: toString(row[18]),
+    overview: toStringValue(row[36]),
+    target: toStringValue(row[49]),
+    intent: toStringValue(row[50]),
+    result: toStringValue(row[51]),
+    legalBasis: toStringValue(row[18]),
     financials,
     indicators,
     indicatorLabels: {
       activity: [
-        { name: toString(row[52]), unit: toString(row[53]) }, // BB-BC列: 活動指標ア（名称・単位）
-        { name: toString(row[54]), unit: toString(row[55]) }, // BD-BE列: 活動指標イ（名称・単位）
-        { name: toString(row[56]), unit: toString(row[57]) }, // BF-BG列: 活動指標ウ（名称・単位）
+        { name: toStringValue(row[52]), unit: toStringValue(row[53]) }, // BB-BC列: 活動指標ア（名称・単位）
+        { name: toStringValue(row[54]), unit: toStringValue(row[55]) }, // BD-BE列: 活動指標イ（名称・単位）
+        { name: toStringValue(row[56]), unit: toStringValue(row[57]) }, // BF-BG列: 活動指標ウ（名称・単位）
       ],
       target: [
-        { name: toString(row[58]), unit: toString(row[59]) }, // BH-BI列: 対象指標カ（名称・単位）
-        { name: toString(row[60]), unit: toString(row[61]) }, // BJ-BK列: 対象指標キ（名称・単位）
-        { name: toString(row[62]), unit: toString(row[63]) }, // BL-BM列: 対象指標ク（名称・単位）
+        { name: toStringValue(row[58]), unit: toStringValue(row[59]) }, // BH-BI列: 対象指標カ（名称・単位）
+        { name: toStringValue(row[60]), unit: toStringValue(row[61]) }, // BJ-BK列: 対象指標キ（名称・単位）
+        { name: toStringValue(row[62]), unit: toStringValue(row[63]) }, // BL-BM列: 対象指標ク（名称・単位）
       ],
       outcome: [
-        { name: toString(row[64]), unit: toString(row[65]) }, // BN-BO列: 成果指標サ（名称・単位）
-        { name: toString(row[66]), unit: toString(row[67]) }, // BP-BQ列: 成果指標シ（名称・単位）
-        { name: toString(row[68]), unit: toString(row[69]) }, // BR-BS列: 成果指標ス（名称・単位）
+        { name: toStringValue(row[64]), unit: toStringValue(row[65]) }, // BN-BO列: 成果指標サ（名称・単位）
+        { name: toStringValue(row[66]), unit: toStringValue(row[67]) }, // BP-BQ列: 成果指標シ（名称・単位）
+        { name: toStringValue(row[68]), unit: toStringValue(row[69]) }, // BR-BS列: 成果指標ス（名称・単位）
       ],
     },
     evaluation: {
-      direction: toString(row[203]),
-      futureDirection: toString(row[207]),
+      direction: toStringValue(row[203]),
+      futureDirection: toStringValue(row[207]),
       comments: [
         {
           role: '担当課',
-          comment: toString(row[206]),
+          comment: toStringValue(row[206]),
         },
         {
           role: '課長',
-          comment: toString(row[208]),
+          comment: toStringValue(row[208]),
         },
       ],
     },
@@ -241,7 +234,7 @@ async function convertExcelToJson(): Promise<void> {
     if (!row || row.length === 0) continue;
 
     // 事務事業IDが存在しない行はスキップ
-    const projectId = toString(row[6]);
+    const projectId = toStringValue(row[6]);
     if (!projectId) continue;
 
     try {

@@ -2,8 +2,8 @@
  * ChartContainer コンポーネントのテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { ChartContainer } from './ChartContainer';
 
 describe('ChartContainer', () => {
@@ -25,9 +25,7 @@ describe('ChartContainer', () => {
     );
 
     // ResponsiveContainerが存在することを確認
-    const responsiveContainer = container.querySelector(
-      '.recharts-responsive-container'
-    );
+    const responsiveContainer = container.querySelector('.recharts-responsive-container');
     expect(responsiveContainer).toBeInTheDocument();
   });
 
@@ -39,9 +37,7 @@ describe('ChartContainer', () => {
     );
 
     // ResponsiveContainerは高さをstyle属性で設定する
-    const responsiveContainer = container.querySelector(
-      '.recharts-responsive-container'
-    );
+    const responsiveContainer = container.querySelector('.recharts-responsive-container');
     expect(responsiveContainer).toBeInTheDocument();
   });
 
@@ -52,9 +48,7 @@ describe('ChartContainer', () => {
       </ChartContainer>
     );
 
-    const responsiveContainer = container.querySelector(
-      '.recharts-responsive-container'
-    );
+    const responsiveContainer = container.querySelector('.recharts-responsive-container');
     expect(responsiveContainer).toBeInTheDocument();
   });
 });

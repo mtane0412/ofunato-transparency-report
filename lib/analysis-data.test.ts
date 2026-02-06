@@ -2,13 +2,13 @@
  * lib/analysis-data.ts の予算分析用データ集計関数のテスト
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { Project } from '@/types';
 import {
-  aggregateYearlyTotalBudget,
   aggregateBudgetByDepartment,
-  aggregateRevenueSourceTotal,
   aggregateBudgetByPolicyAndYear,
+  aggregateRevenueSourceTotal,
+  aggregateYearlyTotalBudget,
 } from './analysis-data';
 
 // テスト用のモックプロジェクトデータ
@@ -370,24 +370,24 @@ describe('aggregateBudgetByPolicyAndYear', () => {
       (d: { year: string; [key: string]: string | number }) => d.year === 'R2'
     );
     expect(r2Data).toBeDefined();
-    expect(r2Data?.['政策1']).toBe(4300); // proj-001: 2900 + proj-003: 1400
-    expect(r2Data?.['政策2']).toBe(1400); // proj-002: 1400
+    expect(r2Data?.政策1).toBe(4300); // proj-001: 2900 + proj-003: 1400
+    expect(r2Data?.政策2).toBe(1400); // proj-002: 1400
 
     // R3年度のデータ確認
     const r3Data = result.data.find(
       (d: { year: string; [key: string]: string | number }) => d.year === 'R3'
     );
     expect(r3Data).toBeDefined();
-    expect(r3Data?.['政策1']).toBe(5000); // proj-001: 3400 + proj-003: 1600
-    expect(r3Data?.['政策2']).toBe(1600); // proj-002: 1600
+    expect(r3Data?.政策1).toBe(5000); // proj-001: 3400 + proj-003: 1600
+    expect(r3Data?.政策2).toBe(1600); // proj-002: 1600
 
     // R7年度のデータ確認
     const r7Data = result.data.find(
       (d: { year: string; [key: string]: string | number }) => d.year === 'R7'
     );
     expect(r7Data).toBeDefined();
-    expect(r7Data?.['政策1']).toBe(6800); // proj-001: 4400 + proj-003: 2400
-    expect(r7Data?.['政策2']).toBe(2400); // proj-002: 2400
+    expect(r7Data?.政策1).toBe(6800); // proj-001: 4400 + proj-003: 2400
+    expect(r7Data?.政策2).toBe(2400); // proj-002: 2400
   });
 
   it('空の配列を渡した場合、空のデータと政策名を返す', () => {
@@ -426,7 +426,7 @@ describe('aggregateBudgetByPolicyAndYear', () => {
       (d: { year: string; [key: string]: string | number }) => d.year === 'R2'
     );
     expect(r2Data).toBeDefined();
-    expect(r2Data?.['政策1']).toBe(7200); // 2900 + 1400 + 2900
-    expect(r2Data?.['政策１']).toBeUndefined(); // 表記揺れは集約される
+    expect(r2Data?.政策1).toBe(7200); // 2900 + 1400 + 2900
+    expect(r2Data?.政策１).toBeUndefined(); // 表記揺れは集約される
   });
 });

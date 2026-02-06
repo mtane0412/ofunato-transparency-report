@@ -2,10 +2,10 @@
  * CustomTooltip コンポーネントのテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { CustomTooltip } from './CustomTooltip';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
+import { CustomTooltip } from './CustomTooltip';
 
 describe('CustomTooltip', () => {
   it('activeがfalseの場合は何も表示しない', () => {
@@ -29,9 +29,7 @@ describe('CustomTooltip', () => {
   });
 
   it('ラベルとデータが表示される', () => {
-    const payload = [
-      { name: 'トータルコスト', value: 1000000, color: '#3b82f6' },
-    ];
+    const payload = [{ name: 'トータルコスト', value: 1000000, color: '#3b82f6' }];
 
     render(
       <AmountDisplayProvider>
@@ -63,9 +61,7 @@ describe('CustomTooltip', () => {
   });
 
   it('カラーインジケーターが表示される', () => {
-    const payload = [
-      { name: 'トータルコスト', value: 1000000, color: '#3b82f6' },
-    ];
+    const payload = [{ name: 'トータルコスト', value: 1000000, color: '#3b82f6' }];
 
     const { container } = render(
       <AmountDisplayProvider>
@@ -73,9 +69,7 @@ describe('CustomTooltip', () => {
       </AmountDisplayProvider>
     );
 
-    const colorIndicator = container.querySelector(
-      '[style*="background-color"]'
-    );
+    const colorIndicator = container.querySelector('[style*="background-color"]');
     expect(colorIndicator).toBeInTheDocument();
   });
 });

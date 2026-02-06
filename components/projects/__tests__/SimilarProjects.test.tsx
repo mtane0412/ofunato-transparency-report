@@ -2,11 +2,11 @@
  * 類似事業表示コンポーネントのテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { SimilarProjects } from '../SimilarProjects';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { SimilarProjectDisplay } from '@/types/similarity';
+import { SimilarProjects } from '../SimilarProjects';
 
 /**
  * テスト用のラッパーコンポーネント
@@ -67,14 +67,10 @@ describe('SimilarProjects', () => {
     renderWithProviders(<SimilarProjects projects={mockSimilarProjects} />);
 
     // 政策名 > 施策名 の形式で表示される（複数回出現するためgetAllByTextを使用）
-    const roadMaintenance = screen.getAllByText(
-      '安全・安心なまちづくり > 道路整備'
-    );
+    const roadMaintenance = screen.getAllByText('安全・安心なまちづくり > 道路整備');
     expect(roadMaintenance.length).toBeGreaterThan(0);
 
-    const parkMaintenance = screen.getByText(
-      '安全・安心なまちづくり > 公園整備'
-    );
+    const parkMaintenance = screen.getByText('安全・安心なまちづくり > 公園整備');
     expect(parkMaintenance).toBeInTheDocument();
   });
 
@@ -88,21 +84,15 @@ describe('SimilarProjects', () => {
   it('事業詳細へのリンクが正しく設定される', () => {
     renderWithProviders(<SimilarProjects projects={mockSimilarProjects} />);
 
-    const link1 = screen
-      .getByText('道路維持管理事業')
-      .closest('a') as HTMLAnchorElement;
+    const link1 = screen.getByText('道路維持管理事業').closest('a') as HTMLAnchorElement;
     expect(link1.href).toContain('/projects/P001');
 
-    const link2 = screen
-      .getByText('橋梁維持管理事業')
-      .closest('a') as HTMLAnchorElement;
+    const link2 = screen.getByText('橋梁維持管理事業').closest('a') as HTMLAnchorElement;
     expect(link2.href).toContain('/projects/P002');
   });
 
   it('類似事業がない場合、何も表示されない', () => {
-    const { container } = renderWithProviders(
-      <SimilarProjects projects={[]} />
-    );
+    const { container } = renderWithProviders(<SimilarProjects projects={[]} />);
 
     expect(container.textContent).toBe('');
   });

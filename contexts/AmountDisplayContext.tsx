@@ -11,13 +11,7 @@
 
 'use client';
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  type ReactNode,
-} from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import type { AmountDisplayMode } from '@/types';
 
 /**
@@ -33,9 +27,7 @@ interface AmountDisplayContextValue {
 /**
  * AmountDisplayContext
  */
-const AmountDisplayContext = createContext<
-  AmountDisplayContextValue | undefined
->(undefined);
+const AmountDisplayContext = createContext<AmountDisplayContextValue | undefined>(undefined);
 
 /**
  * AmountDisplayProvider のプロパティ
@@ -55,9 +47,7 @@ const STORAGE_KEY = 'amountDisplayMode';
  * 金額表示モードを管理するProvider。
  * localStorageへの永続化とSSGハイドレーション対策を実装しています。
  */
-export function AmountDisplayProvider({
-  children,
-}: AmountDisplayProviderProps) {
+export function AmountDisplayProvider({ children }: AmountDisplayProviderProps) {
   // SSGハイドレーション対策: 初期値は常に'japanese'
   const [mode, setMode] = useState<AmountDisplayMode>('japanese');
 
@@ -102,9 +92,7 @@ export function AmountDisplayProvider({
 export function useAmountDisplay(): AmountDisplayContextValue {
   const context = useContext(AmountDisplayContext);
   if (context === undefined) {
-    throw new Error(
-      'useAmountDisplay must be used within AmountDisplayProvider'
-    );
+    throw new Error('useAmountDisplay must be used within AmountDisplayProvider');
   }
   return context;
 }

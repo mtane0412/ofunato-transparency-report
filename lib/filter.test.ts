@@ -3,12 +3,12 @@
  *
  * 事業データのフィルタリング機能とカスケード選択肢の取得機能をテストします。
  */
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { Project } from '@/types';
 import {
   filterProjects,
-  getAvailableMeasures,
   getAvailableBasicProjects,
+  getAvailableMeasures,
   getFilterOptionCounts,
 } from './filter';
 

@@ -2,16 +2,16 @@
  * 類似度計算ロジックのテスト
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type { Project } from '@/types';
 import {
-  calculateHierarchySimilarity,
-  calculateTextSimilarity,
-  calculateFinancialSimilarity,
   calculateAttributeSimilarity,
+  calculateFinancialSimilarity,
+  calculateHierarchySimilarity,
   calculateSimilarityScore,
+  calculateTextSimilarity,
   findSimilarProjects,
 } from '../similarity';
-import type { Project } from '@/types';
 
 describe('類似度計算ロジック', () => {
   // テスト用のサンプル事業データ
@@ -336,9 +336,7 @@ describe('類似度計算ロジック', () => {
     it('自分自身は除外される', () => {
       const projects = [project1, project2, project3];
       const similar = findSimilarProjects(project1, projects, 3);
-      expect(similar.every((s: { id: string }) => s.id !== project1.id)).toBe(
-        true
-      );
+      expect(similar.every((s: { id: string }) => s.id !== project1.id)).toBe(true);
     });
 
     it('利用可能な事業数より多い件数を指定しても、全事業数-1を返す', () => {

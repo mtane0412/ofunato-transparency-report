@@ -5,13 +5,13 @@
 
 'use client';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmount, formatAmountShort } from '@/lib/utils';
-import { toPolicyBudgetChartData } from '@/lib/chart-data';
-import { ChartContainer } from './ChartContainer';
 import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
+import { toPolicyBudgetChartData } from '@/lib/chart-data';
+import { formatAmount, formatAmountShort } from '@/lib/utils';
 import type { CategoryStats } from '@/types';
+import { ChartContainer } from './ChartContainer';
 
 interface PolicyBudgetChartProps {
   /** 政策別統計データ */
@@ -48,9 +48,7 @@ function CustomBarTooltip({ active, payload }: { active?: boolean; payload?: any
  * 政策別予算配分グラフ
  * 予算降順でソートされた横棒グラフで表示
  */
-export default function PolicyBudgetChart({
-  policyStats,
-}: PolicyBudgetChartProps) {
+export default function PolicyBudgetChart({ policyStats }: PolicyBudgetChartProps) {
   const { mode } = useAmountDisplay();
   const { yAxisWidth, fontSize } = useChartYAxisWidth(280);
 
@@ -78,16 +76,8 @@ export default function PolicyBudgetChart({
         margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          type="number"
-          tickFormatter={(value) => formatAmountShort(value, mode)}
-        />
-        <YAxis
-          type="category"
-          dataKey="name"
-          width={yAxisWidth}
-          tick={{ fontSize }}
-        />
+        <XAxis type="number" tickFormatter={(value) => formatAmountShort(value, mode)} />
+        <YAxis type="category" dataKey="name" width={yAxisWidth} tick={{ fontSize }} />
         <Tooltip content={<CustomBarTooltip />} />
         <Legend wrapperStyle={{ paddingTop: '10px' }} />
         <Bar dataKey="value" fill="#3b82f6" name="予算" />

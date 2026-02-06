@@ -2,11 +2,11 @@
  * RevenueSourceChart コンポーネントのテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { RevenueSourceChart } from './RevenueSourceChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { YearlyFinancial } from '@/types';
+import { RevenueSourceChart } from './RevenueSourceChart';
 
 describe('RevenueSourceChart', () => {
   const mockFinancials: YearlyFinancial[] = [
@@ -55,9 +55,7 @@ describe('RevenueSourceChart', () => {
       </AmountDisplayProvider>
     );
 
-    const responsiveContainer = container.querySelector(
-      '.recharts-responsive-container'
-    );
+    const responsiveContainer = container.querySelector('.recharts-responsive-container');
     expect(responsiveContainer).toBeInTheDocument();
   });
 

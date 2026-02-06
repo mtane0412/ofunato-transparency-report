@@ -57,10 +57,7 @@ export function formatJapaneseYen(amountInThousand: number): string {
  * @param mode - 表示モード（'thousand' or 'japanese'）
  * @returns フォーマットされた金額文字列
  */
-export function formatAmount(
-  amountInThousand: number,
-  mode: AmountDisplayMode
-): string {
+export function formatAmount(amountInThousand: number, mode: AmountDisplayMode): string {
   if (mode === 'thousand') {
     return `${amountInThousand.toLocaleString('ja-JP')}千円`;
   }
@@ -93,10 +90,7 @@ export function formatPercent(value: number, decimals = 1): string {
  *   - 1万円〜1億円未満: 万円単位、小数点1桁（例: "1.3万"）
  *   - 1億円以上: 億円単位、小数点1桁（例: "1.3億"）
  */
-export function formatAmountShort(
-  amountInThousand: number,
-  mode: AmountDisplayMode
-): string {
+export function formatAmountShort(amountInThousand: number, mode: AmountDisplayMode): string {
   if (mode === 'thousand') {
     // thousandモードはカンマ区切りの千円表記
     return `${amountInThousand.toLocaleString('ja-JP')}千円`;

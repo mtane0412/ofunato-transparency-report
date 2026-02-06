@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Select, type SelectOption } from '@/components/ui/Select';
 import type { FilterParams } from '@/lib/filter';
 

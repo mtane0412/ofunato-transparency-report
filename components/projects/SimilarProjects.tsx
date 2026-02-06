@@ -4,8 +4,8 @@
  * 事業詳細ページの最下部に、類似度の高い事業を表示します。
  */
 
-import React from 'react';
 import Link from 'next/link';
+import type React from 'react';
 import type { SimilarProjectDisplay } from '@/types/similarity';
 import { FormattedAmount } from '../ui/FormattedAmount';
 
@@ -17,9 +17,7 @@ export type SimilarProjectsProps = {
 /**
  * 類似事業表示コンポーネント
  */
-export function SimilarProjects({
-  projects,
-}: SimilarProjectsProps): React.ReactElement | null {
+export function SimilarProjects({ projects }: SimilarProjectsProps): React.ReactElement | null {
   // 類似事業がない場合は何も表示しない
   if (projects.length === 0) {
     return null;

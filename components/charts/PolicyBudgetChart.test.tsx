@@ -3,11 +3,11 @@
  * 政策別予算配分を横棒グラフで表示するコンポーネントのスモークテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import PolicyBudgetChart from './PolicyBudgetChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { CategoryStats } from '@/types';
+import PolicyBudgetChart from './PolicyBudgetChart';
 
 describe('PolicyBudgetChart', () => {
   it('政策別予算データをレンダリングできること', () => {
