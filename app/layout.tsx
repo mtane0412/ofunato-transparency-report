@@ -10,6 +10,7 @@ import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: '大船渡市 事務事業評価データ（非公式）',
@@ -32,6 +33,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </AmountDisplayProvider>
+        <Analytics />
       </body>
     </html>
   );
