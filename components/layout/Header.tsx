@@ -18,7 +18,7 @@ export function Header() {
           <Link href="/" className="text-lg md:text-xl font-bold hover:text-blue-100 truncate">
             大船渡市 事務事業評価データ（非公式）
           </Link>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4 md:gap-6">
             <nav className="flex gap-3 md:gap-6">
               <Link href="/" className="text-sm md:text-base hover:text-blue-100">
                 ダッシュボード

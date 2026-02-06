@@ -297,3 +297,24 @@ export interface RevenueComposition {
   /** 金額（千円単位） */
   value: number;
 }
+
+/**
+ * Rechartsツールチップのペイロード型
+ * ツールチップに渡されるデータ項目の型定義
+ *
+ * @template TValue - データ値の型（デフォルト: number | string）
+ * @template TName - データ項目名の型（デフォルト: string）
+ */
+export interface RechartsTooltipPayload<TValue = number | string, TName = string> {
+  /** データ項目名 */
+  name?: TName;
+  /** データ値 */
+  value?: TValue;
+  /** 表示色 */
+  color?: string;
+  /** データキー */
+  dataKey?: string | number;
+  /** 元のデータオブジェクト（any型を使用して柔軟性を確保） */
+  // biome-ignore lint/suspicious/noExplicitAny: Rechartsの型定義に合わせて、元データの型を柔軟に受け入れる必要があるため
+  payload?: any;
+}

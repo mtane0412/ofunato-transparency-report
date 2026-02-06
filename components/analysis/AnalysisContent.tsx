@@ -18,6 +18,7 @@ import { formatAmount, formatAmountShort } from '@/lib/utils';
 import type {
   DepartmentBudget,
   PolicyYearlyChartDataPoint,
+  RechartsTooltipPayload,
   RevenueComposition,
   YearlyTotalBudget,
 } from '@/types';
@@ -40,7 +41,13 @@ interface AnalysisContentProps {
 /**
  * 年度別総予算推移グラフ用カスタムツールチップ
  */
-function YearlyTotalBudgetTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function YearlyTotalBudgetTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: RechartsTooltipPayload<number>[];
+}) {
   const { mode } = useAmountDisplay();
 
   if (!active || !payload || payload.length === 0) {

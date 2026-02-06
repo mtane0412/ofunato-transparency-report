@@ -8,6 +8,7 @@
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 // import { EVALUATION_COLORS } from '@/lib/chart-constants';
+import type { RechartsTooltipPayload } from '@/types';
 import { ChartContainer } from './ChartContainer';
 
 interface EvaluationChartProps {
@@ -36,7 +37,13 @@ function formatLabel(label: string): string {
  * 横棒グラフ用カスタムツールチップ
  * カテゴリ名と件数を表示
  */
-function CustomEvaluationTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function CustomEvaluationTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: RechartsTooltipPayload<number>[];
+}) {
   if (!active || !payload || payload.length === 0) {
     return null;
   }

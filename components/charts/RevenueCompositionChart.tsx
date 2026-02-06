@@ -9,7 +9,7 @@ import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
 import { REVENUE_PIE_COLORS } from '@/lib/chart-constants';
 import { formatAmount, formatPercent } from '@/lib/utils';
-import type { RevenueComposition } from '@/types';
+import type { RechartsTooltipPayload, RevenueComposition } from '@/types';
 import { ChartContainer } from './ChartContainer';
 
 interface RevenueCompositionChartProps {
@@ -77,7 +77,13 @@ function CustomPieLabel({
  * PieChart用カスタムツールチップ
  * 財源名、金額、割合を表示
  */
-function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function CustomPieTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: RechartsTooltipPayload<number>[];
+}) {
   const { mode } = useAmountDisplay();
 
   if (!active || !payload || payload.length === 0) {
@@ -85,9 +91,9 @@ function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: any
   }
 
   const data = payload[0];
-  const total = data.payload.totalValue; // 合計値（親から渡される）
-  const value = data.value;
-  const percent = total > 0 ? (value / total) * 100 : 0;
+  const total = data.payload?.totalValue as number | undefined; // 合計値（親から渡される）
+  const value = data.value ?? 0;
+  const percent = total && total > 0 ? (value / total) * 100 : 0;
 
   return (
     <div className="bg-white p-3 border border-gray-300 rounded shadow-lg">
@@ -140,11 +146,8 @@ export default function RevenueCompositionChart({ data }: RevenueCompositionChar
           label={CustomPieLabel}
           labelLine={false}
         >
-          {chartData.map((_, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={REVENUE_PIE_COLORS[index % REVENUE_PIE_COLORS.length]}
-            />
+          {chartData.map((entry, index) => (
+            <Cell key={entry.name} fill={REVENUE_PIE_COLORS[index % REVENUE_PIE_COLORS.length]} />
           ))}
         </Pie>
         <Tooltip content={<CustomPieTooltip />} />
