@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
     "type-check": "tsc --noEmit",
     "convert-data": "tsx scripts/convert-excel.ts && tsx scripts/generate-similarities.ts",
     "generate-similarities": "tsx scripts/generate-similarities.ts",
@@ -25,8 +27,6 @@
     "@types/react-dom": "^19.2.3",
     "@vercel/analytics": "^1.6.1",
     "autoprefixer": "^10.4.24",
-    "eslint": "^9.39.2",
-    "eslint-config-next": "^16.1.6",
     "next": "^16.1.6",
     "postcss": "^8.5.6",
     "react": "^19.2.4",
@@ -37,7 +37,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
+    "@biomejs/biome": "2.3.14",
     "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

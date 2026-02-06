@@ -2,11 +2,11 @@
  * CostBreakdownChart コンポーネントのテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { CostBreakdownChart } from './CostBreakdownChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { YearlyFinancial } from '@/types';
+import { CostBreakdownChart } from './CostBreakdownChart';
 
 describe('CostBreakdownChart', () => {
   const mockFinancials: YearlyFinancial[] = [
@@ -55,9 +55,7 @@ describe('CostBreakdownChart', () => {
       </AmountDisplayProvider>
     );
 
-    const responsiveContainer = container.querySelector(
-      '.recharts-responsive-container'
-    );
+    const responsiveContainer = container.querySelector('.recharts-responsive-container');
     expect(responsiveContainer).toBeInTheDocument();
   });
 

@@ -10,14 +10,14 @@
  * Server Componentとして実装されており、データ取得後にClient Componentに渡します。
  */
 
-import { getAllProjects } from '@/lib/data';
+import { AnalysisContent } from '@/components/analysis/AnalysisContent';
 import {
-  aggregateYearlyTotalBudget,
+  aggregateBudgetByDepartment,
   aggregateBudgetByPolicyAndYear,
   aggregateRevenueSourceTotal,
-  aggregateBudgetByDepartment,
+  aggregateYearlyTotalBudget,
 } from '@/lib/analysis-data';
-import { AnalysisContent } from '@/components/analysis/AnalysisContent';
+import { getAllProjects } from '@/lib/data';
 
 export default function AnalysisPage() {
   // 全プロジェクトを取得

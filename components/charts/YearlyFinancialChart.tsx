@@ -6,13 +6,13 @@
 'use client';
 
 import { useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
+import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
+import { toGrandTotalChartData } from '@/lib/chart-data';
+import { formatAmountShort } from '@/lib/utils';
+import type { YearlyFinancial } from '@/types';
 import { ChartContainer } from './ChartContainer';
 import { CustomTooltip } from './CustomTooltip';
-import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmountShort } from '@/lib/utils';
-import { toGrandTotalChartData } from '@/lib/chart-data';
-import type { YearlyFinancial } from '@/types';
 
 /**
  * トータルコスト推移グラフのプロパティ
@@ -33,10 +33,7 @@ export function YearlyFinancialChart({ financials }: YearlyFinancialChartProps) 
   const { mode } = useAmountDisplay();
 
   // データ変換（メモ化により不要な再計算を防ぐ）
-  const chartData = useMemo(
-    () => toGrandTotalChartData(financials),
-    [financials]
-  );
+  const chartData = useMemo(() => toGrandTotalChartData(financials), [financials]);
 
   // データが空の場合
   if (chartData.length === 0) {

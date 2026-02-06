@@ -5,11 +5,11 @@
  */
 
 import type {
-  Project,
-  YearlyTotalBudget,
-  PolicyYearlyChartDataPoint,
   DepartmentBudget,
+  PolicyYearlyChartDataPoint,
+  Project,
   RevenueComposition,
+  YearlyTotalBudget,
 } from '@/types';
 import { formatFiscalYear } from './utils';
 
@@ -47,19 +47,14 @@ export function aggregateYearlyTotalBudget(projects: Project[]): YearlyTotalBudg
  */
 export function aggregateBudgetByDepartment(projects: Project[]): DepartmentBudget[] {
   // 部署名を正規化（全角スペース除去）して集計
-  const departmentBudgetMap = new Map<
-    string,
-    { budget: number; count: number }
-  >();
+  const departmentBudgetMap = new Map<string, { budget: number; count: number }>();
 
   projects.forEach((project) => {
     // 部署名の全角スペースを除去して正規化
     const normalizedDepartment = project.department.replace(/\s+/g, '');
 
     // 最新年度のgrandTotalを取得
-    const latestFinancial = project.financials.find(
-      (f) => f.year === project.year
-    );
+    const latestFinancial = project.financials.find((f) => f.year === project.year);
 
     if (latestFinancial) {
       const existing = departmentBudgetMap.get(normalizedDepartment) || {
@@ -98,9 +93,7 @@ export function aggregateRevenueSourceTotal(projects: Project[]): RevenueComposi
 
   projects.forEach((project) => {
     // 最新年度の財源データを取得
-    const latestFinancial = project.financials.find(
-      (f) => f.year === project.year
-    );
+    const latestFinancial = project.financials.find((f) => f.year === project.year);
 
     if (latestFinancial) {
       nationalSubsidy += latestFinancial.nationalSubsidy;
@@ -185,9 +178,7 @@ export function aggregateBudgetByPolicyAndYear(projects: Project[]): {
   });
 
   // ステップ5: Recharts用のデータ形式に変換（年度順ソート）
-  const data: PolicyYearlyChartDataPoint[] = Array.from(
-    yearPolicyBudgetMap.entries()
-  )
+  const data: PolicyYearlyChartDataPoint[] = Array.from(yearPolicyBudgetMap.entries())
     .sort((a, b) => a[0] - b[0])
     .map(([year, policyBudgetMap]) => {
       const dataPoint: PolicyYearlyChartDataPoint = {

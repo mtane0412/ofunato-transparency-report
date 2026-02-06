@@ -7,27 +7,27 @@
 
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useCallback, useMemo, Suspense } from 'react';
-import {
-  getAllProjects,
-  getAllPolicies,
-  getAllMeasures,
-  getAllBasicProjects,
-  getAllDepartments,
-  getAllCategories,
-  getAllDirections,
-  getAllFutureDirections,
-} from '@/lib/data';
-import {
-  filterProjects,
-  getAvailableMeasures,
-  getAvailableBasicProjects,
-  getFilterOptionCounts,
-  type FilterParams,
-} from '@/lib/filter';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useCallback, useMemo } from 'react';
 import { ProjectFilter } from '@/components/projects/ProjectFilter';
 import { ProjectTable } from '@/components/projects/ProjectTable';
+import {
+  getAllBasicProjects,
+  getAllCategories,
+  getAllDepartments,
+  getAllDirections,
+  getAllFutureDirections,
+  getAllMeasures,
+  getAllPolicies,
+  getAllProjects,
+} from '@/lib/data';
+import {
+  type FilterParams,
+  filterProjects,
+  getAvailableBasicProjects,
+  getAvailableMeasures,
+  getFilterOptionCounts,
+} from '@/lib/filter';
 
 /**
  * フィルター機能付き事業一覧コンポーネント
@@ -97,31 +97,23 @@ function ProjectsContent() {
     [policies, optionCounts.policies]
   );
 
-  const measuresWithCount = useMemo(
-    () => {
-      const measuresToUse = filters.policy ? availableMeasures : allMeasures;
-      return measuresToUse.map((m) => ({
-        value: m.id,
-        label: m.name,
-        count: optionCounts.measures.get(m.id) || 0,
-      }));
-    },
-    [filters.policy, availableMeasures, allMeasures, optionCounts.measures]
-  );
+  const measuresWithCount = useMemo(() => {
+    const measuresToUse = filters.policy ? availableMeasures : allMeasures;
+    return measuresToUse.map((m) => ({
+      value: m.id,
+      label: m.name,
+      count: optionCounts.measures.get(m.id) || 0,
+    }));
+  }, [filters.policy, availableMeasures, allMeasures, optionCounts.measures]);
 
-  const basicProjectsWithCount = useMemo(
-    () => {
-      const basicProjectsToUse = filters.measure
-        ? availableBasicProjects
-        : allBasicProjects;
-      return basicProjectsToUse.map((bp) => ({
-        value: bp.id,
-        label: bp.name,
-        count: optionCounts.basicProjects.get(bp.id) || 0,
-      }));
-    },
-    [filters.measure, availableBasicProjects, allBasicProjects, optionCounts.basicProjects]
-  );
+  const basicProjectsWithCount = useMemo(() => {
+    const basicProjectsToUse = filters.measure ? availableBasicProjects : allBasicProjects;
+    return basicProjectsToUse.map((bp) => ({
+      value: bp.id,
+      label: bp.name,
+      count: optionCounts.basicProjects.get(bp.id) || 0,
+    }));
+  }, [filters.measure, availableBasicProjects, allBasicProjects, optionCounts.basicProjects]);
 
   const departmentsWithCount = useMemo(
     () =>

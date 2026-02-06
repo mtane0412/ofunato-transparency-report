@@ -7,19 +7,19 @@
 'use client';
 
 import Link from 'next/link';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmount, formatAmountShort } from '@/lib/utils';
-import { toYearlyTotalBudgetChartData } from '@/lib/chart-data';
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 import { ChartContainer } from '@/components/charts/ChartContainer';
+import DepartmentBudgetChart from '@/components/charts/DepartmentBudgetChart';
 import PolicyBudgetTrendChart from '@/components/charts/PolicyBudgetTrendChart';
 import RevenueCompositionChart from '@/components/charts/RevenueCompositionChart';
-import DepartmentBudgetChart from '@/components/charts/DepartmentBudgetChart';
+import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
+import { toYearlyTotalBudgetChartData } from '@/lib/chart-data';
+import { formatAmount, formatAmountShort } from '@/lib/utils';
 import type {
-  YearlyTotalBudget,
+  DepartmentBudget,
   PolicyYearlyChartDataPoint,
   RevenueComposition,
-  DepartmentBudget,
+  YearlyTotalBudget,
 } from '@/types';
 
 interface AnalysisContentProps {
@@ -95,10 +95,7 @@ export function AnalysisContent({
       {/* 年度別総予算推移（BarChart） */}
       <div className="mb-8">
         <ChartContainer title="年度別総予算推移" height={300}>
-          <BarChart
-            data={yearlyTotalChartData}
-            margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
-          >
+          <BarChart data={yearlyTotalChartData} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" />
             <YAxis tickFormatter={(value) => formatAmountShort(value, mode)} />

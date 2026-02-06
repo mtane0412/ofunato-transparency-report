@@ -6,14 +6,14 @@
 'use client';
 
 import { useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
+import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
+import { REVENUE_SOURCE_COLORS } from '@/lib/chart-constants';
+import { toRevenueSourceChartData } from '@/lib/chart-data';
+import { formatAmountShort } from '@/lib/utils';
+import type { YearlyFinancial } from '@/types';
 import { ChartContainer } from './ChartContainer';
 import { CustomTooltip } from './CustomTooltip';
-import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
-import { formatAmountShort } from '@/lib/utils';
-import { toRevenueSourceChartData } from '@/lib/chart-data';
-import { REVENUE_SOURCE_COLORS } from '@/lib/chart-constants';
-import type { YearlyFinancial } from '@/types';
 
 /**
  * 財源構成グラフのプロパティ
@@ -33,10 +33,7 @@ export function RevenueSourceChart({ financials }: RevenueSourceChartProps) {
   const { mode } = useAmountDisplay();
 
   // データ変換（メモ化により不要な再計算を防ぐ）
-  const chartData = useMemo(
-    () => toRevenueSourceChartData(financials),
-    [financials]
-  );
+  const chartData = useMemo(() => toRevenueSourceChartData(financials), [financials]);
 
   // データが空の場合
   if (chartData.length === 0) {

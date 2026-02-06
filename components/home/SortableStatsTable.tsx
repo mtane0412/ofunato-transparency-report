@@ -99,9 +99,7 @@ export function SortableStatsTable({
     }
 
     if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortOrder === 'asc'
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
+      return sortOrder === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
     }
 
     return sortOrder === 'asc'
@@ -114,24 +112,20 @@ export function SortableStatsTable({
     if (sortKey !== column) {
       return <span className="text-gray-400 ml-1">↕</span>;
     }
-    return (
-      <span className="text-blue-600 ml-1">
-        {sortOrder === 'asc' ? '↑' : '↓'}
-      </span>
-    );
+    return <span className="text-blue-600 ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>;
   };
 
   // 型ガード: データが評価情報付きかを判定
-  const hasEvaluation = (item: CategoryStats | CategoryStatsWithEvaluation): item is CategoryStatsWithEvaluation => {
+  const hasEvaluation = (
+    item: CategoryStats | CategoryStatsWithEvaluation
+  ): item is CategoryStatsWithEvaluation => {
     return 'directionBreakdown' in item && 'futureDirectionBreakdown' in item;
   };
 
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-300">
-        {caption && (
-          <caption className="sr-only">{caption}</caption>
-        )}
+        {caption && <caption className="sr-only">{caption}</caption>}
         <thead className="bg-gray-50">
           <tr>
             <th

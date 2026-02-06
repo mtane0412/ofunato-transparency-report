@@ -4,10 +4,10 @@
  */
 
 import type {
-  YearlyFinancial,
-  YearlyIndicator,
   CategoryStats,
   EvaluationCategoryCount,
+  YearlyFinancial,
+  YearlyIndicator,
   YearlyTotalBudget,
 } from '@/types';
 import { formatFiscalYear } from './utils';
@@ -34,9 +34,7 @@ export function toGrandTotalChartData(
  * @param financials - 財政データ配列
  * @returns グラフ用データ配列（year, 国庫支出金, 県支出金, 地方債, その他, 一般財源）
  */
-export function toRevenueSourceChartData(
-  financials: YearlyFinancial[]
-): Array<{
+export function toRevenueSourceChartData(financials: YearlyFinancial[]): Array<{
   year: string;
   国庫支出金: number;
   県支出金: number;

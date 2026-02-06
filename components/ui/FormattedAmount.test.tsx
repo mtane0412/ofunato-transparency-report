@@ -2,22 +2,23 @@
  * FormattedAmount コンポーネントのテスト
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { FormattedAmount } from './FormattedAmount';
-import {
-  AmountDisplayProvider,
-  useAmountDisplay,
-} from '@/contexts/AmountDisplayContext';
 import { userEvent } from '@testing-library/user-event';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { AmountDisplayProvider, useAmountDisplay } from '@/contexts/AmountDisplayContext';
+import { FormattedAmount } from './FormattedAmount';
 
 // テスト用のトグルコンポーネント（モード切り替え用）
 function ModeToggle() {
   const { setMode } = useAmountDisplay();
   return (
     <>
-      <button onClick={() => setMode('thousand')}>千円モード</button>
-      <button onClick={() => setMode('japanese')}>日本語モード</button>
+      <button type="button" onClick={() => setMode('thousand')}>
+        千円モード
+      </button>
+      <button type="button" onClick={() => setMode('japanese')}>
+        日本語モード
+      </button>
     </>
   );
 }

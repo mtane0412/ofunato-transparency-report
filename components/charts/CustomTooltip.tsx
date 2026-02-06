@@ -58,16 +58,11 @@ export function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
         <div key={`item-${index}`} className="flex items-center gap-2 text-sm">
           {/* カラーインジケーター */}
           {entry.color && (
-            <div
-              className="w-3 h-3 rounded-sm"
-              style={{ backgroundColor: entry.color }}
-            />
+            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: entry.color }} />
           )}
           {/* ラベルと値 */}
           <span className="text-gray-700">{entry.name}:</span>
-          <span className="font-medium">
-            {formatAmount(entry.value, mode)}
-          </span>
+          <span className="font-medium">{formatAmount(entry.value, mode)}</span>
         </div>
       ))}
     </div>

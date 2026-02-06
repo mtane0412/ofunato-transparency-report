@@ -2,13 +2,10 @@
  * AmountDisplayContext のテスト
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import {
-  AmountDisplayProvider,
-  useAmountDisplay,
-} from './AmountDisplayContext';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AmountDisplayProvider, useAmountDisplay } from './AmountDisplayContext';
 
 // テスト用コンポーネント
 function TestComponent() {
@@ -17,8 +14,12 @@ function TestComponent() {
   return (
     <div>
       <div data-testid="current-mode">{mode}</div>
-      <button onClick={() => setMode('thousand')}>千円表記</button>
-      <button onClick={() => setMode('japanese')}>日本語表記</button>
+      <button type="button" onClick={() => setMode('thousand')}>
+        千円表記
+      </button>
+      <button type="button" onClick={() => setMode('japanese')}>
+        日本語表記
+      </button>
     </div>
   );
 }
@@ -172,9 +173,7 @@ describe('AmountDisplayContext', () => {
 
   it('useAmountDisplayをProvider外で使用するとエラーになる', () => {
     // コンソールエラーを抑制
-    const consoleErrorSpy = vi
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     expect(() => {
       render(<TestComponent />);

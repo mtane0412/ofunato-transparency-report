@@ -2,11 +2,11 @@
  * YearlyFinancialChart コンポーネントのテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { YearlyFinancialChart } from './YearlyFinancialChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { YearlyFinancial } from '@/types';
+import { YearlyFinancialChart } from './YearlyFinancialChart';
 
 describe('YearlyFinancialChart', () => {
   const mockFinancials: YearlyFinancial[] = [
@@ -55,9 +55,7 @@ describe('YearlyFinancialChart', () => {
       </AmountDisplayProvider>
     );
 
-    const responsiveContainer = container.querySelector(
-      '.recharts-responsive-container'
-    );
+    const responsiveContainer = container.querySelector('.recharts-responsive-container');
     expect(responsiveContainer).toBeInTheDocument();
   });
 

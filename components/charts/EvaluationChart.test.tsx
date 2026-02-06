@@ -3,8 +3,8 @@
  * 評価グラフコンポーネントの単体テスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { EvaluationChart } from './EvaluationChart';
 
 describe('EvaluationChart', () => {
@@ -28,13 +28,7 @@ describe('EvaluationChart', () => {
   });
 
   it('説明文が表示されること', () => {
-    render(
-      <EvaluationChart
-        title="改革改善の方向性"
-        data={mockData}
-        description="テスト説明文"
-      />
-    );
+    render(<EvaluationChart title="改革改善の方向性" data={mockData} description="テスト説明文" />);
 
     expect(screen.getByText('テスト説明文')).toBeInTheDocument();
   });

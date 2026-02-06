@@ -3,11 +3,11 @@
  * 政策別・年度別予算推移を複数系列折れ線グラフで表示するコンポーネントのスモークテスト
  */
 
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import PolicyBudgetTrendChart from './PolicyBudgetTrendChart';
+import { describe, expect, it } from 'vitest';
 import { AmountDisplayProvider } from '@/contexts/AmountDisplayContext';
 import type { PolicyYearlyChartDataPoint } from '@/types';
+import PolicyBudgetTrendChart from './PolicyBudgetTrendChart';
 
 describe('PolicyBudgetTrendChart', () => {
   it('政策別・年度別予算推移データをレンダリングできること', () => {

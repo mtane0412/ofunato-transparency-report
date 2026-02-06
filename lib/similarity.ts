@@ -12,9 +12,9 @@
 import TinySegmenter from 'tiny-segmenter';
 import type { Project } from '@/types';
 import type {
+  SimilarityData,
   SimilarityWeights,
   SimilarProject,
-  SimilarityData,
   SimilarProjectDisplay,
 } from '@/types/similarity';
 
@@ -35,10 +35,7 @@ const DEFAULT_WEIGHTS: SimilarityWeights = {
  * @param projectB - 比較する事業B
  * @returns 類似度スコア（0.0〜1.0）
  */
-export function calculateHierarchySimilarity(
-  projectA: Project,
-  projectB: Project
-): number {
+export function calculateHierarchySimilarity(projectA: Project, projectB: Project): number {
   // 基本事業IDが一致する場合
   if (projectA.basicProject.id === projectB.basicProject.id) {
     return 1.0;
@@ -65,10 +62,7 @@ export function calculateHierarchySimilarity(
  * @param idfCache - IDF値のキャッシュ（単語 → IDF値）
  * @returns TF-IDFベクトル（単語 → スコアのマップ）
  */
-function calculateTfIdf(
-  text: string,
-  idfCache: Map<string, number>
-): Map<string, number> {
+function calculateTfIdf(text: string, idfCache: Map<string, number>): Map<string, number> {
   const segmenter = new TinySegmenter();
   const tokens = segmenter.segment(text).filter((t: string) => t.trim() !== '');
 
@@ -109,20 +103,18 @@ export function buildIdfCache(allTexts: string[]): Map<string, number> {
   const documentTokens: Set<string>[] = [];
 
   allTexts.forEach((text) => {
-    const tokens = new Set(
-      segmenter.segment(text).filter((t: string) => t.trim() !== '')
-    );
+    const tokens = new Set(segmenter.segment(text).filter((t: string) => t.trim() !== ''));
     documentTokens.push(tokens);
-    tokens.forEach((token) => allTokens.add(token));
+    for (const token of tokens) {
+      allTokens.add(token);
+    }
   });
 
   // IDF値を計算
   const idfCache = new Map<string, number>();
   allTokens.forEach((token) => {
     // このトークンを含む文書数をカウント
-    const docsWithToken = documentTokens.filter((tokens) =>
-      tokens.has(token)
-    ).length;
+    const docsWithToken = documentTokens.filter((tokens) => tokens.has(token)).length;
 
     // IDF = log(総文書数 / トークンを含む文書数)
     idfCache.set(token, Math.log(totalDocs / (docsWithToken + 1)));
@@ -215,10 +207,7 @@ export function calculateTextSimilarity(
  * @param projectB - 比較する事業B
  * @returns 類似度スコア（0.0〜1.0）
  */
-export function calculateFinancialSimilarity(
-  projectA: Project,
-  projectB: Project
-): number {
+export function calculateFinancialSimilarity(projectA: Project, projectB: Project): number {
   // 最新年度の財政データを取得
   const finA = projectA.financials[0];
   const finB = projectB.financials[0];
@@ -256,10 +245,7 @@ export function calculateFinancialSimilarity(
  * @param projectB - 比較する事業B
  * @returns 類似度スコア（0.0〜1.0）
  */
-export function calculateAttributeSimilarity(
-  projectA: Project,
-  projectB: Project
-): number {
+export function calculateAttributeSimilarity(projectA: Project, projectB: Project): number {
   let score = 0;
 
   // 部署名の一致（配分: 0.4）
@@ -273,10 +259,7 @@ export function calculateAttributeSimilarity(
   }
 
   // 今後の方向性の一致（配分: 0.3）
-  if (
-    projectA.evaluation.futureDirection ===
-    projectB.evaluation.futureDirection
-  ) {
+  if (projectA.evaluation.futureDirection === projectB.evaluation.futureDirection) {
     score += 0.3;
   }
 
@@ -330,9 +313,7 @@ export function findSimilarProjects(
   const otherProjects = allProjects.filter((p) => p.id !== targetProject.id);
 
   // 全事業のIDFキャッシュを事前計算
-  const allTexts = allProjects.map(
-    (p) => `${p.overview} ${p.target} ${p.intent}`
-  );
+  const allTexts = allProjects.map((p) => `${p.overview} ${p.target} ${p.intent}`);
   const idfCache = buildIdfCache(allTexts);
 
   // 各事業の類似度を計算
@@ -365,10 +346,7 @@ export function loadSimilarityData(): SimilarityData {
  * @param topN - 取得件数（デフォルト: 5）
  * @returns 類似事業の表示用データ
  */
-export function getSimilarProjects(
-  projectId: string,
-  topN = 5
-): SimilarProjectDisplay[] {
+export function getSimilarProjects(projectId: string, topN = 5): SimilarProjectDisplay[] {
   const similarityData = loadSimilarityData();
   const projectData = require('@/data/projects.json');
 
@@ -376,29 +354,25 @@ export function getSimilarProjects(
   const similarIds = similarityData.similarities[projectId] || [];
 
   // 事業詳細を結合
-  const result: SimilarProjectDisplay[] = similarIds
-    .slice(0, topN)
-    .map((similar) => {
-      const project = projectData.projects.find(
-        (p: Project) => p.id === similar.id
-      );
+  const result: SimilarProjectDisplay[] = similarIds.slice(0, topN).map((similar) => {
+    const project = projectData.projects.find((p: Project) => p.id === similar.id);
 
-      if (!project) {
-        throw new Error(`Project not found: ${similar.id}`);
-      }
+    if (!project) {
+      throw new Error(`Project not found: ${similar.id}`);
+    }
 
-      const latestFinancial = project.financials[0];
+    const latestFinancial = project.financials[0];
 
-      return {
-        id: project.id,
-        name: project.name,
-        score: similar.score,
-        policyName: project.policy.name,
-        measureName: project.measure.name,
-        department: project.department,
-        totalCost: latestFinancial?.grandTotal || 0,
-      };
-    });
+    return {
+      id: project.id,
+      name: project.name,
+      score: similar.score,
+      policyName: project.policy.name,
+      measureName: project.measure.name,
+      department: project.department,
+      totalCost: latestFinancial?.grandTotal || 0,
+    };
+  });
 
   return result;
 }

@@ -9,16 +9,16 @@
 
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
-import { FormattedAmount } from '@/components/ui/FormattedAmount';
-import PolicyBudgetChart from '@/components/charts/PolicyBudgetChart';
+import { useState } from 'react';
 import CategoryChart from '@/components/charts/CategoryChart';
 import { EvaluationChart } from '@/components/charts/EvaluationChart';
-import { SortableStatsTable } from './SortableStatsTable';
+import PolicyBudgetChart from '@/components/charts/PolicyBudgetChart';
+import { Card } from '@/components/ui/Card';
+import { FormattedAmount } from '@/components/ui/FormattedAmount';
 import { toEvaluationChartData } from '@/lib/chart-data';
 import type { DatasetStats } from '@/types';
+import { SortableStatsTable } from './SortableStatsTable';
 
 interface HomeContentProps {
   stats: DatasetStats;
@@ -35,9 +35,7 @@ export function HomeContent({ stats }: HomeContentProps) {
         <h1 className="text-xl md:text-3xl font-bold text-gray-900">
           事務事業評価データ 概要ダッシュボード
         </h1>
-        <p className="mt-2 text-gray-600">
-          大船渡市の事務事業評価データの概要を表示しています。
-        </p>
+        <p className="mt-2 text-gray-600">大船渡市の事務事業評価データの概要を表示しています。</p>
       </div>
 
       {/* サマリーカード */}
@@ -102,6 +100,7 @@ export function HomeContent({ stats }: HomeContentProps) {
         {/* 詳細テーブル（アコーディオン） */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <button
+            type="button"
             onClick={() => setShowPolicyDetails(!showPolicyDetails)}
             className="w-full flex items-center justify-between text-left font-semibold text-gray-900 hover:text-blue-600 transition-colors"
             aria-expanded={showPolicyDetails}
@@ -129,6 +128,7 @@ export function HomeContent({ stats }: HomeContentProps) {
         {/* 詳細テーブル（アコーディオン） */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <button
+            type="button"
             onClick={() => setShowCategoryDetails(!showCategoryDetails)}
             className="w-full flex items-center justify-between text-left font-semibold text-gray-900 hover:text-blue-600 transition-colors"
             aria-expanded={showCategoryDetails}

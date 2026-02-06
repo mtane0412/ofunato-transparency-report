@@ -3,19 +3,19 @@
  *
  * JSONデータ読み込みと一覧取得関数が正しく動作することを確認します。
  */
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  getAllProjects,
-  getProjectById,
-  getAllPolicies,
-  getAllMeasures,
   getAllBasicProjects,
-  getAllDepartments,
   getAllCategories,
-  getDatasetStats,
-  normalizeEvaluationValue,
+  getAllDepartments,
   getAllDirections,
   getAllFutureDirections,
+  getAllMeasures,
+  getAllPolicies,
+  getAllProjects,
+  getDatasetStats,
+  getProjectById,
+  normalizeEvaluationValue,
 } from './data';
 
 describe('data.ts', () => {
@@ -231,8 +231,10 @@ describe('data.ts', () => {
 
       // 政策名からIDを逆引きしてソート順を確認
       for (let i = 0; i < stats.projectsByPolicy.length - 1; i++) {
-        const currentPolicyId = policies.find((p) => p.name === stats.projectsByPolicy[i].name)?.id || '';
-        const nextPolicyId = policies.find((p) => p.name === stats.projectsByPolicy[i + 1].name)?.id || '';
+        const currentPolicyId =
+          policies.find((p) => p.name === stats.projectsByPolicy[i].name)?.id || '';
+        const nextPolicyId =
+          policies.find((p) => p.name === stats.projectsByPolicy[i + 1].name)?.id || '';
         expect(currentPolicyId.localeCompare(nextPolicyId)).toBeLessThanOrEqual(0);
       }
     });
@@ -345,16 +347,18 @@ describe('data.ts', () => {
       // 不正データが存在する場合、「その他・未設定」カテゴリが存在すること
       const allProjects = getAllProjects();
       const hasInvalidDirection = allProjects.some((p) => /^[0-9]+$/.test(p.evaluation.direction));
-      const hasInvalidFutureDirection = allProjects.some((p) => /^[0-9]+$/.test(p.evaluation.futureDirection));
+      const hasInvalidFutureDirection = allProjects.some((p) =>
+        /^[0-9]+$/.test(p.evaluation.futureDirection)
+      );
 
       if (hasInvalidDirection) {
         expect(directionOther).toBeDefined();
-        expect(directionOther!.count).toBeGreaterThan(0);
+        expect(directionOther?.count).toBeGreaterThan(0);
       }
 
       if (hasInvalidFutureDirection) {
         expect(futureDirectionOther).toBeDefined();
-        expect(futureDirectionOther!.count).toBeGreaterThan(0);
+        expect(futureDirectionOther?.count).toBeGreaterThan(0);
       }
     });
 

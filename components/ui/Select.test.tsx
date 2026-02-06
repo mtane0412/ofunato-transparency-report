@@ -3,9 +3,10 @@
  *
  * セレクトボックスコンポーネントが正しく動作することを確認します。
  */
-import { describe, it, expect, vi } from 'vitest';
+
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 import { Select } from './Select';
 
 describe('Select', () => {

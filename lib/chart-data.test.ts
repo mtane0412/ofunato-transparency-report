@@ -3,26 +3,26 @@
  * グラフ用データ変換関数の単体テスト
  */
 
-import { describe, it, expect } from 'vitest';
-import {
-  formatFiscalYear,
-  toGrandTotalChartData,
-  toRevenueSourceChartData,
-  toCostBreakdownChartData,
-  toIndicatorChartData,
-  hasValidIndicatorData,
-  toPolicyBudgetChartData,
-  toCategoryChartData,
-  toEvaluationChartData,
-  toYearlyTotalBudgetChartData,
-} from './chart-data';
+import { describe, expect, it } from 'vitest';
 import type {
-  YearlyFinancial,
-  YearlyIndicator,
   CategoryStats,
   EvaluationCategoryCount,
+  YearlyFinancial,
+  YearlyIndicator,
   YearlyTotalBudget,
 } from '@/types';
+import {
+  formatFiscalYear,
+  hasValidIndicatorData,
+  toCategoryChartData,
+  toCostBreakdownChartData,
+  toEvaluationChartData,
+  toGrandTotalChartData,
+  toIndicatorChartData,
+  toPolicyBudgetChartData,
+  toRevenueSourceChartData,
+  toYearlyTotalBudgetChartData,
+} from './chart-data';
 
 describe('formatFiscalYear', () => {
   it('年度数値を和暦文字列に変換する', () => {

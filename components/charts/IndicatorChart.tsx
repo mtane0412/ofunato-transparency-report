@@ -6,11 +6,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { ChartContainer } from './ChartContainer';
-import { toIndicatorChartData } from '@/lib/chart-data';
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { INDICATOR_COLORS } from '@/lib/chart-constants';
+import { toIndicatorChartData } from '@/lib/chart-data';
 import type { YearlyIndicator } from '@/types';
+import { ChartContainer } from './ChartContainer';
 
 /**
  * 指標推移グラフのプロパティ
@@ -32,12 +32,7 @@ interface IndicatorChartProps {
  * 年度別の指標実績値を折れ線グラフで表示します。
  * 指標データは金額ではないため、formatAmountは使用しません。
  */
-export function IndicatorChart({
-  indicators,
-  category,
-  index,
-  label,
-}: IndicatorChartProps) {
+export function IndicatorChart({ indicators, category, index, label }: IndicatorChartProps) {
   // データ変換（メモ化により不要な再計算を防ぐ）
   const chartData = useMemo(
     () => toIndicatorChartData(indicators, category, index),

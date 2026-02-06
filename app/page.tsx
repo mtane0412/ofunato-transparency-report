@@ -10,8 +10,8 @@
  * Server Componentとして実装されており、データ取得後にClient Componentに渡します。
  */
 
-import { getDatasetStats } from '@/lib/data';
 import { HomeContent } from '@/components/home/HomeContent';
+import { getDatasetStats } from '@/lib/data';
 
 export default function Home() {
   const stats = getDatasetStats();

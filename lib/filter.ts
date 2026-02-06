@@ -4,8 +4,8 @@
  * 事業データのフィルタリング機能とカスケード選択肢の取得機能を提供します。
  */
 
-import type { Project } from '@/types';
 import { normalizeEvaluationValue } from '@/lib/data';
+import type { Project } from '@/types';
 
 /**
  * フィルターパラメータ
@@ -36,10 +36,7 @@ export interface FilterParams {
  * @param params - フィルターパラメータ
  * @returns フィルタリング後の事業データ配列
  */
-export function filterProjects(
-  projects: Project[],
-  params: FilterParams
-): Project[] {
+export function filterProjects(projects: Project[], params: FilterParams): Project[] {
   return projects.filter((project) => {
     // キーワード検索（事業名の部分一致、大文字小文字区別なし）
     if (params.q && !project.name.toLowerCase().includes(params.q.toLowerCase())) {
@@ -72,12 +69,18 @@ export function filterProjects(
     }
 
     // 改革改善の方向性でフィルタリング（正規化後の値で比較）
-    if (params.direction && normalizeEvaluationValue(project.evaluation.direction) !== params.direction) {
+    if (
+      params.direction &&
+      normalizeEvaluationValue(project.evaluation.direction) !== params.direction
+    ) {
       return false;
     }
 
     // 今後の方向性でフィルタリング（正規化後の値で比較）
-    if (params.futureDirection && normalizeEvaluationValue(project.evaluation.futureDirection) !== params.futureDirection) {
+    if (
+      params.futureDirection &&
+      normalizeEvaluationValue(project.evaluation.futureDirection) !== params.futureDirection
+    ) {
       return false;
     }
 
@@ -198,18 +201,12 @@ export function getFilterOptionCounts(
   projects.forEach((project) => {
     // 政策の件数（政策以外のフィルターを適用）
     if (filterProjects([project], filtersWithoutPolicy).length > 0) {
-      counts.policies.set(
-        project.policy.id,
-        (counts.policies.get(project.policy.id) || 0) + 1
-      );
+      counts.policies.set(project.policy.id, (counts.policies.get(project.policy.id) || 0) + 1);
     }
 
     // 施策の件数（施策以外のフィルターを適用）
     if (filterProjects([project], filtersWithoutMeasure).length > 0) {
-      counts.measures.set(
-        project.measure.id,
-        (counts.measures.get(project.measure.id) || 0) + 1
-      );
+      counts.measures.set(project.measure.id, (counts.measures.get(project.measure.id) || 0) + 1);
     }
 
     // 基本事業の件数（基本事業以外のフィルターを適用）
@@ -230,10 +227,7 @@ export function getFilterOptionCounts(
 
     // 事業区分の件数（事業区分以外のフィルターを適用）
     if (filterProjects([project], filtersWithoutCategory).length > 0) {
-      counts.categories.set(
-        project.category,
-        (counts.categories.get(project.category) || 0) + 1
-      );
+      counts.categories.set(project.category, (counts.categories.get(project.category) || 0) + 1);
     }
 
     // 改革改善の方向性の件数（方向性以外のフィルターを適用）
@@ -247,7 +241,9 @@ export function getFilterOptionCounts(
 
     // 今後の方向性の件数（今後の方向性以外のフィルターを適用）
     if (filterProjects([project], filtersWithoutFutureDirection).length > 0) {
-      const normalizedFutureDirection = normalizeEvaluationValue(project.evaluation.futureDirection);
+      const normalizedFutureDirection = normalizeEvaluationValue(
+        project.evaluation.futureDirection
+      );
       counts.futureDirections.set(
         normalizedFutureDirection,
         (counts.futureDirections.get(normalizedFutureDirection) || 0) + 1
