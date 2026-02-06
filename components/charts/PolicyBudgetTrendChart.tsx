@@ -9,7 +9,7 @@ import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'r
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
 import { POLICY_COLORS } from '@/lib/chart-constants';
 import { formatAmount, formatAmountShort } from '@/lib/utils';
-import type { PolicyYearlyChartDataPoint } from '@/types';
+import type { PolicyYearlyChartDataPoint, RechartsTooltipPayload } from '@/types';
 import { ChartContainer } from './ChartContainer';
 
 interface PolicyBudgetTrendChartProps {
@@ -23,7 +23,13 @@ interface PolicyBudgetTrendChartProps {
  * LineChart用カスタムツールチップ
  * 年度と各政策の予算を表示
  */
-function CustomLineTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function CustomLineTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: RechartsTooltipPayload<number>[];
+}) {
   const { mode } = useAmountDisplay();
 
   if (!active || !payload || payload.length === 0) {
@@ -36,7 +42,10 @@ function CustomLineTooltip({ active, payload }: { active?: boolean; payload?: an
     <div className="bg-white p-3 border border-gray-300 rounded shadow-lg">
       <p className="font-bold text-gray-900 mb-2">{data.year}年度</p>
       {payload.map((entry, index) => (
-        <p key={index} className="text-sm text-gray-700">
+        <p
+          key={entry.dataKey?.toString() || entry.name?.toString() || `item-${index}`}
+          className="text-sm text-gray-700"
+        >
           <span style={{ color: entry.color }}>{entry.name}</span>:{' '}
           <span className="font-semibold">{formatAmount(entry.value as number, mode)}</span>
         </p>

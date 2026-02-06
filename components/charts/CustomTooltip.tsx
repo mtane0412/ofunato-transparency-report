@@ -12,6 +12,8 @@ import { formatAmount } from '@/lib/utils';
  * ツールチップのペイロード型定義
  */
 interface TooltipPayload {
+  /** データキー */
+  dataKey?: string | number;
   /** データキー（日本語ラベル） */
   name: string;
   /** 値 */
@@ -55,7 +57,10 @@ export function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 
       {/* 各データ項目 */}
       {payload.map((entry, index) => (
-        <div key={`item-${index}`} className="flex items-center gap-2 text-sm">
+        <div
+          key={entry.dataKey?.toString() || entry.name?.toString() || `item-${index}`}
+          className="flex items-center gap-2 text-sm"
+        >
           {/* カラーインジケーター */}
           {entry.color && (
             <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: entry.color }} />

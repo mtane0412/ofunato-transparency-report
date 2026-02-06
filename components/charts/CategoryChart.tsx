@@ -10,7 +10,7 @@ import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
 import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 import { toCategoryChartData } from '@/lib/chart-data';
 import { formatAmount, formatAmountShort } from '@/lib/utils';
-import type { CategoryStats } from '@/types';
+import type { CategoryStats, RechartsTooltipPayload } from '@/types';
 import { ChartContainer } from './ChartContainer';
 
 interface CategoryChartProps {
@@ -22,7 +22,13 @@ interface CategoryChartProps {
  * 横棒グラフ用カスタムツールチップ
  * 事業区分、予算、事業数を表示
  */
-function CustomBarTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function CustomBarTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: RechartsTooltipPayload<number>[];
+}) {
   const { mode } = useAmountDisplay();
 
   if (!active || !payload || payload.length === 0) {

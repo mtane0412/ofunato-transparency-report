@@ -241,7 +241,7 @@ export function ProjectDetailContent({ project, similarProjects }: ProjectDetail
               defaultLabels.map((defaultLabel, index) =>
                 hasValidIndicatorData(project.indicators, category, index) ? (
                   <IndicatorChart
-                    key={`${category}-${index}`}
+                    key={`${category}-${defaultLabel}`}
                     indicators={project.indicators}
                     category={category}
                     index={index}
@@ -268,8 +268,8 @@ export function ProjectDetailContent({ project, similarProjects }: ProjectDetail
             <h3 className="text-sm font-medium text-gray-500 mb-2">今後の方向性</h3>
             <p className="text-sm text-gray-900">{project.evaluation.futureDirection || 'なし'}</p>
           </div>
-          {project.evaluation.comments.map((comment, index) => (
-            <div key={index}>
+          {project.evaluation.comments.map((comment) => (
+            <div key={comment.role}>
               <h3 className="text-sm font-medium text-gray-500 mb-2">{comment.role}意見</h3>
               <p className="text-sm text-gray-900 whitespace-pre-wrap">
                 {comment.comment || 'なし'}

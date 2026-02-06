@@ -135,8 +135,10 @@ export function aggregateBudgetByPolicyAndYear(projects: Project[]): {
     if (!policyNameCountMap.has(policyId)) {
       policyNameCountMap.set(policyId, new Map<string, number>());
     }
-    const nameCountMap = policyNameCountMap.get(policyId)!;
-    nameCountMap.set(policyName, (nameCountMap.get(policyName) || 0) + 1);
+    const nameCountMap = policyNameCountMap.get(policyId);
+    if (nameCountMap) {
+      nameCountMap.set(policyName, (nameCountMap.get(policyName) || 0) + 1);
+    }
   });
 
   // ステップ2: 各政策IDごとに最も使用頻度の高い名前を取得
@@ -171,9 +173,11 @@ export function aggregateBudgetByPolicyAndYear(projects: Project[]): {
         yearPolicyBudgetMap.set(year, new Map<string, number>());
       }
 
-      const policyBudgetMap = yearPolicyBudgetMap.get(year)!;
-      const currentBudget = policyBudgetMap.get(unifiedPolicyName) || 0;
-      policyBudgetMap.set(unifiedPolicyName, currentBudget + financial.grandTotal);
+      const policyBudgetMap = yearPolicyBudgetMap.get(year);
+      if (policyBudgetMap) {
+        const currentBudget = policyBudgetMap.get(unifiedPolicyName) || 0;
+        policyBudgetMap.set(unifiedPolicyName, currentBudget + financial.grandTotal);
+      }
     });
   });
 

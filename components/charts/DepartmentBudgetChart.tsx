@@ -10,7 +10,7 @@ import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'rec
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
 import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 import { formatAmount, formatAmountShort } from '@/lib/utils';
-import type { DepartmentBudget } from '@/types';
+import type { DepartmentBudget, RechartsTooltipPayload } from '@/types';
 import { ChartContainer } from './ChartContainer';
 
 interface DepartmentBudgetChartProps {
@@ -22,7 +22,13 @@ interface DepartmentBudgetChartProps {
  * 横棒グラフ用カスタムツールチップ
  * 部署名、予算、事業数を表示
  */
-function CustomBarTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function CustomBarTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: RechartsTooltipPayload<number>[];
+}) {
   const { mode } = useAmountDisplay();
 
   if (!active || !payload || payload.length === 0) {
