@@ -10,6 +10,7 @@ import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
 import { formatAmount, formatAmountShort } from '@/lib/utils';
 import { toPolicyBudgetChartData } from '@/lib/chart-data';
 import { ChartContainer } from './ChartContainer';
+import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 import type { CategoryStats } from '@/types';
 
 interface PolicyBudgetChartProps {
@@ -51,6 +52,7 @@ export default function PolicyBudgetChart({
   policyStats,
 }: PolicyBudgetChartProps) {
   const { mode } = useAmountDisplay();
+  const { yAxisWidth, fontSize } = useChartYAxisWidth(280);
 
   // 空データのフォールバック
   if (policyStats.length === 0) {
@@ -83,8 +85,8 @@ export default function PolicyBudgetChart({
         <YAxis
           type="category"
           dataKey="name"
-          width={280}
-          tick={{ fontSize: 13 }}
+          width={yAxisWidth}
+          tick={{ fontSize }}
         />
         <Tooltip content={<CustomBarTooltip />} />
         <Legend wrapperStyle={{ paddingTop: '10px' }} />

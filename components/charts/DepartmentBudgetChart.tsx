@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'rec
 import { useAmountDisplay } from '@/contexts/AmountDisplayContext';
 import { formatAmount, formatAmountShort } from '@/lib/utils';
 import { ChartContainer } from './ChartContainer';
+import { useChartYAxisWidth } from '@/hooks/useChartYAxisWidth';
 import type { DepartmentBudget } from '@/types';
 
 interface DepartmentBudgetChartProps {
@@ -52,6 +53,7 @@ export default function DepartmentBudgetChart({
   departmentBudgets,
 }: DepartmentBudgetChartProps) {
   const { mode } = useAmountDisplay();
+  const { yAxisWidth, fontSize } = useChartYAxisWidth(240);
   const [showAll, setShowAll] = useState(false);
 
   // 空データのフォールバック
@@ -94,8 +96,8 @@ export default function DepartmentBudgetChart({
           <YAxis
             type="category"
             dataKey="name"
-            width={240}
-            tick={{ fontSize: 12 }}
+            width={yAxisWidth}
+            tick={{ fontSize }}
           />
           <Tooltip content={<CustomBarTooltip />} />
           <Legend wrapperStyle={{ paddingTop: '10px' }} />

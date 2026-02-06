@@ -79,7 +79,7 @@ export function ProjectDetailContent({
             {project.category}
           </span>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900">{project.name}</h1>
+        <h1 className="text-xl md:text-3xl font-bold text-gray-900">{project.name}</h1>
       </div>
 
       {/* 基本情報カード */}
@@ -175,7 +175,7 @@ export function ProjectDetailContent({
       <Card title="財政データ（最新年度）">
         {latestFinancial ? (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div>
                 <dt className="text-sm font-medium text-gray-500">
                   国庫支出金
@@ -222,7 +222,7 @@ export function ProjectDetailContent({
               </div>
             </div>
             <div className="pt-4 border-t border-gray-200">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <dt className="text-sm font-medium text-gray-500">
                     正規職員従事人数
