@@ -7,7 +7,7 @@
  */
 
 import { renderHook } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useChartYAxisWidth } from '../useChartYAxisWidth';
 
 describe('useChartYAxisWidth', () => {
@@ -30,7 +30,7 @@ describe('useChartYAxisWidth', () => {
     vi.unstubAllGlobals();
   });
 
-  test('デスクトップ幅（640px以上）では指定された幅をそのまま返す', () => {
+  it('デスクトップ幅（640px以上）では指定された幅をそのまま返す', () => {
     // 準備: デスクトップサイズに設定
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
@@ -46,7 +46,7 @@ describe('useChartYAxisWidth', () => {
     expect(result.current.fontSize).toBe(12);
   });
 
-  test('モバイル幅（640px未満）では指定された幅の40%を返す', () => {
+  it('モバイル幅（640px未満）では指定された幅の40%を返す', () => {
     // 準備: モバイルサイズに設定
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
@@ -62,7 +62,7 @@ describe('useChartYAxisWidth', () => {
     expect(result.current.fontSize).toBe(10);
   });
 
-  test('境界値: 640pxではデスクトップとして扱う', () => {
+  it('境界値: 640pxではデスクトップとして扱う', () => {
     // 準備: 境界値（640px）に設定
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
@@ -78,7 +78,7 @@ describe('useChartYAxisWidth', () => {
     expect(result.current.fontSize).toBe(12);
   });
 
-  test('境界値: 639pxではモバイルとして扱う', () => {
+  it('境界値: 639pxではモバイルとして扱う', () => {
     // 準備: 境界値-1（639px）に設定
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
@@ -94,7 +94,7 @@ describe('useChartYAxisWidth', () => {
     expect(result.current.fontSize).toBe(10);
   });
 
-  test('異なるdesktopWidth値でも正しく計算される', () => {
+  it('異なるdesktopWidth値でも正しく計算される', () => {
     // 準備: デスクトップサイズに設定
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
@@ -110,7 +110,7 @@ describe('useChartYAxisWidth', () => {
     expect(result.current.fontSize).toBe(12);
   });
 
-  test('モバイル幅で異なるdesktopWidth値でも正しく40%が計算される', () => {
+  it('モバイル幅で異なるdesktopWidth値でも正しく40%が計算される', () => {
     // 準備: モバイルサイズに設定
     Object.defineProperty(window, 'innerWidth', {
       writable: true,

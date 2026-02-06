@@ -47,8 +47,9 @@ export function useChartYAxisWidth(desktopWidth: number) {
       : DESKTOP_FONT_SIZE;
   }, []);
 
-  const [yAxisWidth, setYAxisWidth] = useState(calculateWidth);
-  const [fontSize, setFontSize] = useState(calculateFontSize);
+  // SSR/クライアント間のハイドレーションミスマッチを防ぐため、初期値は常にデスクトップ値で固定
+  const [yAxisWidth, setYAxisWidth] = useState(desktopWidth);
+  const [fontSize, setFontSize] = useState(DESKTOP_FONT_SIZE);
 
   useEffect(() => {
     // リサイズイベントをハンドル
@@ -56,6 +57,9 @@ export function useChartYAxisWidth(desktopWidth: number) {
       setYAxisWidth(calculateWidth());
       setFontSize(calculateFontSize());
     };
+
+    // ハイドレーション後、クライアント側の実際の値に更新
+    handleResize();
 
     // イベントリスナーを登録
     window.addEventListener('resize', handleResize);
